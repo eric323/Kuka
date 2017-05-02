@@ -1,2 +1,0 @@
-<apex:page controller="APTSMD_RedirectEcommerceController" action="{!redirect}">
-</apex:page>

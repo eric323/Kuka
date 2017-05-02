@@ -1,6 +1,8 @@
 public  without sharing class APTSMD_categoriesUtils
     {
         public static Map<Id,String> mapCategoryTranslations {get;set;}
+        //Jade Fischer added 5/2/2017
+        public static Contact pubContact = new Contact();
         public static List<APTSMD_CategoryWrapperClass> getCategoriesForPriceList(String PLId)
         {
             //try
@@ -11,6 +13,7 @@ public  without sharing class APTSMD_categoriesUtils
                 //Apttus_Config2__PriceList__c objPriceList = [select id from Apttus_Config2__PriceList__c where District__c =: objUserAcc.Dealer_del__c];
                 List<APTSMD_CategoryWrapperClass> lstCategories = prepareWrapper(getCategories(null,PLId));
                 system.debug('lstCategories == '+lstCategories);
+            	
 
             // Need to update the logic to process the APTSMD_CategoryWrapperClass class to remove the categories from the list
 
@@ -31,8 +34,11 @@ public  without sharing class APTSMD_categoriesUtils
         
         public static Apttus_CPQApi.CPQ.CategorySearchResultDO  getCategories(Apttus_Config2__PriceList__c objPriceList,String PLId) {        //a2nc0000000DAAB
             User user = [select contactId from user where id = :UserInfo.getUserId()];
-            Contact objContact = user.contactId != null ? [select id,accountId from Contact where id = :user.contactId] : getGuestContact();
-
+            Contact objContact = user.contactId != null ? [select id,accountId, Product_Categories__c from Contact where id = :user.contactId] : getGuestContact();
+			system.debug('string compare contact = ' + objContact);
+            //Get Contact once and share 
+            pubContact = objContact;
+            
             //Contact objContact = [select id,accountId from Contact where id in (select contactId from user where id =: UserInfo.getUserId())];
             Apttus_Config2__PriceList__c priceList;
             if (PLId != null) {
@@ -52,18 +58,21 @@ public  without sharing class APTSMD_categoriesUtils
             return categroryResult;
 
         }
+        
+       
 
 
         //Method to change the prepareWrapper and remove categories before it is returned
-
-        public static List<APTSMD_CategoryWrapperClass> compareCategories(List<APTSMD_CategoryWrapperClass> lstproductCategory) {
+    public static List<APTSMD_CategoryWrapperClass> compareCategories(List<APTSMD_CategoryWrapperClass> lstproductCategory) {
             //Return list of categories for Pilot
             List<APTSMD_CategoryWrapperClass> categoriesList = new List<APTSMD_CategoryWrapperClass>();
             List<APTSMD_categoryWrapperClass.childCategories> childCat = new List<APTSMD_categoryWrapperClass.childCategories>();
-
             Boolean isCategory = false;
             User user = [select contactId from user where id = :UserInfo.getUserId()];
             Contact objContact = user.contactId != null ? [select Id, AccountId, Product_Categories__c from Contact where id = :user.contactId] : getGuestContact();
+
+
+
 
             //Parse out the multi-select list on the contact object for Product_Categories__c
             String conACategories = objContact.Product_Categories__c;
@@ -78,6 +87,7 @@ public  without sharing class APTSMD_categoriesUtils
 
                 }
             } catch (Exception e) {
+                //no error not in debug log
                 system.debug('ConACat error message' + e.getMessage());
             }
 
@@ -86,83 +96,120 @@ public  without sharing class APTSMD_categoriesUtils
             
 
            // childCat = lstproductCategory.lstChildCategories;
-            for (APTSMD_CategoryWrapperClass category: lstproductCategory) {
-                childCat = category.lstChildCategories;
+                try {
+                    for (APTSMD_CategoryWrapperClass category: lstproductCategory) {
+                        //childCat = category.lstChildCategories;
+                        //system.debug(' childCat = ' + childCat);
+                        List<APTSMD_CategoryWrapperClass> lstCategories = new List<APTSMD_CategoryWrapperClass>();
+                        for (Integer i = 0; i < custSettingCategories.size(); i++) {
 
-                for (Integer i = 0; i < custSettingCategories.size(); i++) {
+                            String catName = category.level1categoryName;
+                            //Apttus_Custom_Categories__c aptCustomSetting = custSettingCategories[i];
+                            system.debug('catName = ' + catName);
+                            Boolean isHasSubcategoryTrue = false;
+                            Boolean comparedTrue = CompareString(catName);
+                            //See if there has been a value for Hassubcat property on category
+                            if (category.Hassubcat == null){
+                                isHasSubcategoryTrue = false;
+                                category.Hassubcat = false;
+                                system.debug('hasSub = ' + category.Hassubcat);
+                            }else{
+                                isHasSubcategoryTrue = true;
+                            }
+                            system.debug('comparedTrue = ' + comparedTrue);
 
-                    String catName = category.level1categoryName;
-                    //Apttus_Custom_Categories__c aptCustomSetting = custSettingCategories[i];
-
-                        Boolean comparedTrue = CompareString(catName);
-                        system.debug('comparedTrue = ' + comparedTrue);
-
-                    if (comparedTrue) {
+                            if (comparedTrue) {
 
                                 system.debug('Equals true comparedTrue = ' + comparedTrue);
                                 //<<Add Category>\
 
                                 categoriesList.add(category);
+                                system.debug('category.Hassubcat = ' + category.Hassubcat);
+                            }
+                            /*
+                            else if(category.HasChildCategories){
 
-                    }else if(category.Hassubcat)
-                    {
-                        system.debug('In SubCat comparedTrue = ' + comparedTrue);
-                        for (APTSMD_categoryWrapperClass.childCategories childsubCategories : childCat)
-                        {
-                            system.debug(childsubCategories);
-                            if (CompareString(childsubCategories.strCategoryName))
+                                    lstCategories = subcategoryextract(category);
+
+                            }
+                            */
+                            /* else if (isHasSubcategoryTrue) {
+                                system.debug('category.Hassubcat = ' + category.Hassubcat);
+                                system.debug('In SubCat comparedTrue = ' + comparedTrue);
+                                for (APTSMD_categoryWrapperClass.childCategories childsubCategories : childCat) {
+                                    system.debug(childsubCategories);
+                                    if (CompareString(childsubCategories.strCategoryName)) {
+                                        categoriesList.add(category);
+                                    }
+                                }
+                            }*/
                             {
+                                system.debug('In else comparedTrue = ' + comparedTrue);
+                                //<<Add Category>>
                                 categoriesList.add(category);
                             }
+
                         }
                     }
-                    {
-                        system.debug('In else comparedTrue = ' + comparedTrue);
-                        //<<Add Category>>
-                        categoriesList.add(category);
-                    }
-
+                }catch(Exception e){
+                    system.debug('For Category loop error message' + e.getMessage());
                 }
-            }
-
             return categoriesList;
         }
-    //Checks category against the custom settings and the multiselect picklist from contact object.
+        
+        
+     	//Checks category against the custom settings and the multiselect picklist from contact object. Jade Fischer 5/2/2017
     public static Boolean CompareString(String strCompare) {
         //Return list of categories for Pilot
+        
         Boolean isEqualString = false;
         List<APTSMD_CategoryWrapperClass> categoriesList = new List<APTSMD_CategoryWrapperClass>();
-        //APTSMD_CategoryWrapperClass wrapper = new APTSMD_CategoryWrapperClass();
-
         Boolean isCategory = false;
-        User user = [select contactId from user where id = :UserInfo.getUserId()];
-        Contact objContact = user.contactId != null ? [select Id, AccountId, Product_Categories__c from Contact where id = :user.contactId] : getGuestContact();
-
+        //User user = [select contactId from user where id = :UserInfo.getUserId()];
+        //Contact objContact = user.contactId != null ? [select Id, AccountId, Product_Categories__c from Contact where id = :user.contactId] : getGuestContact();
+		//Add pubContact here
+        
+        system.debug('in CompareString');
+        //system.debug('objContact = ' + objContact);
+        system.debug('pubContact = ' + pubContact);
+		//system.debug('string compare contact = ' + objContact);  
+        
         //Parse out the multi-select list on the contact object for Product_Categories__c
-        String conACategories = objContact.Product_Categories__c;
+        //Add pubContact here
+        //String conACategories = objContact.Product_Categories__c;
+        String conACategories = pubContact.Product_Categories__c;
+        try{
+            //String conACategories = objContact.Product_Categories__c;
+         } catch(Exception e){
+            system.debug('conACat error = ' + e.getMessage());
+        }
+        
+        
         List<String> conCategories = new List<String>();
         conCategories.add('');
+        
         //Creating list of multi Selected values for categories on the contact object
-        try {
-            system.debug('in ConACategories');
-            if (conACategories != Null) {
+        if (conACategories != Null) {
                 conCategories = conACategories.split(';');
-
-
             }
+        try {
+            system.debug('in ConCategories = ' + conCategories);
+            
         } catch (Exception e) {
-            system.debug(e.getMessage());
+            system.debug('adding to conCategories error message' + e.getMessage());
         }
-
+		system.debug('conCategories = ' + conCategories);
         //Categories from Custom Setting Apttus_Custom_Categories__c
         List<Apttus_Custom_Categories__c> custSettingCategories = Apttus_Custom_Categories__c.getall().values();
         for (Integer i = 0; i < custSettingCategories.size(); i++) {
             //Apttus_Custom_Categories__c aptCustomSetting = custSettingCategories[i];
+            system.debug('customSetting Name ' + custSettingCategories[i].Name + ' strCompare = ' + strCompare);
+            system.debug('custSettingCategories = ' + custSettingCategories);
             if (strCompare == custSettingCategories[i].Name) {
                 for (String strCat: conCategories) {
                     //system.debug('in conCategory');
-                    //system.debug('customSetting Name ' + custSettingCategories[i].Name);
-                    //system.debug('strCat Name ' + strCat);
+                    system.debug('customSetting Name ' + custSettingCategories[i].Name + ' strCompare = ' + strCompare);
+                    system.debug('strCat Name ' + strCat);
                     if (strCompare == strCat) {
                         isEqualString = true;
 
@@ -171,6 +218,8 @@ public  without sharing class APTSMD_categoriesUtils
             }
         }
         return isEqualString;
+
+        //return false;
     }
 
    //Old Method for changing the categories
@@ -250,23 +299,32 @@ public  without sharing class APTSMD_categoriesUtils
                     mapCategoryTranslations.put(obj.Apttus_Config2__CategoryHierarchy__c,obj.Name);
              }
              system.debug('mapCategoryTranslations==='+mapCategoryTranslations);
-            List<APTSMD_CategoryWrapperClass> lstCategories = new List<APTSMD_CategoryWrapperClass>();
+             List<APTSMD_CategoryWrapperClass> lstCategories = new List<APTSMD_CategoryWrapperClass>();
              for( Apttus_CPQApi.CPQ.CategoryDO catresult : categoryResult.Categories)
              {
+                system.debug('catresult = ' + catresult);
                 if(catresult.HasChildCategories) 
-                { 
-                    
+                {
+                    // Compare for Pilot Program Jade Fischer 5/1/2017
+                   /* for (Apttus_CPQApi.CPQ.CategoryDO cldCategory : subcategoryextract(catresult))
+                    {
+                        if (CompareString(String strCompare)
+                    }*/
+
+
                     lstCategories = subcategoryextract(catresult);
+
+
                 }
                 
             }   
             System.debug('lstCategories :: '+lstCategories);
             //Add filter for Pilot Categories Jade Fischer 5/1/2017
-            try{
+            /*try{
                 lstCategories=compareCategories(lstCategories);
             }catch(Exception e){
                 system.debug('compareCategories error message ' + e.getStackTraceString());
-            }
+            }*/
 
             return lstCategories;
         }
@@ -275,14 +333,19 @@ public  without sharing class APTSMD_categoriesUtils
    
                     List<APTSMD_CategoryWrapperClass> lstCategoriessub = new List<APTSMD_CategoryWrapperClass>();
                     Set<Id> setLevel1Categories = new Set<Id>();
+            		//Jade Fischer 5/2/2017
+            		Boolean isPilotCategory = false;
+            
                     String strCategoryName = '';
                     for( Apttus_CPQApi.CPQ.CategoryDO level1Categroy : subcat.ChildCategories)
                     { 
+                        
                        APTSMD_CategoryWrapperClass wrap = New APTSMD_CategoryWrapperClass();
                         wrap.Level1CategoryId = level1Categroy.CategoryId;
-                        
+                        system.debug('wrap.Level1CategoryId =' + wrap.Level1CategoryId);
                         if(mapCategoryTranslations!=null && mapCategoryTranslations.size() > 0)
                         {
+                            
                             if(mapCategoryTranslations.containsKey(level1Categroy.CategoryId))
                             {
                                 strCategoryName= mapCategoryTranslations.get(level1Categroy.CategoryId);
@@ -290,17 +353,24 @@ public  without sharing class APTSMD_categoriesUtils
                         }
                          if(strCategoryName!= null && strCategoryName!='')
                          {
-                           wrap.level1categoryName = strCategoryName;
+                           		wrap.level1categoryName = strCategoryName;                             
                          }
-                         else
+                         else 
                          {
-                            wrap.level1categoryName = level1Categroy.name;
+                            //check to see if it is in Pilot Category Jade Fischer 5/1/2017
+                            String catName = level1Categroy.name;
+                            //isPilotCategory = CompareString(catName);
+                            system.debug('wrap = ' + level1Categroy.name + ' isPilotCategory = ' + isPilotCategory);
+                            //system.debug('The strCategory is null or is blank ' + strCategoryName);
+                            //If (isPilotCategory){ 
+                            	wrap.level1categoryName = level1Categroy.name;
+                            //}
                          }
                          if(level1Categroy.HasChildCategories)
                         { 
-                                //System.debug('level1CategroyinIf :: '+level1Categroy);
+                               System.debug('level1CategroyinIf :: '+level1Categroy);
                                wrap.childcat = subcategoryextract(level1Categroy); 
-        //                     wrap.Hassubcat = True;
+                               wrap.Hassubcat = True;
         //                     System.debug('level1Categroy :: '+level1Categroy);
         //                     List<APTSMD_CategoryWrapperClass> lstChildCategories = new List<APTSMD_CategoryWrapperClass>();
         //                     for( Apttus_CPQApi.CPQ.CategoryDO  childCategory : level1Categroy.ChildCategories)

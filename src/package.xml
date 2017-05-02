@@ -5,19 +5,17 @@
         <name>ApexClass</name>
     </types>
     <types>
-        <members>*</members>
+        <members>APTSDMP_eComm_Controller</members>
+        <members>APTSDMP_eComm_Templates</members>
         <name>ApexComponent</name>
     </types>
     <types>
-        <members>*</members>
+        <members>APTSMD_SKOECommCatalog</members>
+        <members>APTSMD_SKOECommCatalogOld</members>
         <name>ApexPage</name>
     </types>
     <types>
-        <members>*</members>
-        <name>ApexTrigger</name>
-    </types>
-    <types>
-        <members>*</members>
+        <members>APTSMD_Kuka</members>
         <name>StaticResource</name>
     </types>
     <version>36.0</version>

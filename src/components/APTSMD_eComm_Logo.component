@@ -1,9 +1,0 @@
-<apex:component >
-    <div class="col-xs-12 col-sm-6 col-md-3 ">
-                <div class="logo-wrapper" style="margin-left: auto; margin-right: auto;margin-top: -2.5%;">
-                    <a href="../ecomm/APTSMD_SKOECommCatalog?storeId={{store.Id}}" class="logo" title="logo">
-                        <img style="width: 193px; height: auto;" src="{{sitePrefix+'/servlet/servlet.FileDownload?file='+logoImage}}" alt="logo" />
-                    </a>
-                </div>
-            </div>
-</apex:component>
