@@ -1,0 +1,16 @@
+{
+  "name": "kuka",
+  "version": "0.1.0",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-load-plugins": "^1.4.0",
+    "gulp-sass": "^2.3.2",
+    "gulp-sass-unicode": "^1.0.1",
+    "gulp-uglify": "^2.0.0"
+  },
+  "dependencies": {
+    "angular-ui-bootstrap": "^2.3.0",
+    "angular-ui-router": "^0.3.2"
+  }
+}

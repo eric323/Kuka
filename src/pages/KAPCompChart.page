@@ -1,0 +1,20 @@
+<!-- **********************************************************************
+Name:  KAPCompChart.page
+======================================================
+Purpose:
+
+This page displays an spiderchart concerning KAPCompetitors
+======================================================
+History
+-------
+Date        AUTHOR                  DETAIL
+30/08/2016  Andreas Meyer           INITIAL
+********************************************************************** -->
+<apex:page sidebar="false" showHeader="false" standardController="KeyAccountPlan__c" extensions="KAPCompChartController">
+    <apex:outputPanel id="hasnovalues" rendered="{!novalues}">
+        {!$Label.KAPCompetitorView_NoData} 
+    </apex:outputPanel> 
+    <apex:outputPanel id="hasvalues" rendered="{!NOT(novalues)}">  
+        <c:SpiderChartComponent strCompetitors="{!strCompetitors}" strDimensionsData="{!strDimensionsData}" strLengendData="{!SWOTData}" />    
+    </apex:outputPanel> 
+</apex:page>

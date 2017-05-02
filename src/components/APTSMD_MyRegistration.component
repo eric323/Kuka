@@ -1,0 +1,524 @@
+<apex:component controller="APTSMD_MyRegistrationCtrl" >
+
+    <!--<apex:includeScript value="{!URLFOR($Resource.myNeopostiNeoArtifacts, '/js/knockout-3.1.0.js')}"></apex:includeScript>
+    <script src="{!$Label.APTSMD_neoApiUrl}/scripts/ineo/argumentextensions.js" ></script>                           
+    <script src="{!$Label.APTSMD_neoApiUrl}/scripts/ineo/stringextensions.js" ></script>   --> 
+
+    <script>
+        Visualforce.remoting.timeout = 120000;
+
+        $(document).ready( function() {
+
+            //Setup registration mode selection event handler
+            $("#registerUsingMethod").change( function() {
+                //Get the option selected
+                hideRegisterMethods();
+                var selectedVal = $("#registerUsingMethod option:selected").val();
+                //Show the appropriate objects
+                showRegisterMethods( selectedVal );
+            });
+
+            //Remove error popup when a field gets focus
+            $(".reg-field").focus(function() {
+                var div = $(this).closest("div.form-group");
+                div.removeClass("error_msg");
+            });
+
+            //Load the terms and condition page
+            var currentLang = window.location.pathname.split('/')[2];
+           function (response) {
+                //setTextForRegTermsAndConditions(response);
+            //});        
+
+            //Handle when a registration method is changed
+            hideRegisterMethods();
+             $('.pleaseWaitWhileregistering1').hide();
+        });
+
+        function removeDataWhenModalisHidden(){
+            //Clear input fields
+            $(".reg-field").each( function() {
+                $(this).val("");
+                $(this).removeClass("error_msg");
+            });                  
+            $(".reg-field option:selected" ).each(function() {
+                $(this).attr("selected", "");
+                $(this).removeClass("error_msg");
+            });
+            hideRegisterMethods();
+        }
+
+        function showRegTermsConditions () {
+            $("#apttuslab_reg .mainForm").hide();
+            $("#apttuslab_reg").addClass("modal_signup")
+            $("#apttuslab_reg .TermsAndConditionsModalContent").show();
+        }
+        function closedonereg () {
+            alert('close');
+             $("#apttuslab_reg .finishedregistering").hide();
+        }
+
+        function hideRegTermsConditions () {
+            $("#apttuslab_reg .TermsAndConditionsModalContent").hide();
+            $("#apttuslab_reg").removeClass("modal_signup")
+            $("#apttuslab_reg .mainForm").show();
+            
+        }
+
+        function showDoneRegistering () {
+            $("#apttuslab_reg .mainForm").hide();
+            $("#mainformregister").hide();
+            $("#apttuslab_reg .finishedregistering").show();
+        }
+
+        function cleanRegistrationProcess () {
+            $("#apttuslab_reg .TermsAndConditionsModalContent").hide();
+            $("#apttuslab_reg .finishedregistering").hide();
+            $("#apttuslab_reg .mainForm").hide();
+            $("#apttuslab_reg").modal("hide");
+            $('#apttuslab_reg').on('hide.bs.modal', function () {
+                removeDataWhenModalisHidden();
+            });
+            //Force page to refresh
+            document.location.href = document.location.href;
+        }
+
+        function setTextForRegTermsAndConditions(htmlText){
+            $("#apttuslab_reg .TermsAndConditionsModalContent .modal-body").html(
+               $("#apttuslab_reg .TermsAndConditionsModalContent .modal-body").html(htmlText).text()
+            );
+        }
+
+        function hideRegisterMethods()
+        {
+            $(".divCM").each( function() {
+                $(this).hide();
+            });
+            $(".divCI").each( function() {
+                $(this).hide();
+            });
+            $(".divPM").each( function() {
+                $(this).hide();
+            });
+        }
+
+        function showRegisterMethods(regMethod)
+        {
+            //What option was selected from registration
+            switch (regMethod)
+            {
+                case "CM":
+                    $(".divCM").each( function() {
+                        $(this).show();
+                    });
+                    break;
+                case "PM":
+                    $(".divPM").each( function() {
+                        $(this).show();
+                    });
+                    break;
+                case "CI":
+                    $(".divCI").each( function() {
+                        $(this).show();
+                    });
+                    break;
+            }
+        }
+
+        //Used to verify that data entered is in email format
+        function validateEmailAddress(emailAddress) {
+            if (emailAddress == "")
+            {
+                return false;
+            }
+            var pattern = new RegExp(/^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/);
+            return pattern.test(emailAddress);
+        }
+
+        //Validate that number is a US phone format
+        function validatePhone(phone) {
+            if (phone=="")
+            {
+                return true;
+            }
+            phone = phone.replace(" ","").replace("(","").replace(")","").replace("-","");
+            var regexObj = /^(\()?(\d{3})([\)-\. ])?(\d{3})([-\. ])?(\d{4})$/;
+            return regexObj.test(phone);
+        }
+        
+        //Validate user input and submit request for registration
+        function validateAndSubmitRegistration()
+        {
+            var passed = true;
+
+            //Clear old error messages
+            $("div.form-group").each( function() {
+                $(this).removeClass("error_msg");
+            });
+
+            //Check for required fields
+            $(".reg-required").each( function() {
+                if ( $(this).val() == "" ) {
+                    var div = $(this).closest("div.form-group");
+                    div.addClass("error_msg");
+                    //div.find(".alert_error_popover").text("Please fill out this field");
+                    passed = false;
+                }
+            });
+
+            //Do we have a valid email
+            var username = $("#registerUsernameInput").val();
+            if (!validateEmailAddress(username))
+            {
+                var div = $("#registerUsernameInput").closest("div.form-group");
+                div.addClass("error_msg");
+                passed = false;
+            }
+
+            //Do we have a valid email
+            var phone = $("#registerPhoneInput").val();
+            if (!validatePhone(phone))
+            {
+                var div = $("#registerPhoneInput").closest("div.form-group");
+                div.addClass("error_msg");
+                passed = false;
+            }
+
+            //Was a brand selected?
+            /*var brand = "";
+            $("#registerBrandInput option:selected" ).each(function() {
+                brand  = $(this).val();
+            });
+            if (brand.trim().replace("-- Select product brand --","").length==0)
+            {
+                var div = $("#registerBrandInput").closest("div.form-group");
+                div.addClass("error_msg");
+                passed = false;          
+            }
+
+            //Was a registration method selected?
+            var regMethod = "";
+            $("#registerUsingMethod option:selected" ).each(function() {
+                regMethod  = $(this).val();
+            });
+            if (regMethod.trim().replace("-- Select registration method --","").length==0)
+            {
+                var div = $("#registerUsingMethod").closest("div.form-group");
+                div.addClass("error_msg");
+                passed = false;          
+            }
+
+            //Make sure we have fields needed to perform registration
+            var csn = $("#registerCSN").val();
+            var poc = $("#registerPOC").val();
+            var mtr = $("#registerMSN").val(); 
+            var inv = $("#registerINV").val();             
+            switch (regMethod)
+            {
+                case "PM":
+                    //Do we have a POC
+                    csn="";
+                    inv="";
+                    if (poc=="")
+                    {
+                        var div = $("#registerPOC").closest("div.form-group");
+                        div.addClass("error_msg");
+                        passed = false;
+                    }
+                    //Do we have a Meter
+                    if (mtr=="")
+                    {
+                        var div = $("#registerMSN").closest("div.form-group");
+                        div.addClass("error_msg");
+                        passed = false;
+                    }
+                    break;
+
+                case "CM":
+                    //Do we have a CSN
+                    poc="";
+                    inv="";
+                    if (csn=="")
+                    {
+                        var div = $("#registerCSN").closest("div.form-group");
+                        div.addClass("error_msg");
+                        passed = false;
+                    }
+                    //Do we have a Meter
+                    if (mtr=="")
+                    {
+                        var div = $("#registerMSN").closest("div.form-group");
+                        div.addClass("error_msg");
+                        passed = false;
+                    }
+                    break;
+
+                case "CI":
+                    //Do we have a CSN
+                    poc="";
+                    mtr="";
+                    if (csn=="")
+                    {
+                        var div = $("#registerCSN").closest("div.form-group");
+                        div.addClass("error_msg");
+                        passed = false;
+                    }
+                    //Do we have a Invoice #
+                    if (inv=="")
+                    {
+                        var div = $("#registerINV").closest("div.form-group");
+                        div.addClass("error_msg");
+                        passed = false;
+                    }
+                    break;
+            }*/
+
+            //Is it Ok to submit registration request?
+            var csn = "";
+            var poc = "";
+            var mtr = "";
+            var inv = "";
+            if (passed)
+            {
+                //As user accepted the terms and conditions?
+                var accepted = document.getElementById("registerTermsChecked").checked;
+                if (accepted)
+                {
+                    //Yes, start the registration process
+                    var brand = 0;
+                    var opco = parseInt(brand);
+                //startLoading();
+                    $("#apttuslab_reg .mainForm").hide();
+                    $('.pleaseWaitWhileregistering1').show();
+                    APTSMD_MyRegistrationCtrl.registerNewUser(username, $("#registerFirstNameInput").val(), $("#registerLastNameInput").val(),
+                        username, phone, opco, csn, poc, mtr, inv, '',
+                    function(result, event) { 
+                        //endLoading();
+                        if (result.Success)
+                        {
+                            //We are done show success dialog 
+                            //other call
+                            APTSMD_MyRegistrationCtrl.registerNewUserfinal(username, $("#registerFirstNameInput").val(), $("#registerLastNameInput").val(),
+                        username, phone, opco, csn, poc, mtr, inv, '',
+                    function(result, event) { 
+                        //endLoading();
+                        if (result.Success)
+                        {
+                            //We are done show success dialog 
+                            //other call
+                            
+                           //done
+                            $('.pleaseWaitWhileregistering1').Hide();                           
+                            showDoneRegistering();
+                            removeDataWhenModalisHidden();
+                            hideRegisterMethods();
+                            
+                        }
+                        else
+                        {
+                            
+                            errorreg();
+                            $('.pleaseWaitWhileregistering1').hide();
+                            $("#apttuslab_reg .mainForm").show();
+                            var div = $("#registerTermsChecked").closest("div.form-group");
+                            div.addClass("error_msg");
+                            div.find(".alert_error_popover").text(result.ErrMessage);  
+                            // document.location.href='/ecomm';
+                        }
+                    });
+                           //done
+                            $('.pleaseWaitWhileregistering1').hide();                           
+                            showDoneRegistering();
+                            removeDataWhenModalisHidden();
+                            hideRegisterMethods();
+                        }
+                        else
+                        {
+                            $('.pleaseWaitWhileregistering1').hide();
+                            $("#apttuslab_reg .mainForm").show();
+                            var div = $("#registerTermsChecked").closest("div.form-group");
+                            div.addClass("error_msg");
+                            div.find(".alert_error_popover").text(result.ErrMessage);                    
+                        }
+                    });
+                }
+                else
+                {
+                    //Terms were not accepted
+                    var div = $("#registerTermsChecked").closest("div.form-group");
+                    div.addClass("error_msg");
+                }
+            }
+            return false;
+        }
+
+    </script>
+
+    <apex:form >
+        <!-- START MODAL REGISTER -->
+        <div class="modal modal_neopost modal_register fade" id="apttuslab_reg" tabindex="-1" role="dialog" aria-labelledby="myModalLabelReg" aria-hidden="true">
+            <div>
+                <!--<div class="modal-content mainForm">
+                    <div class="modal-header">
+                        <button type="button" class="ico-close" data-dismiss="modal" aria-hidden="true" onclick="{ removeDataWhenModalisHidden(); }"> </button>
+                        <h4 class="modal-title" id="registerModalTitleID">Registration
+                            <small>Please enter the following</small>
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <div role="form">
+                            <div class="form-group headerregisterInputFormG" >
+                                <label for="registerUsernameInput">Email</label>
+                                <input type="email" class="form-control reg-required reg-field" id="registerUsernameInput" />
+                                <span class="alert_error_popover"> Please provide a valid email address</span>
+                            </div>
+                            <div class="form-group headerregisterInputFormG" >
+                                <label for="registerFirstNameInput">First Name</label>
+                                <input type="text" class="form-control reg-required reg-field" id="registerFirstNameInput" />
+                                <span class="alert_error_popover"> Please provide your first name</span>
+                            </div>
+                            <div class="form-group headerregisterInputFormG" >
+                                <label for="registerLastNameInput">Last Name</label>
+                                <input type="text" class="form-control reg-required reg-field" id="registerLastNameInput" />
+                                <span class="alert_error_popover"> Please provide your last name</span>
+                            </div>
+                            <div class="form-group headerregisterInputFormG" >
+                                <label for="registerPhoneInput">Phone</label>
+                                <input type="text" class="form-control reg-field" id="registerPhoneInput" onblur="formatPhone(this);" />
+                                <span class="alert_error_popover"> Please provide your phone number</span>
+                            </div>
+                            <div class="form-group headerregisterInputFormG ">
+                                <div class="checkbox">
+                                    <input type="checkbox" id="registerTermsChecked" class="acceptTerms reg-field"/>
+                                    <p class="mockLabelStyle">
+                                        I have read and I accept the <a class="mockLabelStyle" href="#" onclick="showRegTermsConditions();" style="text-decoration: underline" > Terms of Use</a>         
+                                    </p>
+                                </div>
+                                <span class="alert_error_popover"> Please check if you have read and accept the terms and conditions</span>
+                            </div>                            
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="col-lg-4 col-md-4 col-sm-4  pull-right">
+                            <button type="button" class="btn btn-primary modal_btn_login pull-right" id="registerMyNeopost" onclick="return validateAndSubmitRegistration();" >Register</button>
+                        </div>
+                    </div>
+                </div>-->
+                
+                <div class="slds">
+                  <div aria-hidden="false" role="dialog" id="mainformregister" class="slds-modal slds-fade-in-open">
+                    <div class="slds-modal__container">
+                      <div class="slds-modal__header">
+                        <span class="slds-text-heading--medium">Registration</span>
+                      </div>
+                      <div class="slds-modal__content">
+                        <div>
+                            <div role="form slds-form-element">
+                                <div class="form-group headerregisterInputFormG" >
+                                    <label for="registerUsernameInput" class="slds-form-element__label">Email</label>
+                                    <input type="email" class="slds-input reg-required reg-field" id="registerUsernameInput" />
+                                    <span class="alert_error_popover"> Please provide a valid email address</span>
+                                </div>
+                                <div class="form-group headerregisterInputFormG" >
+                                    <label for="registerFirstNameInput" class="slds-form-element__label">First Name</label>
+                                    <input type="text" class="slds-input reg-required reg-field" id="registerFirstNameInput" />
+                                    <span class="alert_error_popover"> Please provide your first name</span>
+                                </div>
+                                <div class="form-group headerregisterInputFormG" >
+                                    <label for="registerLastNameInput" class="slds-form-element__label">Last Name</label>
+                                    <input type="text" class="slds-input reg-required reg-field" id="registerLastNameInput" />
+                                    <span class="alert_error_popover"> Please provide your last name</span>
+                                </div>
+                                <div class="form-group headerregisterInputFormG" >
+                                    <label for="registerPhoneInput" class="slds-form-element__label">Phone</label>
+                                    <input type="text" class="slds-input reg-field" id="registerPhoneInput" onblur="formatPhone(this);" />
+                                    <span class="alert_error_popover"> Please provide your phone number</span>
+                                </div>
+                                <!--<div class="form-group headerregisterInputFormG ">
+                                    <div class="checkbox">
+                                        <input type="checkbox" id="registerTermsChecked" class="acceptTerms reg-field"/>
+                                        <p class="mockLabelStyle">
+                                            I have read and I accept the <a class="mockLabelStyle" href="#" onclick="showRegTermsConditions();" style="text-decoration: underline" > Terms of Use</a>         
+                                        </p>
+                                    </div>
+                                    <span class="alert_error_popover"> Please check if you have read and accept the terms and conditions</span>
+                                </div>--> 
+                                <div class="slds-form-element headerregisterInputFormG">
+                                  <label class="slds-checkbox" for="registerTermsChecked">
+                                    <input name="checkbox" type="checkbox" id="registerTermsChecked" class="acceptTerms reg-field"/>
+                                    <span class="slds-checkbox--faux"></span>
+                                    <span class="slds-form-element__label">I have read and I accept the <a class="mockLabelStyle" href="#" onclick="showRegTermsConditions();" style="text-decoration: underline" > Terms of Use</a></span>
+                                  </label>
+                                </div>                              
+                            </div>
+                        </div>
+                      </div>
+                      <div class="slds-modal__footer">
+                        <span class="slds-text-body--regular slds-float--left"><a href="#" style="cursor:pointer;text-decoration:none;">Forgot your password?</a></span>
+                        <button class="slds-button slds-button--neutral" aria-hidden="true" data-dismiss="modal" id="loginCancelButton" type="button">Cancel</button>
+                        <button type="button" class="slds-button slds-button--neutral slds-button--brand modal_btn_login"  id="registerMyNeopost" onclick="return validateAndSubmitRegistration();" >Register</button>
+                      </div>
+                    </div>
+                  </div>
+                  <!--<div class="slds-modal-backdrop slds-modal-backdrop--open"></div>-->
+                </div>
+        <!-- END MODAL REGISTER -->
+
+
+        <!-- START LOADING -->
+            <div class="modal-content pleaseWaitWhileregistering1"  style="display:none">
+                <div class="modal-header">
+                    <h4 id="myModalLabel" class="modal-title">
+                        <span class="modal_title" style="background">Registration</span>
+                    </h4>
+                 </div>
+                <div class="modal-body clearfix " style="margin: 13px; padding: 0px; height: 700px; overflow: auto">
+                     <!--<h4 style="text-align: center; margin: 240px 0px 40px;">{!$Label.MyNeopost_Legacy_System_registration_loading_text}</h4>-->
+                     <span class="big_loader"> </span>
+                </div>
+            </div>
+       <!-- END LOADING -->
+        
+                
+                <!-- START FINISHED REGISTERING -->
+                <div class="modal-content finishedregistering" style="display:none;background-color:white;">
+                    <div class="modal-header">
+                        <button type="button" class="ico-close" data-dismiss="modal" aria-hidden="true" onclick="cleanRegistrationProcess();"> </button>
+                        <h4 class="modal-title" id="registerModalTitleID" style="color: black;text-align:center;">Thank You for Registering
+                        <!--<small>You have completed the first part of registration process</small>-->
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="finishedregistering" style=""> 
+                            <ul class="step_list">
+                                <!--<li>
+                                    <h5> {!$Label.Rate_Plans_Free_Trial_Finish_Register_1_Title} </h5>
+                                    <span class="sub_label"> {!$Label.Rate_Plans_Free_Trial_Finish_Register_1_Body} </span>
+                                    <small>{!$Label.Rate_Plans_Free_Trial_Finish_Register_1_Spam_Check}</small>
+                                </li>
+                                <li>
+                                    <h5>{!$Label.Rate_Plans_Free_Trial_Finish_Register_2_Title}</h5>
+                                    <span class="sub_label">{!$Label.Rate_Plans_Free_Trial_Finish_Register_2_Body}</span>
+                                </li>
+                                <li>
+                                    <h5>{!$Label.Rate_Plans_Free_Trial_Finish_Register_3_Title} </h5>
+                                </li>-->
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="col-lg-4 col-md-4 col-sm-4  pull-right">
+                            <button type="button" class="btn btn-primary modal_btn_login pull-right" data-dismiss="modal" id="registerMyNeopostDone" onclick="return cleanRegistrationProcess(); " >Done</button>
+                            
+                        </div>
+                    </div>                    
+                </div>
+                <!-- START FINISHED REGISTERING -->
+
+            </div>
+        </div>
+       
+
+    </apex:form>
+
+</apex:component>

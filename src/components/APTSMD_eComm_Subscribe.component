@@ -1,0 +1,54 @@
+<apex:component >
+    <style>
+        .subscribe
+        {
+            background-image: url({!URLFOR($Resource.APTSMD_SubscribeBG2x)});
+        
+        background-size:cover;
+        background-origin: border-box;
+        background-repeat: no-repeat;
+        }
+        
+    </style>
+    <!--<apex:stylesheet value="{!URLFOR($Resource.APTSMD_KUKAStyles)}"/>-->
+    <div style = "width: 100%; height: 10px; background-color: #ff6000;"></div>
+<section class="subscribe">
+    
+        <div class="kuka-container" >
+          <div class="title-holder">
+            <h2 style="font-weight: normal;	font-size: 33px;">{!$Label.APTSDMP_SubscribeIm} <span class="active-colored">{!$Label.APTSDMP_SubscribeInterested}</span></h2>
+          </div>
+          <div class="content-holder">
+            <p>{!$Label.APTSDMP_SubscribeTagline}</p>
+          </div>
+          <!-- form action. Currently a placeholder https://www.salesforce.com/servlet/servlet.WebToLead?encoding=UTF-8-->
+            <form action="" method="POST" class="subscribe-form">        
+                <input type="email" name="email"  class="input-field" placeholder="{!$Label.APTSDMP_EnterEmail}" style="font-size: 14pt;"/>
+                <input type="submit" class="submit-button" value="{!$Label.APTSDMP_Submit}"/>
+                
+                
+                <!-- Input values that may need to be modified-->
+                
+                <!-- value= org ID of the salesforce org-->
+                <!--<input type="hidden" name="oid" value="00D58000000I3xL"/>
+                
+                <!-- value=  the redirect address after the user clicks submit-->
+                <!--<input type="hidden" name="retURL" value="http://connect.kuka.com"/> 
+                
+                <!-- value = ID of the salesforce campaign  -->
+               <!-- <input type="hidden" name="Campaign_ID" value="7015800000053JA"/>
+                
+                <!-- First name and last name  -->
+               <!-- <input type=hidden name="lead_source" value="Web"/>
+    
+                <!-- Company name
+                <input  id="company" maxlength="40" name="company" size="20" type="text" /> -->
+            </form>  
+        </div>
+        <!--<div class="bg-stretch" >
+            <apex:image url="{!URLFOR($Resource.APTSMD_SubscribeBG2x)}" style="height: 100%; width: auto;"/>
+            
+        </div>-->
+        
+      </section>
+</apex:component>

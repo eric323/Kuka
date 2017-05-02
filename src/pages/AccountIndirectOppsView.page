@@ -1,0 +1,87 @@
+<!-- **********************************************************************
+Name:  AccountIndirectOppsView.page
+======================================================
+Purpose:
+
+This page displays an spiderchart concerning AccountCompetitors
+======================================================
+History
+-------
+Date        AUTHOR                      DETAIL
+30/08/2016  Wolfram von Reizenstein     INITIAL
+02/11/2016  Andreas Meyer               use jQuery to inject link target
+07/11/2016  Andreas Meyer               DC-721 and remove jQuery
+********************************************************************** -->
+<apex:page sidebar="false" showHeader="false" standardController="Account" extensions="AccountIndirectOppsViewController">
+<style>
+    .pagbuttonlink {
+        width: auto;
+        border: 1px solid #CCC!important;
+        padding: 1px;
+        text-align: center;
+        text-decoration:none;
+    
+    }
+    
+    .pagbuttonlinkActive {
+        width: auto;
+        border: 1px solid #CCC!important;
+        padding: 1px;
+        text-align: center;
+        background-color: #e0e0e0!important;
+    }
+</style>
+
+
+<!-- <base target="_parent" /> -->
+    <base target="_parent" />
+    <apex:form > 
+        <apex:outputPanel id="mainPanel"> 
+            <apex:outputPanel id="hasnovalues" rendered="{!novalues}">
+                {!noOppsAvailable}
+            </apex:outputPanel>
+            <apex:outputPanel id="hasvalues" rendered="{!NOT(novalues)}">  
+                <apex:outputPanel id="dataPanel">    
+                    <apex:pageBlock id="opportunities">
+                        <apex:pageBlockTable id="opportunitiesTable" var="opportunities" value="{!listOpportunitiesByPage}">
+                            <apex:repeat var="f" value="{!$ObjectType.Opportunity.FieldSets.KAPFieldDetails}">
+                                <apex:column headerValue="{!f.label}" rendered="{!f != 'Name'}">
+                                   <apex:outputPanel rendered="{!f == 'Id'}">
+                                       
+                                       <apex:outputLink value="/{!opportunities['Id'] }" target="_parent" >{!opportunities['Name'] }</apex:outputLink>
+                                       <!--
+                                       <a href="#" onclick="window.top.location='/{!opportunities['Id']}'; return true">{!opportunities['Name'] }</a>
+                                       -->
+                                   </apex:outputPanel>
+                                   <apex:outputPanel rendered="{!f != 'Id'}">   
+                                       <apex:outputField value="{!opportunities[f]}" rendered="{!f.Type != 'reference'}" /> 
+                                       <!--<apex:outputField styleClass="openInParent" value="{!opportunities[f.fieldPath]}" rendered="{!f.Type == 'reference'}" /> -->
+                                        <apex:outputLink value="/{!opportunities[f] }" target="_parent" rendered="{!f.Type == 'reference'}">{!opportunities[mapReferenceNameFields[f.fieldPath]]}</apex:outputLink>  
+                                   </apex:outputPanel>                  
+                                </apex:column>
+                            </apex:repeat>
+                        </apex:pageBlockTable>
+                    </apex:pageBlock>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!AND(IF(paginater.isAll, false, true), IF(paginater.totalPage == 1, false, true))}"> 
+                    <apex:outputText rendered="{!paginater.showPrevious}"> 
+                        <apex:commandLink action="{!previousPage}" value="Prev" rerender="mainPanel" styleClass="pagbuttonlink" />
+                    </apex:outputText> 
+                    <apex:repeat value="{!paginater.pageList}" var="pl"> 
+                        <apex:outputText rendered="{!!pl.isActive}"> 
+                            <apex:commandLink action="{!updatePage}" rerender="mainPanel" styleClass="pagbuttonlink"> {!pl.pageNum} 
+                                <apex:param name="selectedPage" value="{!pl.pageNum}" assignTo="{!paginater.pageNum}" /> 
+                            </apex:commandLink> 
+                        </apex:outputText> 
+                        <apex:outputText rendered="{!pl.isActive}" value="{!pl.pageNum}" styleClass="pagbuttonlinkActive"/> 
+                        <!-- andreas.meyer@salesforce.com 29.07.2016: add space -->
+                        &nbsp;
+                    </apex:repeat> 
+                    <apex:outputText rendered="{!paginater.showNext}"> 
+                        <apex:commandLink action="{!nextPage}" value="Next" rerender="mainPanel" styleClass="pagbuttonlink" /> 
+                    </apex:outputText> 
+                 </apex:outputPanel>
+             </apex:outputPanel>
+         </apex:outputPanel> 
+    </apex:form> 
+</apex:page>

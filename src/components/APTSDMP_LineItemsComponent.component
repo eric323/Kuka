@@ -1,0 +1,40 @@
+<apex:component controller="APTSDMP_GetLineItems" access="global">
+    <apex:attribute name="orderId" type="Id" description="Id of the Order" assignTo="{!oId}"/>
+    <table border = "0" cellspacing = "5" width="500px" align="top">
+        <tr align="right">
+              <td style="font-family:verdana;font-size:10px;color:4B0082;font-weight:bold">{!$Label.APTSDMP_ProductName} </td>
+                <td style="font-family:verdana;font-size:10px;color:4B0082;font-weight:bold"> {!$Label.APTSDMP_Quantity}</td>
+                <td style="font-family:verdana;font-size:10px;color:4B0082;font-weight:bold"> {!$Label.APTSDMP_BasePrice}</td>
+                <td style="font-family:verdana;font-size:10px;color:4B0082;font-weight:bold"> {!$Label.APTSDMP_NetPrice}</td> 
+               
+            </tr>
+
+        <tr align="right"><td colspan="4">  <hr size="1" width="100%"/></td></tr>
+       <apex:repeat var="Items" value="{!LineItems}">
+      
+            <tr style="font-family:verdana;font-size:10px;color:4B0082" align="right">
+            <td >{!Items.Apttus_Config2__ProductId__r.Name}</td>
+            <td > <apex:outputText value="{0, number, 0}">
+                    <apex:param value="{!Items.Apttus_Config2__Quantity__c}" /> 
+                </apex:outputText>
+
+
+                </td>
+
+            <td  align="right">
+            <apex:outputText value="{0,number,currency}">
+                    <apex:param value="{!Items.Apttus_Config2__BasePrice__c}" />
+                </apex:outputText>
+            </td>
+
+            <td align="right"> 
+                <apex:outputText value="{0,number,currency}">
+                    <apex:param value="{!Items.Apttus_Config2__NetPrice__c}" />
+                </apex:outputText></td>
+            
+        </tr>
+   <tr><td colspan="4">  <hr size="1" width="100%"/></td></tr>
+ 
+        </apex:repeat> 
+            </table>
+</apex:component>

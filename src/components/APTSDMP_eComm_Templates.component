@@ -1,0 +1,1072 @@
+<apex:component >
+
+  <script type="text/ng-template" id="base.html">
+    <nav class="navbar navbar-default header-content">
+      <div class="container">
+        <a class="navbar-brand navbar-right" href="#">
+          <img alt="Brand" src="{!URLFOR($Resource.APTSMD_Kuka, 'images/logo.png')}"/>
+        </a>
+        <div class="navbar-header">
+          <p class="navbar-text" ng-if="model.isValidUser == 'true'">
+            {{user}}
+          </p>
+          <p class="navbar-text" ng-if="model.isValidUser != 'true'">
+            <a data-toggle="modal" data-target="#login-modal">{!$Label.APTSMD_Login}</a>
+          </p>
+          <p class="navbar-text">
+            <img src="{{model.userLogoUrl}}" id="user-logo"/>
+          </p>
+          <p class="navbar-text cart-hover">
+            <i class="cart-icon"></i>
+            <span ng-show="cart.cartWrapper.cartLineItems.length>0" class="badge bg-danger">{{cart.cartWrapper.cartLineItems.length}}</span>
+          </p>
+          <p class="navbar-text">
+            <a data-toggle="modal" class="text-muted" data-target="#language-modal">
+              <i class="icon-Icon_069"></i>
+            </a>
+          </p>
+        </div>
+      </div>
+    </nav>
+    <content ui-view="banner"></content>
+
+    <content ui-view="content"></content>
+
+    <content ui-view="sub-footer"></content>
+
+    <footer id="footer">
+        <div class="kuka-container container">
+          <div id="footer-image"></div>
+          <ul class="linkholder socials">
+            <li>
+              <a href="{!$Label.APTSDMP_YoutubeURL}" target="_blank"><img src="{!URLFOR($Resource.APTSMD_FooterYoutubeGray)}" /></a>
+            </li>
+            <li><a href="{!$Label.APTSDMP_LinkedIn}" target="_blank"><img src="{!URLFOR($Resource.APTSMD_FooterLinkedinGray)}"/></a></li>
+            <li><a href="{!$Label.APTSDMP_Facebook}" target="_blank"><img src="{!URLFOR($Resource.APTSMD_FooterFacebookGray)}" /></a></li>
+            <li><a href="{!$Label.APTSDMP_Twitter}" target="_blank"><img src="{!URLFOR($Resource.APTSMD_FooterTwitterGray)}"/></a></li>
+          </ul>
+          <ul class="linkholder">
+            <li>&copy; <a href="{!$Label.APTSDMP_KUKALink}">{!$Label.APTSDMP_KUKAAG}</a></li>
+            <li><a href="{!$Label.APTSDMP_KUKAImprintURL}">{!$Label.APTSDMP_Imprint}</a></li>
+<!--<li><a href="https://training.kuka.com/sites/5/en-US/all/all/action?nextPage=jsp/Impressum.jsp&SessionContextID=DEFAULT_ID">{!$Label.APTSDMP_Imprint}</a></li>-->           
+<!--<li><a href="{!$Label.APTSDMP_PrivacyURL}">{!$Label.APTSDMP_Privacy}</a></li>-->
+            <li><a href="#!/legal/">{!$Label.CommunitySelfReg_HeaderTandD}</a></li> 
+          </ul>
+      </div>
+    </footer>
+
+    <div class="modal fade" id="language-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">{!$Label.APTSDMP_Language}</h4>
+          </div>
+          <div class="modal-body">
+              <div class="list-group">
+                <a href="javascript:void(0);" data-dismiss="modal" ng-click="selectLanguage('en_US')" class="list-group-item">{!$Label.APTSDMP_English}</a>
+                <a href="javascript:void(0);" data-dismiss="modal" ng-click="selectLanguage('de')" class="list-group-item">{!$Label.APTSDMP_German}</a>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="login-modal" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <form name="loginForm" novalidate ng-submit="doLogin()">
+          <div class="modal-content">
+            <div class="modal-header text-center">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="myModalLabel">{!$Label.APTSMD_Login}</h4>
+              <p class="m-b-n-xxs">
+                {!$Label.APTSDMP_NotRegistered} <a href="{!$Label.KUKA_Ecom_Reg_URL}" style="font-size:16px;color:#ff6000;">{!$Label.APTSDMP_CreateAccount}</a>
+              </p>
+            </div>
+            <div class="modal-body p-xl">
+
+                <div class="{{loginForm.$invalid ? 'form-group has-error' : 'form-group'}}">
+                  <label for="exampleInputEmail1">{!$Label.kuka_username}</label>
+                  <input type="email" class="form-control" id="exampleInputEmail1" ng-model="loginModel.username" placeholder="{!$Label.kuka_username}" required>
+                </div>
+                <div class="{{loginForm.$invalid ? 'form-group has-error' : 'form-group'}}">
+                  <label for="exampleInputPassword1">{!$Label.APTSMD_Password}</label>
+                  <input type="password" class="form-control" id="exampleInputPassword1" ng-model="loginModel.password" placeholder="{!$Label.APTSMD_Password}" required ng-min="4">
+                </div>
+                <p class="helpBlock text-danger text-center m-b-n-md" ng-if="loginModel.error">{{loginModel.error}}</p>
+            </div>
+            <div class="modal-footer">
+              <p class="pull-left m-l-sm m-b-n-sm m-t-xs">
+                <a href="{!$Label.KUKA_Ecom_ForgotPass_URL}">{!$Label.APTSDMP_ForgotPassword}</a>
+              </p>
+              <button type="button" class="btn btn-default" data-dismiss="modal">{!$Label.APTSMD_Close}</button>
+              <button type="submit" class="btn btn-primary" ng-disabled="loginForm.$invalid">{!$Label.APTSMD_Login}</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </script>
+
+  <script type="text/ng-template" id="subscribe.html">
+    <section class="subscribe">
+        <div class="kuka-container">
+            <div class="title-holder">
+                <h2 style="font-weight: normal; font-size: 33px;">{!$Label.APTSDMP_SubscribeIm}
+                    <span class="text-primary">{!$Label.APTSDMP_SubscribeInterested}</span>
+                </h2>
+            </div>
+            <div class="content-holder">
+                <p>{!$Label.APTSDMP_SubscribeTagline}</p>
+            </div>
+            <form action="" method="POST" class="subscribe-form">
+                <input type="email" name="email" class="input-field" placeholder="{!$Label.APTSDMP_EnterEmail}"/>
+                <input type="submit" class="submit-button" value="{!$Label.APTSDMP_Submit}"/>
+            </form>
+        </div>
+    </section>
+  </script>
+
+  <script type="text/ng-template" id="banner.html">
+    <div id="promo-carousel" class="carousel slide m-b-xl" data-ride="carousel" data-interval="5000">
+      <ol class="carousel-indicators">
+        <li data-target="#promo-carousel" data-slide-to="{{$index}}" class="{{$index == 0 ? 'active' : ''}}" ng-repeat="promo in model.promoImages track by $index"></li>
+      </ol>
+      <div class="carousel-inner" role="listbox">
+        <div class="{{$index == 0 ? 'item active' : 'item'}}" ng-repeat="promo in model.promoImages track by $index">
+          <img ng-src="{{'servlet/servlet.FileDownload?file=' + promo}}"/>
+        </div>
+      </div>
+    </div>
+  </script>
+
+  <script type="text/ng-template" id="product-details.html">
+    <div class="product-details">
+      <div class="container m-t-sm">
+        <ol class="breadcrumb">
+            <li><a href="javascript:void(0)" ui-sref="index.products">{!$Label.APTSDMP_Catalog}</a></li>
+            <li class="active">{{product.ProductName}}</li>
+        </ol>
+      </div>
+      <div class="container m-t-md">
+        <div class="row product-info">
+          <div class="col-sm-12 col-md-6">
+            <div class="tablet">
+              <div id="product-image-carousel" class="carousel slide" data-ride="carousel">
+                <ol class="carousel-indicators">
+                  <li data-target="#product-image-carousel" data-slide-to="0" class="active" ng-if="product.productDetails.APTSDMP_Slider_Pic_1__c"></li>
+                  <li data-target="#product-image-carousel" data-slide-to="1" ng-if="product.productDetails.APTSDMP_Slider_Pic_2__c"></li>
+                  <li data-target="#product-image-carousel" data-slide-to="2" ng-if="product.productDetails.APTSDMP_Slider_Pic_3__c"></li>
+                  <li data-target="#product-image-carousel" data-slide-to="3" ng-if="product.productDetails.APTSDMP_Slider_Pic_4__c"></li>
+                </ol>
+                <div class="carousel-inner" role="listbox">
+                  <div class="item active" ng-if="product.productDetails.APTSDMP_Slider_Pic_1__c">
+                    <img ng-src="{{'servlet/servlet.FileDownload?file='+product.productDetails.APTSDMP_Slider_Pic_1__c}}"/>
+                  </div>
+                  <div class="item" ng-if="product.productDetails.APTSDMP_Slider_Pic_2__c">
+                    <img ng-src="{{'servlet/servlet.FileDownload?file='+product.productDetails.APTSDMP_Slider_Pic_2__c}}"/>
+                  </div>
+                  <div class="item" ng-if="product.productDetails.APTSDMP_Slider_Pic_3__c">
+                    <img ng-src="{{'servlet/servlet.FileDownload?file='+product.productDetails.APTSDMP_Slider_Pic_3__c}}"/>
+                  </div>
+                  <div class="item" ng-if="product.productDetails.APTSDMP_Slider_Pic_4__c">
+                    <img ng-src="{{'servlet/servlet.FileDownload?file='+product.productDetails.APTSDMP_Slider_Pic_4__c}}"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <div ng-if="product.productDetails.Family!='KUKA College'"><h3>{{product.ProductName}}</h3></div>
+            <div ng-if="product.productDetails.Family=='KUKA College'"><h3>{{product.eCommDesc1}}</h3></div>
+            <ul ng-if="product.Description">
+                <li ng-repeat='line in product.Description.split(",")'>
+                    {{line}}
+                </li>
+            </ul>
+
+            <div ng-if="product.productDetails.Family!='KUKA College'" class="price">
+                <span class="amount" ng-if="!product.PriceItem.Apttus_Config2__SalePrice__c">
+                    <span ng-if="product.isContracted==true" ng-class="{'strike-label':product.isContracted==true}">{{product.PriceItem.Apttus_Config2__ListPrice__c | exchange: model.exchangeRate | currency: model.currency: 2}}</span>
+                    <span ng-if="product.isContracted!=true">{{product.PriceItem.Apttus_Config2__ListPrice__c | exchange: model.exchangeRate | currency: model.currency: 2}}</span><br/>
+                    <span ng-if="product.isContracted==true" class="text-primary">{{product.PriceItem.Apttus_Config2__ListPrice__c | exchange: model.exchangeRate | currency: model.currency: 2}}</span>
+                </span>
+                <span ng-if="product.frequency" class="frequency m-l-xs">{{product.frequency}}</span>
+            </div>
+
+
+            <div ng-if="product.longDescription!=null">
+                <h5 class="m-t-md m-b-sm">{!$Label.APTSDMP_QuickOverview}:</h5>
+                <div class="product-description" ng-bind-html="product.longDescription"></div>
+            </div>
+
+            <a class="btn btn-default outline m-t-lg" target="_blank" href="{{collegeURL + product.productDetails.APTSDMP_Product_External_ID__c + collegePostURL}}" ng-if="product.productDetails.Family == 'KUKA College'">{!$Label.APTSDMP_CollegeLink}</a>
+
+            <div ng-if="product.productDetails.Family != 'KUKA College'" class="m-t-lg">
+              <a ng-if="product.hasOptions != true && product.hasAttributes != true && model.isValidUser == 'true' && model.supportedRegion == 'true'" href="javascript:void(0)" class="btn btn-primary"><i class="cart-icon"></i>{!$Label.APTSMD_AddToCart}</a>
+              <a ng-if="(product.hasOptions || product.hasAttributes) && model.isValidUser == 'true' && model.supportedRegion == 'true'" class="btn btn-primary" data-target="#bundle-modal" data-toggle="modal"><i class="fa icon-Icon_041"></i>{!$Label.APTSDMP_Configure}</a>
+              <a ng-if="model.supportedRegion == 'false' && model.isValidUser == 'true'" href="javascript:void(0)" disabled="disabled" class="btn btn-default outline">{!$Label.APTSDMP_UnsupportedRegion}</a>
+              <a ng-if="model.isValidUser != 'true'" href="javascript:void(0)" class="btn btn-default outline" data-toggle="modal" data-target="#login-modal">{!$Label.APTSDMP_LoginToContinue}</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-description-wrapper container p-xl m-lg" ng-if="product.productDetails.Family == 'KUKA College'">
+          <div class="row-fluid">
+            <div>
+                <div>
+                    <span style="font-size:32px">{!$Label.kuka_ecom_lms1}</span>
+                </div>
+                <div>
+                    {!$Label.kuka_ecom_lms2} 
+                </div>
+                <div style="margin-top:30px;">
+                    <span style="font-size:32px">{!$Label.kuka_ecom_lms3} </span>
+                </div>
+                <div>
+                    {!$Label.kuka_ecom_lms4} 
+                </div>
+                <div style="margin-top:30px;">
+                    <ul> 
+                        <li>{!$Label.kuka_ecom_lms7}</li>
+                        <li>{!$Label.kuka_ecom_lms8}</li>
+                        <li>{!$Label.kuka_ecom_lms9}</li>
+                        <li>{!$Label.kuka_ecom_lms10}</li>
+                        <li>{!$Label.kuka_ecom_lms11}</li>
+                        <li>{!$Label.kuka_ecom_lms12}</li>
+                    </ul>
+                </div>
+                <div style="margin-top:70px;">
+                    <center>
+                      <!--  <img src="https://kuka--ecommdev--c.cs82.visual.force.com/resource/1481849092000/mueller_gh">  -->
+                    </center>    
+                </div>
+                <div style="width:60%; margin-left:auto; margin-right:auto; margin-top:30px;">
+                    <center>
+                        <span style="font-size:32px">{!$Label.kuka_ecom_lms5}</span>
+                    </center>
+                </div>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="product-description-wrapper container p-xl m-lg" ng-if="product.productDetails.Family != 'KUKA College'">
+          <div class="row-fluid">
+            <div class="col-sm-3 desc-label" ng-bind-html="product.eCommDesc1" ng-if="product.productDetails.Family == 'KUKA College'"></div>
+            <div class="col-sm-4" ng-bind-html="product.eCommDesc2"></div>
+            <div class="col-sm-4" ng-bind-html="product.eCommDesc3"></div>
+            <div class="col-sm-4" ng-bind-html="product.eCommDesc4" ng-if="product.productDetails.Family == 'Serialized License'"></div>
+          </div>
+        </div>
+
+        <section class="product-holder plus" ng-if="product.productDetails.Name == 'KUKA Connect Plus'">
+          <div class="container" style="margin-left: auto; margin-right: auto;">
+  <div class="section-title">
+    <picture> <img src="{!URLFOR($Resource.APTSDMP_ConnectPlusZip, 'kuka_connect_plus_header.png')}" alt="image description" width="320" height="31" /> </picture>
+  </div>
+  <div class="content-holder">
+    <p>{!$Label.APTSDMP_ConnectPlusDesc}</p>
+  </div>
+  <form action="#" class="form-1">
+    <div class="input-holder">
+      <label class="jcf-label-active"> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectPlusZip, 'PlusIcons/real-time_robot_state_notifications.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectPlusRobot} </span> <span class="jcf-checkbox"><span></span>
+        <input type="checkbox" checked="checked" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;" />
+        </span> </label>
+    </div>
+    <div class="input-holder">
+      <label class="jcf-label-active"> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectPlusZip, 'PlusIcons/real-time_fault_notifications.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectPlusRealtime} </span> <span class="jcf-checkbox"><span></span>
+        <input type="checkbox" checked="checked" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;" />
+        </span> </label>
+    </div>
+    <div class="input-holder">
+      <label class="jcf-label-active"> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectPlusZip, 'PlusIcons/exportable_data_reports_plus.png')}"/></span><span class="input-title"> {!$Label.APTSDMP_ConnectPlusExport} </span> <span class="jcf-checkbox"><span></span>
+        <input type="checkbox" checked="checked" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;" />
+        </span> </label>
+    </div>
+    <div class="input-holder">
+      <label for="check-13" class="jcf-label-active"> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectPlusZip, 'PlusIcons/enhanced_timeline_with_real-time_faults.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectPlusEnhance} </span> <span class="jcf-checkbox"><span></span>
+        <input type="checkbox" id="check-13" checked="checked" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;" />
+        </span> </label>
+    </div>
+    <div class="input-holder">
+      <label class="jcf-label-active"> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectPlusZip, 'PlusIcons/comprehensive_event_log.png')}"/></span> <span class="input-title"> Comprehensive event log </span> <span class="jcf-checkbox"><span></span>
+        <input type="checkbox" checked="checked" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;" />
+        </span> </label>
+    </div>
+    <div class="input-holder">
+      <label class="jcf-label-active"> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectPlusZip, 'PlusIcons/4-d_visualization_of_robot.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_Connect4D} </span> <span class="jcf-checkbox"><span></span>
+        <input type="checkbox" checked="checked" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;" />
+        </span> </label>
+    </div>
+    <div class="input-holder">
+      <label><span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/codition_monitoring.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectCondition} </span> <span class="jcf-checkbox jcf-checked"><span></span>
+        <input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;" />
+        </span> </label>
+    </div>
+    <div class="input-holder">
+      <label><span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/robot_identification_data_icon.png')}"/></span><span class="input-title"> {!$Label.APTSDMP_ConnectRobot} </span> <span class="jcf-checkbox jcf-checked"><span></span>
+        <input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;" />
+        </span> </label>
+    </div>
+    <div class="input-holder">
+      <label> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/controller_identification_data.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectController} </span> <span class="jcf-checkbox jcf-checked"><span></span>
+        <input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;" />
+        </span> </label>
+    </div>
+    <div class="input-holder">
+      <label> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/specifications.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectSpecs} </span> <span class="jcf-checkbox jcf-checked"><span></span>
+        <input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;" />
+        </span> </label>
+    </div>
+
+    <div class="input-holder">
+      <label> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/administrative_console.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectAdmin} </span> <span class="jcf-checkbox jcf-checked"><span></span>
+        <input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;" />
+        </span> </label>
+    </div>
+    <div class="input-holder">
+      <label> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/searchable_and_sortable_robot_list.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectSearch} </span> <span class="jcf-checkbox jcf-checked"><span></span>
+        <input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;" />
+        </span> </label>
+    </div>
+    <div class="input-holder">
+      <label> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/language_support.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectLang} </span> <span class="jcf-checkbox jcf-checked"><span></span>
+        <input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;" />
+        </span> </label>
+    </div>
+  </form>
+</div>
+<div class="bg-stretch" id="bg-stretch1477591930808282"> </div>
+
+        </section>
+        <section class="product-holder" ng-if="product.productDetails.Name == 'KUKA Connect Lite'">
+          <div class="container" style="margin-left: auto; margin-right: auto;">
+  <div class="section-title">
+    <picture> <img src="{!URLFOR($Resource.APTSDMP_ConnectLiteLogo)}" alt="image description" width="320" height="31"/> </picture>
+  </div>
+  <div class="content-holder" style="max-width: 580px;">
+    <p>{!$Label.APTSDMP_ConnectLiteDesc}</p>
+  </div>
+  <form action="#" class="form-1">
+    <div class="input-holder">
+      <label> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/codition_monitoring.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectCondition} </span> <span class="jcf-checkbox jcf-checked"><span></span>
+        <input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;"/>
+        </span> </label>
+    </div>
+    <div class="input-holder">
+      <label> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/timeline_with_routine_maintenance_milestones.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectTimeline} </span> <span class="jcf-checkbox jcf-checked"><span></span>
+        <input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;"/>
+        </span> </label>
+    </div>
+    <div class="input-holder">
+      <label> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/robot_identification_data_icon.png')}"/></span><span class="input-title"> {!$Label.APTSDMP_ConnectRobot} </span> <span class="jcf-checkbox jcf-checked"><span></span>
+        <input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;"/>
+        </span> </label>
+    </div>
+    <div class="input-holder">
+      <label> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/controller_identification_data.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectController} </span> <span class="jcf-checkbox jcf-checked"><span></span>
+        <input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;"/>
+        </span> </label>
+    </div>
+    <div class="input-holder">
+      <label> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/specifications.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectSpecs} </span> <span class="jcf-checkbox jcf-checked"><span></span>
+        <input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;"/>
+        </span> </label>
+    </div>
+    <div class="input-holder">
+      <label> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/administrative_console.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectAdmin} </span> <span class="jcf-checkbox jcf-checked"><span></span>
+        <input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;"/>
+        </span> </label>
+    </div>
+    <div class="input-holder">
+      <label> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/searchable_and_sortable_robot_list.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectSearch} </span> <span class="jcf-checkbox jcf-checked"><span></span>
+        <input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;"/>
+        </span> </label>
+    </div>
+    <div class="input-holder">
+      <label> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/language_support.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectLang} </span> <span class="jcf-checkbox jcf-checked"><span></span>
+        <input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;"/>
+        </span> </label>
+    </div>
+  </form>
+</div>
+<div class="bg-stretch" id="bg-stretch1477517020051400"> </div>
+
+        </section>
+        <div id="product_video_container" ng-if="trustedVideoUrl">
+            <div id="product_video">
+                <iframe width="640" height="360"  ng-src="{{trustedVideoUrl}}" frameborder="0" allowfullscreen="true"></iframe>
+           </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade modal-lg" role="dialog" id="bundle-modal">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">{!$Label.APTSMD_ConfigureYourProducts}</h4>
+          </div>
+          <div class="modal-body">
+            <div class="media">
+              <div class="media-left col-sm-4">
+                <img class="media-object" ng-src="{{product.ImageUrl}}"/>
+              </div>
+              <div class="media-body p-w-lg">
+                <h4 class="media-heading">{{product.ProductName}}</h4>
+                <ul><li ng-repeat='line in product.Description.split(",")'>{{line}}</li></ul>
+                <p ng-bind-html="product.longDescription"></p>
+                <div class="price m-t-lg">
+                  <p class="m-r-xl">{!$Label.APTSMD_Price}:</p>
+                  <span class="amount">{{product.PriceItem.Apttus_Config2__ListPrice__c | exchange: model.exchangeRate | currency : model.currency : 2}}</span>
+                  <span ng-if="product.frequency" class="frequency m-l-xs">{{product.frequency}}</span>
+                </div>
+              </div>
+            </div>
+
+            <form novalidate name="productForm">
+              <hr/>
+              <div class="row">
+                <div class="col-sm-3 form-group">
+                  <label for="quantity">{!$Label.APTSDMP_Quantity}:</label>
+                  <input type="number" class="form-control" id="quantity" name="quantity" ng-model="product.Quantity" required ng-min="1" ng-max="5000">
+                  <small class="help-block m-sm" ng-if="productForm.quantity.$error.max">{!$Label.APTSDMP_LimitItemsQuantity}</small>
+                </div>
+              </div>
+
+              <hr/>
+
+              <div class="row" ng-repeat="attrGrp in product.prodAttributeGroups">
+                <div class="col-sm-4 col-md-3 form-group" ng-repeat="attribute in attrGrp.productAttributes">
+                  <label for="{{attribute.name}}">{{attribute.label}}</label>
+                  <select id="{{attribute.name}}" ng-if="attribute.fieldType.toUpperCase() == 'PICKLIST'"
+                      ng-model="attribute.selectedValue"
+                      ng-options="item.split(',')[0] for item in attribute.availableValues" class="form-control" required></select>
+
+                  <input id="{{attribute.name}}" ng-if="attribute.fieldType.toUpperCase() == 'TEXT'" name="{{attribute.label}}" type="text" ng-model="attribute.selectedValue" class="form-control" required/>
+                  <input id="{{attribute.name}}" ng-if="attribute.fieldType.toUpperCase() == 'DOUBLE'" name="{{attribute.label}}" type="number" min="0" ng-model="attribute.selectedValue" class="form-control" required/>
+                  <input id="{{attribute.name}}" ng-if="attribute.fieldType.toUpperCase() == 'BOOLEAN'" name="{{attribute.label}}" type="checkbox" ng-model="attribute.selectedValue" class="form-control kuka-checkbox" required/>
+                  <input id="{{attribute.name}}" ng-if="attribute.fieldType.toUpperCase() == 'DATE'" name="{{attribute.label}}" type="date" ng-min="today" ng-model="attribute.selectedValue" class="form-control" required/>
+                  <small class="help-block" ng-if="productForm[attribute.label].$error.min">{!$Label.APTSDMP_ConfigError}&nbsp;{{attribute.label}}</small>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">{!$Label.APTSMD_Close}</button>
+            <button type="button" class="btn btn-primary" ng-disabled="productForm.$invalid" ng-click="addToCart()">{!$Label.APTSMD_AddToCart}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </script>
+
+  <script type="text/ng-template" id="cart.html">
+    <div class="cart clearfix">
+      <ul class="media-list">
+        <li ng-repeat="cartItem in cart.cartWrapper.cartLineItems" class="media">
+          <div class="media-left">
+            <a href="javascript:void(0)" ui-sref="index.product({productId : cartItem.ProductId})">
+              <img ng-src="{{'servlet/servlet.FileDownload?file=' + cartItem.attachmentId}}" class="media-object"/>
+            </a>
+          </div>
+          <div class="media-body">
+            <h4 class="media-heading text-center m-t-xs">{{cartItem.ProductName}}</h4>
+            <h4 class="text-center">{{cartItem.iQuantity}} x {{cartItem.lineItemPrice | exchange: model.exchangeRate | currency : model.currency : 2}}</span>
+          </div>
+          <div class="media-right">
+            <a href="javascript:void(0)" ng-click="removeCartItem(cartItem)" class="text-primary">&#10006</a>
+          </div>
+        </li>
+      </ul>
+      <div class="cart-footer clearfix">
+        <div class="pull-left">{!$Label.APTSDMP_Total}</div>
+        <total class="pull-right" cart="cart" model="model"></total>
+      </div>
+      <button class="btn btn-primary pull-right m-t-md" ng-show="cart.cartWrapper.cartLineItems.length>0" ui-sref="index.cart">{!$Label.APTSDMP_ViewCart}</button>
+    </div>
+  </script>
+
+  <script type="text/ng-template" id="products.html">
+    <div class="container product-container">
+      <div class="row">
+        <div class="col-sm-12 col-md-3">
+          <form>
+            <div class="input-group">
+              <input type="search" class="form-control" placeholder="{!$Label.APTSDMP_Search}" ng-model="selected" uib-typeahead="product as product.ProductName for product in getProducts($viewValue)" typeahead-no-results="noResults" typeahead-loading="loadingResults" typeahead-wait-ms="500" typeahead-select-on-exact="true" typeahead-on-select="onSelect($item, $model, $label, $event)">
+              <div class="input-group-addon"><i class="icon-Icon_090 search-icon"></i></div>
+            </div>
+          </form>
+
+          <div class="panel panel-default m-t-md card categories">
+            <div class="panel-heading">{!$label.ecomm_Categories}</div>
+            <div class="panel-body">
+              <a href="javascript:void(0)" ui-sref="index.products({categoryId : ''})" class="text-muted" ui-sref-active="text-primary">{{model.topCategory}}</a>
+
+              <a href="javascript:void(0)" ng-repeat="category in categories" class="text-muted"  ng-if="!category.childcat" ui-sref="index.products({categoryId : category.Level1CategoryId})" ui-sref-active="text-primary">{{category.level1categoryName}}</a>
+              <uib-accordion close-others="true">
+                  <div uib-accordion-group class="panel-default" is-open="category.isCategoryOpen" ng-repeat="category in categories" ng-if="category.childcat">
+                    <uib-accordion-heading class="text-muted">
+                      <div class="text-muted">
+                        <span ng-if="!category.isCategoryOpen">&#43;</span>
+                        <span ng-if="category.isCategoryOpen">&minus;</span>
+                        {{category.level1categoryName}}
+                      </div>
+                    </uib-accordion-heading>
+                    <div class="p-w-sm">
+                      <a href="javascript:void(0)" ng-repeat="subcategory in category.childcat" class="text-muted" ng-if="!subcategory.childcat" ui-sref="index.products({categoryId : subcategory.Level1CategoryId})" ui-sref-active="text-primary">{{subcategory.level1categoryName}}</a>
+
+                      <uib-accordion close-others="true">
+                        <div uib-accordion-group class="panel-default" is-open="subcategory.isCategoryOpen" ng-repeat="subcategory in category.childcat" ng-if="subcategory.childcat">
+                          <uib-accordion-heading>
+                            <div class="text-muted">
+                              <span ng-if="!subcategory.isCategoryOpen">&#43;</span>
+                              <span ng-if="subcategory.isCategoryOpen">&minus;</span>
+                              {{subcategory.level1categoryName}}
+                            </div>
+                          </uib-accordion-heading>
+                          <div class="p-w-sm">
+                            <a href="javascript:void(0)" ng-repeat="grandsubcat in subcategory.childcat" class="m-l-md text-muted" ui-sref="index.products({categoryId : grandsubcat.Level1CategoryId})" ng-if="!grandsubcat.childcat" ui-sref-active="text-primary">{{grandsubcat.level1categoryName}}</a>
+
+                            <uib-accordion close-others="true">
+                              <div uib-accordion-group class="panel-default" is-open="grandsubcat.isCategoryOpen" ng-repeat="grandsubcat in subcategory.childcat" ng-if="grandsubcat.childcat">
+                                <uib-accordion-heading>
+                                  <div class="text-muted">
+                                    <span ng-if="!grandsubcat.isCategoryOpen">&#43;</span>
+                                    <span ng-if="grandsubcat.isCategoryOpen">&minus;</span>
+                                    {{grandsubcat.level1categoryName}}
+                                  </div>
+                                </uib-accordion-heading>
+                                <a href="javascript:void(0)" class="m-l-md text-muted" ui-sref="index.products({categoryId : gcat.Level1CategoryId})" ng-repeat="gcat in grandsubcat.childcat" ng-if="grandsubcat.childcat" ui-sref-active="text-primary">{{gcat.level1categoryName}}</a>
+                              </div>
+                            </uib-accordion>
+                          </div>
+
+                        </div>
+                      </uib-accordion>
+                    </div>
+                  </div>
+              </uib-accordion>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-9 product-list">
+          <uib-accordion close-others="false">
+            <div uib-accordion-group is-open="isFeaturedOpen" heading="{!$Label.APTSDMP_FeaturedProducts}" ng-if="featuredProducts && featuredProducts.length > 0">
+              <div class="row">
+                <div class="col-sm-6" ng-repeat="product in featuredProducts">
+                  <div class="panel panel-default card">
+                    <div class="panel-body text-center">
+                      <a ui-sref="index.product({productId : product.ProductId})">
+                        <img ng-src="{{product.ImageUrl}}"/>
+                      </a>
+                      <h4 class="m-t-sm">
+                        <a ui-sref="index.product({productId : product.ProductId})">{{product.ProductName}}</a>
+                        <div ng-if="product.productDetails.Family!='KUKA College'">
+                            <span>{!$Label.APTSMD_Price}:</span>
+                            {{product.PriceItem.Apttus_Config2__ListPrice__c | exchange: model.exchangeRate | currency: model.currency: 2}}
+                        </div>
+                      </h4>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div uib-accordion-group is-open="isProductsOpen" heading="{!$Label.APTSDMP_AllProducts}">
+              <div class="row">
+                <div class="col-sm-6" ng-repeat="product in products" ng-if="products">
+                  <div class="panel panel-default card">
+                    <div class="panel-body text-center">
+                      <a ui-sref="index.product({productId : product.ProductId})">
+                        <img ng-src="{{product.ImageUrl}}"/>
+                      </a>
+                      <h4 class="m-t-sm">
+                        <a ui-sref="index.product({productId : product.ProductId})">{{product.ProductName}}</a>
+                        <div ng-if="product.productDetails.Family!='KUKA College'">
+                            <span>{!$Label.APTSMD_Price}:</span>
+                            {{product.PriceItem.Apttus_Config2__ListPrice__c | exchange: model.exchangeRate | currency: model.currency: 2}}
+                        </div>
+                      </h4>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </uib-accordion>
+        </div>
+      </div>
+    </div>
+  </script>
+
+  <script type="text/ng-template" id="order-history.html">
+    <div class="order-history">
+      <div class="container m-t-sm">
+        <ol class="breadcrumb">
+            <li><a href="javascript:void(0)" ui-sref="index.products">{!$Label.APTSDMP_Catalog}</a></li>
+            <li class="active">{!$Label.APTSDMP_OrderHistory}</li>
+        </ol>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            {!$Label.APTSDMP_OrderHistory}
+          </div>
+          <div class="panel-body p-xl">
+            <div class="row-fluid" ng-repeat="order in orderHistory track by $index">
+              <h5 class="m-b-lg">
+                <span>{!$Label.APTSDMP_OrderNum}:</span>&nbsp;{{order.OrderNumber}}
+
+                <button class="pull-right btn btn-primary" data-style="zoom-in" ladda="loading == order.OrderId" ng-click="goToSummary(order.OrderId)">{!$Label.APTSDMP_ViewOrderSummary}</button>
+              </h5>
+              <table class="table table-bordered table-responsive">
+                <thead>
+                  <th>{!$Label.APTSDMP_ProductName}</th>
+                  <th class="text-center">{!$Label.APTSDMP_Quantity}</th>
+                  <th class="text-right">{!$Label.APTSDMP_BasePrice}</th>
+                  <th class="text-right">{!$Label.APTSDMP_NetPrice}</th>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="item in order.orderline">
+                    <td>{{item.ProdName}}</td>
+                    <td class="text-center">{{item.Quantity}}</td>
+                    <td class="text-right">{{item.lineItemPrice | exchange: model.exchangeRate | currency: model.currency : 2}}</td>
+                    <td class="text-right">{{item.Netprice | exchange: model.exchangeRate | currency : model.currency : 2}}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="row">
+                <div class="col-sm-4 col-sm-offset-4 text-right">
+                  {!$Label.APTSDMP_Total}
+                </div>
+                <div class="col-sm-4 text-right p-w-md">
+                  {{getOrderTotal(order) | exchange: model.exchangeRate | currency : model.currency : 2}}
+                </div>
+              </div>
+              <small>
+                {!$Label.APTSDMP_PurchaseDate}: {{order.OrderDate | date:'MM/dd/yyyy'}} {!$Label.APTSDMP_By} {{order.UserName }}
+              </small>
+              <hr ng-if="(orderHistory.length - 1) > $index"/>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </script>
+
+  <script type="text/ng-template" id="order-summary.html">
+    <div class="order-details">
+      <div class="container m-t-sm">
+        <ol class="breadcrumb">
+            <li><a href="javascript:void(0)" ui-sref="index.products">{!$Label.APTSDMP_Catalog}</a></li>
+            <li><a href="javascript:void(0)" ui-sref="index.history">{!$Label.APTSDMP_OrderHistory}</a></li>
+            <li class="active">{{order.Order_Number}}</li>
+        </ol>
+
+        <div class="panel panel-default">
+          <div class="panel-heading text-center">{!$Label.APTSDMP_OrderSummary}</div>
+          <div class="panel-body p-xl">
+            <h5 class="m-b-lg">
+              <span>{!$Label.APTSDMP_OrderNum}:</span>&nbsp;{{order.Order_Number}}
+            </h5>
+            <p>
+              {!$Label.APTSDMP_PurchaseDate}: {{order.Order_Date | date:'MM/dd/yyyy'}} {!$Label.APTSDMP_By} {{order.owner}}
+            </p>
+            <p>
+              {!$Label.APTSDMP_OrderDets}:
+            </p>
+            <table class="table table-bordered table-responsive">
+              <thead>
+                <th>{!$Label.APTSDMP_ProductName}</th>
+                <th class="text-center">{!$Label.APTSDMP_Quantity}</th>
+                <th class="text-right">{!$Label.APTSDMP_BasePrice}</th>
+                <th class="text-right">{!$Label.APTSDMP_NetPrice}</th>
+              </thead>
+              <tbody>
+                <tr ng-repeat="item in order.line_Items">
+                  <td>{{item.Item_Name}}</td>
+                  <td class="text-center">{{item.Quantity}}</td>
+                  <td class="text-right">{{item.Unit_Price | exchange: model.exchangeRate | currency: model.currency : 2}}</td>
+                  <td class="text-right">{{item.Total_Price | exchange: model.exchangeRate | currency : model.currency : 2}}</td>
+                </tr>
+                <tr ng-if="order.line_Items.length <= 0">
+                  <td colspan="4" class="text-center">
+                    {!$Label.APTSDMP_OrderDetError}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="row-fluid text-right m-t-xl">
+              <h2>{!$Label.APTSDMP_Total}:&nbsp;{{order.dOrderAmount + (order.dTaxAmount-order.Promotion) | exchange: model.exchangeRate | currency : model.currency : 2}}</h2>
+            </div>
+
+            <table class="table shipping-table">
+              <thead>
+                <th colspan="2">{!$Label.APTSDMP_Shipping}</th>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="text-right">{!$Label.APTSDMP_ShippingMethod}:</td>
+                  <td>{{order.Shipping_Method_Value}}</td>
+                </tr>
+                <tr>
+                  <td class="text-right">{!$Label.APTSDMP_ShippingAddress}:</td>
+                  <td ng-if="model.isValidUser == 'true'">
+                    {{order.Shipto_Address1}} <br/>
+                    {{order.Shipto_City}}, {{order.Shipto_State}} {{order.Shipto_Zip}}<br/>
+                    {{order.Shipto_Country}}
+                  </td>
+                  <td ng-if="model.isValidUser != 'true'">
+                    {{order.GuestShipTo_Street}} <br/>
+                    {{order.GuestShipTo_City}}, {{order.GuestShipTo_State}} {{order.GuestShipTo_Code}}<br/>
+                    {{order.GuestShipTo_Country}}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </script>
+
+  <script type="text/ng-template" id="cart-details.html">
+    <div class="cart-details">
+      <div class="container m-t-sm">
+        <ol class="breadcrumb">
+            <li><a href="javascript:void(0)" ui-sref="index.products">{!$Label.APTSDMP_Catalog}</a></li>
+            <li class="active">{!$Label.APTSDMP_Cart}</li>
+        </ol>
+      </div>
+      <div class="cart-wrapper">
+        <div class="container">
+          <div class="row" ng-if="!cart || !cart.cartWrapper.cartLineItems || cart.cartWrapper.cartLineItems.length == 0">
+            <h5 class="text-center m-t-xl p-xl">
+              {!$Label.APTSDMP_CartEmpty}<br/>
+              <a href="javascript:void(0);" ui-sref="index.products">{!$Label.APTSDMP_Catalog}</a>
+            </h5>
+          </div>
+
+          <div class="row p-xl" ng-if="cart.cartWrapper.cartLineItems.length > 0">
+            <h2 class="m-b-n-sm m-t-xl">{!$Label.APTSDMP_Cart}</h2>
+            <hr/>
+            <form name="cartForm" novalidate>
+              <table class="table table-responsive">
+                <thead>
+                  <th class="text-center">{!$Label.APTSDMP_ProductName}</th>
+                  <th class="text-center">{!$Label.APTSDMP_Quantity}</th>
+                  <th class="text-center">{!$Label.APTSDMP_UOM}</th>
+                  <th class="text-center">{!$Label.APTSDMP_BasePrice}</th>
+                  <th class="text-center">{!$Label.APTSDMP_NetPrice}</th>
+                  <th>&nbsp;</th>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="cartItem in cart.cartWrapper.cartLineItems">
+                    <td>
+                      <div class="media">
+                        <div class="media-left media-middle">
+                          <a href="javascript:void(0)" ui-sref="index.product({productId : cartItem.ProductId})">
+                            <img class="media-object" ng-src="{{'servlet/servlet.FileDownload?file=' + cartItem.attachmentId}}"/>
+                          </a>
+                        </div>
+                        <div class="media-body">
+                          <p class="media-heading m-l-md">{{cartItem.ProductName}}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div>
+                        <ng-form name="cartQuantity">
+                          <p class="{{(cartQuantity.quantity.$error) ? 'text-center m-l-n-sm form-group has-error' : 'text-center m-l-n-sm form-group'}}">
+                            <input type="number" ng-model="cartItem.iQuantity" ng-change="udpateQuantity(cartItem)" ng-max="5000" name="quantity" ng-model-options="{debounce: 1000}"/>
+                            <span class="help-block m-sm" ng-if="cartQuantity.quantity.$error.max">{!$Label.APTSDMP_LimitItemsQuantity}</span>
+                          </p>
+                        </ng-form>
+                      </div>
+                    </td>
+                    <td>
+                      <div>
+                        <p class="text-center m-l-n-sm">{{cartItem.UOM}}</p>
+                      </div>
+                    </td>
+                    <td>
+                      <div>
+                        <p class="text-center m-l-n-sm">{{cartItem.lineItemPrice | exchange: model.exchangeRate | currency : model.currency : 2}}</p>
+                      </div>
+                    </td>
+                    <td>
+                      <div>
+                        <p class="text-center m-l-n-sm">{{cartItem.netPrice | exchange: model.exchangeRate | currency : model.currency : 2}}</p>
+                      </div>
+                    </td>
+                    <td>
+                      <div>
+                        <p class="text-center m-l-n-sm">
+                          <a href="javascript:void(0)" ng-click="removeCartItem(cartItem)" class="text-primary">&#10006</a>
+                        </p>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </form>
+            <div class="row-fluid m-t-lg m-b-xl">
+              <div class="col-sm-5 col-sm-offset-7 col-md-3 col-md-offset-9 cart-total p-lg">
+                <div class="clearfix">
+                  <h2 class="pull-left">{!$Label.APTSDMP_Total}</h2>
+                  <h2 class="pull-right"><total cart="cart" model="model"></total></h2>
+                </div>
+                <button type="button" class="btn btn-primary btn-block m-t-lg" ui-sref="index.checkout" ng-disabled="cartForm.$invalid" >{!$Label.APTSDMP_ProceedToCheckout}</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </script>
+
+  <script type="text/ng-template" id="checkout.html">
+    <div class="checkout">
+      <div class="container m-t-sm">
+        <ol class="breadcrumb">
+            <li><a href="javascript:void(0)" ui-sref="index.products">{!$Label.APTSDMP_Catalog}</a></li>
+            <li><a href="javascript:void(0)" ui-sref="index.cart">{!$Label.APTSDMP_Cart}</a></li>
+            <li class="active">{!$Label.APTSDMP_Checkout}</li>
+        </ol>
+      </div>
+      <div class="wrapper">
+        <div class="container">
+          <form name="checkoutForm" novalidate ng-submit="submitOrder()">
+            <div class="panel panel-default" ng-if="model.localAccountId != model.accountId">
+              <div class="panel-heading text-center">{!$Label.APTSDMP_Billing}</div>
+              <div class="panel-body p-xl">
+                <div class="row">
+                  <div class="col-sm-2 col-sm-offset-1 text-right">
+                    <label for="billingSelect">{!$Label.APTSDMP_BillingAddress}*</label>
+                  </div>
+                  <div class="col-sm-7">
+                    <select class="form-control" id="shippingSelect" ng-required="model.localAccountId != model.accountId" ng-model="formData.BillTo_Account_Id">
+                      <option value="" disabled selected>--Select--</option>
+                      <option value="{{address.Id}}" ng-repeat="address in addressInfo.addressWrapper" ng-if="address.Billing_Street && address.Billing_State">
+                        {{address | address: 'Billing'}}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <div class="row text-center">
+                  <p class="text-danger m-t-sm">{!$Label.APTSDMP_BillingError}</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel panel-default" ng-if="model.localAccountId != model.accountId">
+              <div class="panel-heading text-center">{!$Label.APTSDMP_Shipping}</div>
+              <div class="panel-body p-xl">
+                <div class="row">
+                  <div class="col-sm-2 col-sm-offset-1 text-right">
+                    <label for="shippingSelect">{!$Label.APTSDMP_ShippingAddress}*</label>
+                  </div>
+                  <div class="col-sm-7">
+                    <select class="form-control" id="shippingSelect" ng-required="model.localAccountId != model.accountId" ng-model="formData.ShipTo_Account_Id">
+                      <option value="" disabled selected>--Select--</option>
+                      <option value="-1">New Shipping Address</option>
+                      <option value="{{address.Id}}" ng-repeat="address in addressInfo.addressWrapper" ng-if="address.Shipping_Street && address.Shipping_State">
+                        {{address | address: 'Shipping'}}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <div class="row text-center">
+                  <p class="text-danger m-t-sm">{!$Label.APTSDMP_ShippingError}</p>
+                </div>
+
+                <div class="row">
+                  <div class="col-sm-9 col-sm-offset-1">
+                    <uib-accordion clse-others="false">
+                      <div uib-accordion-group is-open="formData.ShipTo_Account_Id == -1" class="m-l-xl">
+                        <div class="form-group">
+                          <label for="exampleInputName2">{!$Label.APTSDMP_ShippingStreet}*</label>
+                          <input type="text" class="form-control" id="exampleInputName2" ng-required="formData.ShipTo_Account_Id == -1" ng-model="newAddress.Apttus_Config2__Street__c">
+                        </div>
+                        <div class="form-group">
+                          <label for="exampleInputName2">{!$Label.APTSDMP_ShippingCity}*</label>
+                          <input type="text" class="form-control" id="exampleInputName2" ng-required="formData.ShipTo_Account_Id == -1" ng-model="newAddress.Apttus_Config2__City__c">
+                        </div>
+                        <div class="form-group">
+                          <label for="exampleInputName2">{!$Label.APTSDMP_ShippingState}*</label>
+                          <input type="text" class="form-control" id="exampleInputName2" ng-required="formData.ShipTo_Account_Id == -1" ng-model="newAddress.Apttus_Config2__State__c">
+                        </div>
+                        <div class="form-group">
+                          <label for="exampleInputName2">{!$Label.APTSDMP_ShippingPostal}*</label>
+                          <input type="text" class="form-control" id="exampleInputName2" ng-required="formData.ShipTo_Account_Id == -1" ng-model="newAddress.Apttus_Config2__PostalCode__c">
+                        </div>
+                        <div class="form-group">
+                          <label for="exampleInputName2">{!$Label.APTSDMP_ShippingCountry}*</label>
+                          <input type="text" class="form-control" id="exampleInputName2" ng-required="formData.ShipTo_Account_Id == -1" ng-model="newAddress.Apttus_Config2__Country__c">
+                        </div>
+                      </div>
+                    </uib-accordion>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <h4 class="text-center m-t-lg">{!$Label.APTSDMP_OrderSummary}</h4>
+            <table class="table table">
+              <thead>
+                <th>{!$Label.APTSDMP_ProductName}</th>
+                <th class="text-center">{!$Label.APTSMD_Qty}</th>
+                <th class="text-right">{!$Label.APTSDMP_BasePrice}</th>
+                <th class="text-right">{!$Label.APTSDMP_Total}</th>
+              </thead>
+              <tbody>
+                <tr ng-repeat="cartItem in cart.cartWrapper.cartLineItems">
+                  <td>
+                    <div><small>{{cartItem.ProductName}}</small></div>
+                  </td>
+                  <td class="text-center">
+                    <div><small>{{cartItem.iQuantity}}</small></div>
+                  </td>
+                  <td class="text-right">
+                    <div><small>{{cartItem.lineItemPrice | exchange: model.exchangeRate | currency: model.currency : 2}}</small></div>
+                  </td>
+                  <td class="text-right">
+                    <div><small>{{cartItem.netPrice | exchange: model.exchangeRate | currency: model.currency : 2}}</small></div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <table class="table">
+              <thead>
+                <th>{!$Label.APTSDMP_SubTotal}</th>
+                <th>{!$Label.APTSDMP_TaxEstimate}*</th>
+                <th>{!$Label.APTSDMP_Total}</th>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div>
+                      <small><total cart="cart" model="model"></total></small>
+                    </div>
+                  </td>
+                  <td>
+                    <div><small>{!$Label.APTSDMP_TaxCalculation}</small</div>
+                  </td>
+                  <td>
+                    <div><small><total cart="cart" model="model"></total></small></div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="row">
+              <div class="col-sm-6" ng-if="model.localAccountId != model.accountId">
+                <table class="table">
+                  <tbody>
+                    <tr>
+                      <td class="text-right">
+                        <div><h6>{!$Label.APTSDMP_ShippingMethod}</h6></div>
+                      </td>
+                      <td>
+                        <div><small>{{model.shipMethods[0].text}}<small></div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="text-right">
+                        <div><h6>{!$Label.APTSDMP_BillingAddress}</h6></div>
+                      </td>
+                      <td>
+                        <div><small>{{getAddress(formData.BillTo_Account_Id) | address: 'Billing'}}</small></div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="text-right">
+                        <div><h6>{!$Label.APTSDMP_ShippingAddress}</h6></div>
+                      </td>
+                      <td>
+                        <div><small>{{getAddress(formData.ShipTo_Account_Id) | address: 'Shipping'}}</small></div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="panel col-sm-6">
+                <div class="panel-body p-xl">
+                  <div class="text-center p-w-xl">
+                    <label>
+                      <input type="checkbox" ng-model="model.terms" required> <a href="#!/legal/">{!$Label.APTSDMP_AcceptTerms}</a>
+                    </label>
+                    <button type="submit" class="btn bt-primary btn-block btn-lg m-t-sm" ladda="loading" ng-disabled="checkoutForm.$invalid" data-style="zoom-in">{!$Label.APTSDMP_Submit}</button>
+                  </div>
+                  <hr/>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </script>
+
+  <script type="text/ng-template" id="legal.html">
+            <style>
+                .legalli{
+                    margin: 0 0 10px 0;                    
+                }
+                .legaltext{
+                    text-decoration: underline; font-weight: bold;    
+                }
+            </style>
+
+            <section class="intro_terms" ng-switch="model.userLanguage">
+              <div class="container" style="margin-top:20px" ng-switch-when="en_US">
+                <div class="content">
+                    <center><h2>KUKA MARKETPLACE TERMS OF USE</h2></center>
+                  </div>
+                    <div style="margin-top:20px"> 
+                      <ol>
+                        <li class="legalli"><span class="legaltext">Acceptance of the Terms of Use.</span> These KUKA Connect Marketplace Terms of Use are entered into by and between you and KUKA Roboter GmbH ("Company", "we" or "us"). The following terms and conditions, together with any documents they expressly incorporate by reference (collectively, these "Terms of Use"), govern your access to and use of shop.kuka.com, including any content, functionality, and services offered on or through shop.kuka.com (the "Website"). Please read the Terms of Use carefully before you start to use the Website. By using the Website or by clicking to accept or agree to the Terms of Use, you accept and agree to be bound by these Terms of Use and our Data Protection Policy, found at www.kuka.com/en-de/privacy (“Privacy Policy”), incorporated herein by reference. If you do not want to agree to these Terms of Use or the Privacy Policy, you must not access or use the Website. </li>
+                        <li class="legalli"><span class="legaltext">Changes to These Terms.</span> We reserve the right to change these Terms of Use at any time upon notice. We may give notice by posting the updated Terms of Use on the Website or by any other reasonable means. You can review the most current version of these terms of use at any time at HTTPS://shop.kuka.com/legal. The Terms of Use in effect at the time of your use of the Website apply. Updated Terms of Use are binding on you with respect to your use of the Website on or after the date indicated in the updated Terms of Use.  If you do not agree to the updated Terms of Use, you must stop using the Website.  Your continued use of the Website after the date of the updated Terms of Use will constitute your acceptance of the updated Terms of Use. </li>
+                        <li class="legalli"><span class="legaltext">Accessing the Website. </span> We reserve the right to withdraw or amend this Website, and any service or material we provide on the Website, in our sole discretion without notice. We will not be liable if for any reason all or any part of the Website is unavailable at any time or for any period. From time to time, we may restrict access to some parts of the Website, or the entire Website, to users, including registered users. To access the Website or some of the resources it offers, you may be asked to provide certain registration details or other information. It is a condition of your use of the Website that all the information you provide on the Website is correct, current, and complete. You agree that all information you provide to this Website, including but not limited to through the use of any interactive features on the Website, (“User Submissions”) is governed by our Privacy Policy, and you consent to all actions we take with respect to your information consistent with our Privacy Policy. If you choose, or are provided with, a user name, password, or any other piece of information as part of our security procedures, you must treat such information as confidential, and you must not disclose it to any other person or entity. You also acknowledge that your account is personal to you and agree not to provide any other person with access to this Website or portions of it using your user name, password, or other security information. You agree to notify us immediately of any unauthorized access to or use of your user name or password or any other breach of security. You also agree to ensure that you exit from your account at the end of each session. You should use particular caution when accessing your account from a public or shared computer so that others are not able to view or record your password or other personal information. We may disable any user name, password, or other identifier, whether chosen by you or provided by us, at any time, in our sole discretion for any or no reason, including if, in our opinion, you have violated any provision of these Terms of Use. </li>
+                        <li class="legalli"><span class="legaltext">Use of Information Provided by You. </span> We can use User Submissions to contact you about ordering products or services. We will use the information you submit in accordance with our Privacy Policy. You acknowledge, represent and agree that any User Submission is submitted voluntarily and is not confidential or proprietary, and that your User Submission does not establish a relationship between you and us.  You grant the Company and its sublicensees a worldwide, royalty-free, non-exclusive, transferable, perpetual and irrevocable license to use, distribute, transmit, reproduce, modify, publish, translate, publicly perform and display and create derivative works of your User Submissions and to publish your name in connection with your User Submission, except as otherwise prohibited by applicable law or these Terms of Use.  You waive any right to compensation of any type for your User Submissions. We do not intend to publicly display or publish any portion of product purchase history information.  You represent and warrant that you have all the rights necessary to grant the rights in this Section and that use of User Submissions by us does not violate any law.  You may not upload to, distribute, or otherwise publish through the Website any content which is libelous, defamatory, obscene, threatening, invasive of privacy or publicity rights, abusive, illegal, or otherwise objectionable which may constitute or encourage a criminal offense, violate the rights of any party or which may otherwise give rise to liability or violate any law. </li>
+                        <li class="legalli"><span class="legaltext">Intellectual Property Rights. </span> The Website and its entire contents, features, and functionality (including but not limited to all information, software, text, displays, images, video, and audio, and the design, selection, and arrangement thereof), are owned by the Company, its licensors, or other providers of such material and are protected by United States and international copyright, trademark, patent, trade secret, and other intellectual property or proprietary rights laws. You must not reproduce, distribute, modify, create derivative works of, publicly display, publicly perform, republish, download, store, or transmit any of the material on our Website without our prior written consent. The Company name, the terms KUKA Connect, KUKA Connect Lite, and KUKA Connect Plus, the Company logo, and all related names, logos, product and service names, designs, and slogans are trademarks of the Company or its affiliates or licensors. You must not use such marks without the prior written permission of the Company. All other names, logos, product and service names, designs, and slogans on this Website are the trademarks of their respective owners. Under no circumstances will you acquire any ownership rights or other interest in any such marks or content on this Website by or through your use of the Website. </li>
+                        <li class="legalli"><span class="legaltext">Permitted Uses. </span> You may use the Website only for lawful purposes and in accordance with these Terms of Use. You agree not (a) to use the Website in any way that violates any applicable federal, state, local, or international law or regulation, (b) use the Website for any unauthorizeds, fraudulent, or malicious purpose, (c) to engage in any other conduct that restricts or inhibits anyone's use or enjoyment of the Website, or which, as determined by us, may harm the Company or users of the Website or expose them to liability, (d) use the Website in any manner that could disable, overburden, damage, or impair the site, (e) use any robot, spider, or other automatic device, process, or means to access the Website for any purpose, including monitoring or copying any of the material on the Website, (f) to access systems, data or information not intended by us to be made accessible to a user, (g) to obtain or attempt to obtain any materials or information through any means not intentionally made available by us; or (f) to use the Website for any use other than the business purpose for which it was intended. </li>
+                        <li class="legalli"><span class="legaltext">Reliance on Information Posted. </span> The information presented on or through the Website is made available solely for general information purposes. We do not warrant the accuracy, completeness, or usefulness of this information. Any reliance you place on such information is strictly at your own risk. We disclaim all liability and responsibility arising from any reliance placed on such materials by you or any other visitor to the Website, or by anyone who may be informed of any of its contents. We may update the content on this Website from time to time, but its content is not necessarily complete or up-to-date. Any of the material on the Website may be out of date at any given time, and we are under no obligation to update such material. </li>
+                        <li class="legalli"><span class="legaltext">Marketplace Purchases. </span> No actions you take through the Website will create a binding contract for the sale of goods or services. Nothing on this website is an offer for a contract. All terms for the sale of goods or services will be set forth in other documents, independent of these Terms of Use and the Website. If a product or service is listed on the Website with an incorrect price, KUKA may refuse to issue a quotation, proposal, order form, or similar document to you for the product or service at the price listed on the Website. </li>
+                        <li class="legalli"><span class="legaltext">Links from the Website. </span> If the Website contains links to other sites and resources provided by third parties, these links are provided for your convenience only. This includes links contained in advertisements, including banner advertisements and sponsored links. We have no control over the contents of those sites or resources, and accept no responsibility for them or for any loss or damage that may arise from your use of them. If you decide to access any of the third-party websites linked to this Website, you do so entirely at your own risk and subject to the terms and conditions of use for such websites. </li>
+                        <li class="legalli"><span class="legaltext">Disclaimer of Warranties. </span> YOUR USE OF THE WEBSITE, ITS CONTENT, AND ANY SERVICES OR ITEMS OBTAINED THROUGH THE WEBSITE ARE AT YOUR OWN RISK. THE WEBSITE, ITS CONTENT, AND ANY SERVICES OR ITEMS OBTAINED THROUGH THE WEBSITE ARE PROVIDED ON AN "AS IS" AND "AS AVAILABLE" BASIS, WITHOUT ANY WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED. NEITHER THE COMPANY NOR ANY PERSON ASSOCIATED WITH THE COMPANY MAKES ANY WARRANTY OR REPRESENTATION WITH RESPECT TO THE COMPLETENESS, SECURITY, RELIABILITY, QUALITY, ACCURACY, OR AVAILABILITY OF THE WEBSITE. WITHOUT LIMITING THE FOREGOING, NEITHER THE COMPANY NOR ANYONE ASSOCIATED WITH THE COMPANY REPRESENTS OR WARRANTS THAT THE WEBSITE, ITS CONTENT, OR ANY SERVICES OR ITEMS OBTAINED THROUGH THE WEBSITE WILL BE ACCURATE, RELIABLE, ERROR-FREE, OR UNINTERRUPTED, THAT DEFECTS WILL BE CORRECTED, THAT OUR SITE OR THE SERVER THAT MAKES IT AVAILABLE ARE FREE OF VIRUSES OR OTHER HARMFUL COMPONENTS, OR THAT THE WEBSITE OR ANY SERVICES OR ITEMS OBTAINED THROUGH THE WEBSITE WILL OTHERWISE MEET YOUR NEEDS OR EXPECTATIONS. TO THE FULLEST EXTENT PROVIDED BY LAW, THE COMPANY HEREBY DISCLAIMS ALL WARRANTIES OF ANY KIND, WHETHER EXPRESS OR IMPLIED, STATUTORY, OR OTHERWISE, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF MERCHANTABILITY, NON-INFRINGEMENT, AND FITNESS FOR PARTICULAR PURPOSE. </li>
+                        <li class="legalli"><span class="legaltext">Limitation of Liability. </span> TO THE FULLEST EXTENT PROVIDED BY LAW, IN NO EVENT WILL THE COMPANY, ITS AFFILIATES, OR THEIR LICENSORS, SERVICE PROVIDERS, EMPLOYEES, AGENTS, OFFICERS, OR DIRECTORS BE LIABLE FOR DAMAGES OF ANY KIND, UNDER ANY LEGAL THEORY, ARISING OUT OF OR IN CONNECTION WITH YOUR USE, OR INABILITY TO USE, THE WEBSITE, ANY WEBSITES LINKED TO IT, ANY CONTENT ON THE WEBSITE OR SUCH OTHER WEBSITES, INCLUDING ANY DIRECT, INDIRECT, SPECIAL, INCIDENTAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING BUT NOT LIMITED TO, PERSONAL INJURY, PAIN AND SUFFERING, EMOTIONAL DISTRESS, LOSS OF REVENUE, LOSS OF PROFITS, LOSS OF BUSINESS OR ANTICIPATED SAVINGS, LOSS OF USE, LOSS OF GOODWILL, LOSS OF DATA, AND WHETHER CAUSED BY TORT (INCLUDING NEGLIGENCE), BREACH OF CONTRACT, OR OTHERWISE, EVEN IF FORESEEABLE. </li>
+                        <li class="legalli"><span class="legaltext">Indemnification. </span> You agree to defend, indemnify, and hold harmless the Company, its affiliates, licensors, and service providers, and its and their respective officers, directors, employees, contractors, agents, licensors, suppliers, successors, and assigns from and against any third party claims, liabilities, damages, judgments, awards, losses, costs, expenses, or fees (including reasonable attorneys' fees) arising out of or relating to (a) your violation of these Terms of Use or your use of the Website, (b) any User Submission made by you, or (c) your violation of any other party’s rights or applicable law. </li>
+                        <li class="legalli"><span class="legaltext">Arbitration and Governing Law. </span> You will submit any disputes arising from the use of these Terms of Use or the Website, including disputes arising from or concerning their interpretation, violation, invalidity, non-performance, or termination, to final and binding arbitration under the Rules of Arbitration of the American Arbitration Association applying Texas law. These Terms of Use will be governed by and construed in accordance with the laws of the State of Texas, without giving effect to its conflict of laws provisions. </li>
+                        <li class="legalli"><span class="legaltext">Limitation on Time to File Claims. </span> ANY CAUSE OF ACTION OR CLAIM YOU MAY HAVE ARISING OUT OF OR RELATING TO THESE TERMS OF USE OR THE WEBSITE MUST BE COMMENCED WITHIN ONE YEAR AFTER THE CAUSE OF ACTION ACCRUES, OTHERWISE, SUCH CAUSE OF ACTION OR CLAIM IS PERMANENTLY BARRED. </li>
+                      </ol>
+                    </div>
+                </div>
+              </div>
+              <div class="container" style="margin-top:20px" ng-switch-when="de">
+                <div class="content">
+                    <center><h2>NUTZUNGSBEDINGUNGEN FÜR KUKA MARKETPLACE</h2></center>
+                  </div>
+                    <div style="margin-top:20px"> 
+                      <ol>
+                        <li class="legalli"><span class="legaltext">Annahme der Nutzungsbedingungen. </span> Die vorliegenden Nutzungsbedingungen für KUKA Connect Marketplace werden zwischen dem Rechtsträger bzw. dem in den beim Registrierungsverfahren angegebenen Registrierungsangaben genannten Unternehmen oder für den Fall, dass kein Rechtsträger oder anderes Unternehmen angegeben wurde, zwischen dem Rechtsträger oder Unternehmen, das von der die Registrierung vornehmenden Person vertreten wird und dieses implizit vertritt bzw. an dessen Statt handelt (der im Folgenden als „Sie“ bezeichnete Rechtsträger bzw. Unternehmen) und der KUKA Roboter GmbH, einer Gesellschaft mit Hauptsitz in der Zugspitzstraße 140, 86165 Augsburg, Deutschland („Gesellschaft“, „wir“ oder „uns“), vereinbart. Die folgenden Bedingungen regeln zusammen mit allen ausdrücklich hierin durch Bezugnahme aufgenommenen Dokumenten (zusammenfassend die „Nutzungsbedingungen“) Ihren Zugriff auf und die Nutzung von shop.kuka.com, einschließlich jeglicher auf bzw. über shop.kuka.com (die „Webseite“) angebotenen Inhalte, Funktionen und Dienste. Bitte lesen Sie die Nutzungsbedingungen vor der Nutzung der Webseite sorgfältig durch. Durch Anklicken der Annahme oder Zustimmung zu den Nutzungsbedingungen erklären Sie sich einverstanden und stimmen zu, dass diese Nutzungsbedingungen für Sie verbindlich gelten.</li>
+                        <li class="legalli"><span class="legaltext">Zugriff auf die Webseite. </span> Wir behalten uns das Recht vor, diese Webseite sowie jegliche von uns auf dieser Webseite bereitgestellten Dienste oder Material jederzeit nach unserem alleinigen Ermessen ohne Vorankündigung zu löschen bzw. zu ändern. Wir übernehmen keine Haftung, falls die Webseite aus irgend einem Grund ganz oder teilweise zu einem bestimmten Zeitpunkt oder für einen bestimmten Zeitraum nicht verfügbar ist. Wir können gelegentlich für Anwender den Zugriff auf die gesamte oder einige Teile der Webseite einschränken. Um auf die Webseite oder einige der darauf angebotenen Ressourcen zuzugreifen, werden Sie ggf. um die Angabe bestimmter Registrierungsdaten oder anderweitiger Informationen gebeten. Es stellt eine Voraussetzung für Ihre Nutzung der Webseite dar, dass alle von Ihnen auf dieser Webseite angegebenen Informationen wahrheitsgemäß, aktuell und vollständig sind. Wenn Sie einen Benutzernamen, ein Passwort oder andere Informationen im Rahmen unserer Sicherheitsverfahren wählen bzw. Ihnen diese zugeteilt werden, sind diese Informationen vertraulich zu behandeln und Sie dürfen diese weder an natürliche noch juristische Personen weitergeben. Sie erklären sich auch einverstanden, dass Ihr Konto für Sie persönlich ist und stimmen zu, keiner anderen Person unter Verwendung Ihres Benutzernamens, Passwortes oder anderweitiger Sicherheitsinformationen Zugriff auf diese Webseite oder Teile derselben zu gewähren. Sie erklären sich einverstanden, uns unverzüglich über jeden unbefugten Zugriff bzw. unbefugte Nutzung Ihres Benutzernamens oder Passwortes bzw. jeglichen anderweitigen Sicherheitsverstoß zu informieren. Sie erklären sich auch einverstanden, sich zu vergewissern, dass Sie am Ende jeder Sitzung aus Ihrem Konto ausloggen. Beim Zugriff auf Ihr Konto von einem öffentlichen oder gemeinsam genutzten Computer ist besondere Vorsicht geboten, damit andere Personen nicht Ihr Passwort oder andere personenbezogene Informationen sehen oder aufzeichnen können. Wir können jeden Benutzernamen, jedes Passwort bzw. andere Kennungen deaktivieren, unabhängig davon, ob diese von Ihnen gewählt oder von uns zugeteit wurden, wenn Sie nach unserem Dafürhalten gegen eine Bestimmung dieser Nutzungsbedingungen verstoßen haben.</li>
+                        <li class="legalli"><span class="legaltext">Verwendung der von Ihnen überlassenen Informationen. </span> Wir können von Ihnen überlassene Informationen („Benutzerangaben“) verwenden, um Sie hinsichtlich der Bestellung von Produkten oder Diensten zu kontaktieren. Wir verwenden die von Ihnen überlassenen Informationen im Einklang mit unseren Datenschutzbestimmungen. Sie nehmen zur Kenntnis und erklären sich einverstanden, dass alle Benutzerangaben freiwillig überlassen werden. Sie sichern zu und gewährleisten, dass die Benutzerangaben nicht gegen die geltenden Gesetze verstoßen. Sie dürfen auf die Webseite keine Inhalte hochladen, die verleumderisch, diffamierend, obszön oder bedrohlich sind, die Privatsphäre oder Publizierungsrechte verletzen, gewalttätig oder widerrechtlich sind, Straftaten darstellen oder zu diesen aufrufen, gegen die Rechte einer Partei verstoßen oder anderweitig eine Haftung auslösen oder gegen Gesetze verstoßen bzw. diese Inhalte über die Webseite verbreiten oder veröffentlichen.</li>
+                        <li class="legalli"><span class="legaltext">Rechte auf geistiges Eigentum. </span> Die Webseite und deren gesamte Inhalte, Eigenschaften und Funktionen (einschließlich aber nicht beschränkt auf alle Informationen, Software, Texte, Darstellungen, Abbildungen, Video und Audio sowie deren Design, Auswahl und Anordnung) sind Eigentum der Gesellschaft, ihrer Lizenznehmer oder anderer Anbieter dieses Materials und sind durch das Urheberrecht der Vereinigten Staaten sowie durch internationale Urheberrechte, Handelsmarken, Patente, Geschäftsgeheimnisse und andere Rechte auf geistiges Eigentum oder Eigentumsansprüche geschützt. Sie dürfen keine auf der Webseite eingestellten Materialien ohne unsere vorherige schriftliche Einwilligung reproduzieren, verbreiten, abändern, davon abgeleitete Werke schaffen, diese öffentlich darstellen, öffentlich vorführen, erneut veröffentlichen, herunterladen, speichern oder übertragen. Der Name der Gesellschaft, die Begriffe „KUKA Connect“, „KUKA Connect Lite“ und „KUKA ConnectPlus“, das Logo der Gesellschaft sowie alle verbundenen Namen, Logos, Produkt- und Dienstleistungsnamen, Designs und Slogans sind Handelsmarken der Gesellschaft oder ihrer verbundenen Unternehmen und Lizenzgeber. Sie dürfen diese Marken nicht ohne vorherige schriftliche Genehmigung der Gesellschaft verwenden. Alle anderen Namen, Logos, Produkt- und Dienstnamen, Designs und Slogans auf dieser Webseite sind die Handelsmarken der jeweiligen Inhaber. Durch Ihre Nutzung der Webseite erwerben Sie in keinem Fall Eigentumsrechte oder andere Ansprüche an den Marken oder Inhalten auf dieser Webseite.</li>
+                        <li class="legalli"><span class="legaltext">Zulässige Nutzung. </span> Sie dürfen diese Webseite ausschließlich für rechtmäßige Zwecke und im Einklang mit den vorliegenden Nutzungsbedingungen verwenden. Sie erklären sich einverstanden, (a) diese Webseite auf keine andere Weise zu nutzen, die gegen geltende bundesstaatliche, einzelstaatliche, kommunale oder internationale Gesetze oder Bestimmungen verstößt, (b) die Webseite nicht für unzulässige, betrügerische oder kriminelle Zwecke zu nutzen, (c) sich anderweitig nicht auf eine Weise zu verhalten, durch welche die Verwendung oder Nutzung dieser Webseite eingeschränkt oder beeinträchtigt wird oder die nach unserem Dafürhalten ggf. die Gesellschaft oder Benutzer der Webseite schädigt oder sie einer Haftung aussetzt, (d) die Webseite nicht auf eine Weise zu verwenden, die die Webseite funktionsunfähig machen, überlasten, schädigen oder beeinträchtigen könnte, (e) keine Roboter, Spider oder anderweitige automatische Vorrichtungen, Prozesse oder Mittel zum Zugriff auf die Webseite gleich für welche Zwecke zu benutzen, einschließlich der Beobachtung oder dem Kopieren jeglichen auf der Webseite enthaltenen Materials, (f) nicht auf Systeme, Daten oder Informationen zuzugreifen, die wir offensichtlich nicht für einen Benutzer zugänglich machen wollen, (g) keine Materialien oder Informationen durch Mittel einzuholen bzw. den Versuch dazu zu unternehmen, die wir nicht absichtlich bereit gestellt haben und (f) die Webseite für keine andere Nutzung zu verwenden als die Geschäftszwecke, für die sie vorgesehen ist.</li>
+                        <li class="legalli"><span class="legaltext">Vertrauen auf die eingestellten Informationen. </span> Soweit nicht anders vereinbart werden die auf der oder über die Webseite präsentierten Informationen ausschließlich für allgemeine Informationszwecke verfügbar gemacht. Wir verbürgen uns nicht für die Richtigkeit, Vollständigkeit oder Nutzbarkeit dieser Informationen. Sie vertrauen auf diese Informationen allein auf eigene Gefahr. Wir schließen jegliche Haftung und Verantwortung aus, die sich durch Ihr oder das Vertrauen anderer Besucher der Webseite auf dieses Material oder von Personen, die ggf. über ihren Inhalt informiert sind, ergibt. Wir können die auf dieser Webseite eingestellten Inhalte von Zeit zu Zeit aktualisieren, ihr Inhalt ist jedoch nicht notwendigerweise vollständig oder aktuell. Das auf der Webseite eingestellte Material kann zu jeder gegebenen Zeit veraltet sein, und wir unterliegen keiner Pflicht zur Aktualisierung dieses Materials.</li>
+                        <li class="legalli"><span class="legaltext">Käufe über Marketplace. </span> Die über diese Webseite ausgeführten Handlungen schaffen keinen bindenden Vertrag für den Verkauf von Gütern oder Diensten. Kein Teil dieser Webseite stellt ein Angebot für einen Vertrag dar. Alle Bedingungen für den Verkauf von Gütern oder Diensten werden in anderen, von den vorliegenden Nutzungsbedingungen und der Webseite unabhängigen Dokumenten aufgeführt. Ist ein Produkt oder eine Dienstleistung auf der Webseite mit einer falschen Preisangabe versehen, kann KUKA Ihnen die Erstellung eines Voranschlags, Angebots, Auftragsformulars oder ähnlichen Dokuments für das Produkt oder die Dienstleistung zu dem auf der Webseite angegebenen Preis verweigern.</li>
+                        <li class="legalli"><span class="legaltext">Auf der Webseite enthaltene Links. </span> Enthält die Webseite Links zu anderen Webseiten und Ressourcen, die von Dritten bereit gestellt werden, werden diese Links ausschließlich bereitgestellt, um Ihnen die Nutzung zu erleichtern. Dies gilt auch für in Werbung enthaltene Links, einschließlich Bannerwerbung und gesponserte Links. Wir haben keine Kontrolle über die Inhalte dieser Webseiten oder Ressourcen und übernehmen keine Verantwortung für diese oder für Verluste und Schäden, die u.U. aus Ihrer Verwendung derselben entstehen. Wenn Sie auf Webseiten von Dritten zugreifen, die mit dieser Webseite verlinkt sind, geschieht dies ausschließlich auf eigene Gefahr und vorbehaltlich der Nutzungsbedingungen für die betreffenden Webseiten.</li>
+                        <li class="legalli"><span class="legaltext">Garantieausschluss. </span> Ihre Nutzung der Webseite, deren Inhalt und aller über die Webseite bezogenen Dienste oder Gegenstände erfolgt auf eigene Gefahr. Die Webseite, deren Inhalt und alle über die Webseite bezogenen Dienste oder Gegenstände werden ohne Mangelgewähr und ohne Garantien jeglicher Art, weder ausdrücklich noch stillschweigend bereitgestellt. Weder die Gesellschaft noch mit der Gesellschaft verbundene Personen erteilen eine Garantie oder Zusicherung in Bezug auf die Vollständigkeit, Sicherheit, Zuverlässigkeit, Qualität, Richtigkeit oder Verfügbarkeit der Webseite. Ohne Einschränkung des Vorstehenden sichern weder die Gesellschaft noch mit der Gesellschaft verbundene Personen zu bzw. gewährleisten, dass die Webseite, deren Inhalt, oder über die Webseite bezogene Dienste oder Leistungen richtig, zuverlässig, fehlerfrei oder ununterbrochen sein werden, dass die Mängel korrigiert werden, dass unsere Webseite oder der Server, der diese verfügbar macht, frei von Viren oder sonstigen schädlichen Bestandteilen ist oder dass die Webseite oder über die Webseite bezogene Dienste oder Artikel anderweitig Ihren Bedürfnissen oder Erwartungen entsprechen. Die Gesellschaft schließt hiermit alle Garantien jeglicher Art, gleich ob ausdrücklich oder stillschweigend, kraft Gesetzes oder anderweitig, aus.</li>
+                        <li class="legalli"><span class="legaltext">Haftungsbeschränkung. </span> Die Haftung der Gesellschaft ist außer im Zusammenhang mit der Verletzung von Leben, Körper oder Gesundheit nach jeder Rechtslehre auf grobe Fahrlässigkeit und vorsätzliches Verschulden beschränkt.</li>
+                        <li class="legalli"><span class="legaltext">Schadloshaltung. </span> Sie erklären sich einverstanden, die Gesellschaft für alle Schäden zu entschädigen, die der Gesellschaft ggf. zu einem beliebigen Zeitpunkt auf Grund Ihres fahrlässigen oder vorsätzlichen Verstoßes gegen die vorliegenden Nutzungsbedingungen oder die geltenden Gesetze entstehen.</li>
+                        <li class="legalli"><span class="legaltext">Schiedsgerichtsbarkeit und geltendes Recht. </span> Alle Streitigkeiten, Anliegen oder Forderungen (einschließlich Rechtsansprüchen), die eine Partei auf Grund oder im Zusammenhang mit den vorliegenden Nutzungsbedingungen oder der Webseite (einschließlich Erstellung, Leistung oder Verstoß dagegen) ggf. hat, sind durch ein verbindliches, endgültiges Schiedsverfahren vor der Internationalen Handelskammer unter Anwendung der Schiedsordnung der Internationalen Handelskammer ( die „Schiedsordnung“) beizulegen. Eine Partei, die die Schiedsgerichtsbarkeit anrufen möchte, muss zuvor der anderen Partei per Einschreiben oder vorfrankiertem Schreiben mit Rückschein eine schriftliche Benachrichtigung über den Streit zusenden. Die Anzahl der Schiedsrichter beträgt drei. Sofern zwischen Ihnen und der Gesellschaft nichts Anderweitiges vereinbart wird, finden die Schiedsgerichtsverfahren in Augsburg, Deutschland statt. Soweit nicht anders zwischen den Parteien vereinbart, werden die Schiedsgerichtsverfahren auf Deutsch abgehalten. Alle Schiedsgerichtsverfahren sind vertraulich, sofern die Parteien nichts Gegenteiliges vereinbaren. Ungeachtet des Vorstehenden kann jede Partei sofort ein Verfahren anstrengen, in dem bei einem zuständigen Gericht um einen Unterlassungsanspruch ersucht werden kann, und alle daraus resultierenden Entscheidungen bleiben wirksam und in Kraft, bis bei dem Schiedsverfahren ein endgültiger Zuspruch erfolgt. Die vorliegenden Nutzungsbedingungen unterliegen den Gesetzen der Bundesrepublik Deutschland und werden nach diesen ohne Berücksichtigung des Kollisionsrechts ausgelegt.</li>
+                      </ol>
+                    </div>
+                </div>
+              </div>                        
+            </section>    
+      </script>
+
+</apex:component>

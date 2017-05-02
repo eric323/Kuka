@@ -1,0 +1,410 @@
+<apex:page controller="APTSMD_SKOECommHomeController" title="{!pageTitle}" showheader="false" standardStylesheets="false" language="{!langageName}" doctype="html-5.0">
+    
+    <!-- Compiled and minified CSS -->
+  <!--link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css" /-->
+
+  <!-- Compiled and minified JavaScript -->
+  <!--script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script-->
+  <!--mayur-->
+        <link rel="stylesheet" href="{!URLFOR($Resource.APTSMD_SalesforceLightningDesign, 'assets/styles/salesforce-lightning-design-system-vf.css')}" type="text/css" />   
+    <style>
+        .slds .slds-button--brand:hover, .slds .slds-button--brand:focus {
+        background-color : #7F9E5A!important;
+        border:1px solid #7F9E5A!important;
+        color:white!important;
+    }
+    .slds .slds-button--brand {
+        background-color : #81AD4D!important;
+        border:1px solid #81AD4D!important;
+        color:white!important;
+    }
+    .slds .slds-modal-backdrop--open{
+        opacity: 0.3!important;
+    }
+    @media only screen 
+    and (min-device-width : 768px) 
+    and (max-device-width : 1024px) 
+    and (orientation : landscape) {
+        .home-img {
+            max-width:40%!important;
+            
+        }
+    }    
+        .startBtn{
+            cursor: pointer;
+        display: inline-block;
+        overflow: hidden;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+        vertical-align: middle;
+        z-index: 1;
+        will-change: opacity, transform;
+        height: 54px;
+        line-height: 56px;
+        color: #fff;        
+        }
+        .btn-hover:hover, .btn:focus{
+            background-color:#0070D2 !important;
+        }
+        .fade.in {
+           opacity: 1;
+            background-color: rgba(234, 243, 234, 0.23) !important;
+        }
+         
+    </style>
+    <apex:composition template="APTSMD_SKOBootStrapTemplate">
+        <apex:define name="body">
+            <apex:form id="myform">
+                <script>
+                    $( document ).ready(function() {
+                        //initCaroussels();
+                        createBread('','');
+                    });
+                    
+                    var initCaroussels = function(){
+                        $('.main_carousel .item').each(function(index, val){ 
+                            var activeClass = '';
+                            if(index == 0){
+                                activeClass = 'active';
+                                $(this).addClass(activeClass);
+                            }
+                            $('.carousel-indicators').append('<li data-slide-to="' + index + '" data-target="#myCarousel" class="' + activeClass + '"></li>');
+                        });
+                    
+                        $('#myCarousel2 .item').first().addClass('active');
+                    
+                        $('#myCarousel3 .item').first().addClass('active');
+                    }
+                    checkPortalTermsAndConditions('generalTerms');
+                    
+                    function nextModal(index){
+                        //alert(index);
+                        for(var i=1;i<=3;i++){
+                            if(i==1){
+                                $('#guidedSelling').modal('hide');
+                            }
+                            if(i==(index+1)){
+                                //document.getElementById('guidingstep'+i).style.display = 'block';        
+                                $('#guidedSelling'+i).modal('show');
+                            }else{
+                                $('#guidedSelling'+i).modal('hide');
+                               // document.getElementById('guidingstep'+i).style.display = 'none';        
+                                
+                            }
+                        }
+                       }
+                      function previousModal(index){
+                       //alert(1);
+                        for(var i=1;i<=3;i++){
+                             if(i==1){
+                                $('#guidedSelling').modal('show');
+                            }
+                            if(i==(index-1)){
+                                //document.getElementById('guidingstep'+i).style.display = 'block';
+                                $('#guidedSelling'+i).modal('show');        
+                            }else{
+                                //document.getElementById('guidingstep'+i).style.display = 'none';   
+                                $('#guidedSelling'+i).modal('hide');     
+                            }
+                        }
+                       }
+                       function closeModal(){
+                           var index=1;
+                           for(var i=1;i<=3;i++){
+                            if(i==(index)){
+                                //document.getElementById('guidingstep'+i).style.display = 'block';        
+                                 $('#guidedSelling').modal('hide');
+                            }else{
+                                //document.getElementById('guidingstep'+i).style.display = 'none';        
+                                 $('#guidedSelling'+i).modal('hide');
+                            }
+                        }
+                       }
+                       function redirectToCatalog(){
+                        //   alert(1);
+                           window.top.location.href='/ecomm/APTSMD_SKOECommCatalog?showGuide=1&storeId={!$CurrentPage.parameters.storeId}';//'{!$Site.Domain}'+'/apex/APTSMD_SKOECommCatalog';
+                       }
+                </script>
+                <div class="">
+                    <div class="slds">
+                        <img src="{!$Resource.APTSMD_solar}" title="Tier1" style="max-width: 100%!important;width:100%;" />
+                        <!--<div style="position:absolute;left:41%;top:37%;" ><a class="startBtn btn" data-toggle="modal" data-target="#guidedSelling"><i class="material-icons left">Start Here</i></a></div> -->
+                        <div class="slds-text-heading--label" style="text-align: center;margin: 4%;color: #81AD4D!important;">
+                            <span class="slds-text-heading--large">{!store.APTSMD_Header_Content__c}</span>
+                        </div>
+                       <!-- <div>
+                            <span>Green Tech has been at the leading edge of solar product innovation for over 40 years. Using our unique strengths as a manufacturer of premier electrical products, we have developed photovoltaic modules with exceptional performance and quality.  Our photovoltaic systems are used throughout the world to bring clean, reliable energy to residences, business, power-generation plants, schools, factories and areas without access to electricity.
+                            </span>
+                        </div>    -->
+                    </div>
+                    
+                     
+                    <div class="row slds" data-ride="carousel" id="" style="height: auto!important;">
+                        <div class="">
+                            <div class="item">
+                                <div class="col-md-12 slds">
+                                    <div class="col-md-3" style="text-align: center;margin-bottom: 5%;">
+                                        <div style="">
+                                            <img src="{!URLFOR($Resource.APTSMD_solar1)}" title="{!store.APTSMD_Sub_Header_1__c}" style="max-width: 80%;border-radius: 4px;max-height: 240px; height:240px" class="home-img"/>
+                                            <br/><br/>
+                                            <h2 class="slds-text-heading--large" style="color: #0042D4!important;">{!store.APTSMD_Sub_Header_1__c}</h2>
+                                            <br/>
+                                            <div style="padding-left: 5%;padding-right: 5%;">
+                                                <span class="slds-text-body--regular " style="padding-left: 10%;padding-right: 10%;">
+                                                    <!--{!store.APTSMD_Body_Content__c}-->
+                                                    {!store.APTSMD_Sub_Header_Detail_1__c}
+                                                    &nbsp;
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" style="text-align: center;margin-bottom: 5%;">
+                                        <div style="">
+                                            <img src="{!URLFOR($Resource.APTSMD_comm)}" title="{!store.APTSMD_Sub_Header_2__c}" style="max-width: 80%;border-radius: 4px;max-height: 240px; height:240px" class="home-img"/>
+                                            <br/><br/>
+                                            <h2 class="slds-text-heading--large" style="color: #0042D4!important;">{!store.APTSMD_Sub_Header_2__c}</h2>
+                                            <br/>
+                                            <div style="padding-left: 5%;padding-right: 5%;">
+                                                <span class="slds-text-body--regular " style="padding-left: 10%;padding-right: 10%;">
+                                                 {!store.APTSMD_Sub_Header_Detail_2__c}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" style="text-align: center;margin-bottom: 5%;">
+                                        <div style="">
+                                            <img src="{!URLFOR($Resource.APTSMD_solar3)}" title="{!store.APTSMD_Sub_Header_3__c}" style="max-width: 80%;border-radius: 4px;max-height: 240px; height:240px" class="home-img"/>
+                                            <br/><br/>
+                                            <h2 class="slds-text-heading--large" style="color: #0042D4!important;">{!store.APTSMD_Sub_Header_3__c}</h2>
+                                            <br/>
+                                            <div style="padding-left: 5%;padding-right: 5%;">
+                                                <span class="slds-text-body--regular ">
+                                                    {!store.APTSMD_Sub_Header_Detail_3__c}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" style="text-align: center;margin-bottom: 5%;">
+                                        <script type="text/javascript">
+                                            document.write('\x3Cscript type="text/javascript" src="' + ('https:' == document.location.protocol ? 'https://' : 'http://') + 'feed.mikle.com/js/rssmikle.js">\x3C/script>');
+                                        </script>
+                                        <script type="text/javascript">
+                                            (function() {var params = {rssmikle_url: "http://searchdatacenter.techtarget.com/rss/IT-infrastructure-news.xml",rssmikle_frame_width: "300",rssmikle_frame_height: "400",frame_height_by_article: "0",rssmikle_target: "_blank",rssmikle_font: "Arial, Helvetica, sans-serif",rssmikle_font_size: "12",rssmikle_border: "off",responsive: "on",rssmikle_css_url: "",text_align: "left",text_align2: "left",corner: "off",scrollbar: "on",autoscroll: "on_mc",scrolldirection: "up",scrollstep: "3",mcspeed: "30",sort: "Off",rssmikle_title: "on",rssmikle_title_sentence: "News Feed",rssmikle_title_link: "",rssmikle_title_bgcolor: "#0070D2",rssmikle_title_color: "#FFFFFF",rssmikle_title_bgimage: "",rssmikle_item_bgcolor: "#FFFFFF",rssmikle_item_bgimage: "",rssmikle_item_title_length: "55",rssmikle_item_title_color: "#0066FF",rssmikle_item_border_bottom: "on",rssmikle_item_description: "on",item_link: "off",rssmikle_item_description_length: "150",rssmikle_item_description_color: "#666666",rssmikle_item_date: "gl1",rssmikle_timezone: "Etc/GMT",datetime_format: "%b %e, %Y %l:%M %p",item_description_style: "text+tn",item_thumbnail: "full",item_thumbnail_selection: "auto",article_num: "15",rssmikle_item_podcast: "off",keyword_inc: "",keyword_exc: ""};feedwind_show_widget_iframe(params);})();
+                                        </script>
+                                        <style>
+                                            .feed_title{
+                                                font-size:14px;
+                                            }
+                                        </style>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            
+                        </div>
+                      
+                    </div>
+                    <!-- END CAROUSSEL -->
+                    <apex:outputpanel layout="none">
+                       
+                        <div class="row slds">
+                            <div class="box_highlight software_apps  clearfix">
+                                <div class="col-lg-8 col-md-8 col-sm-8 slds-text-body--regular">
+                                    <div class="sub_content">
+                                        <br/><br/><br/>
+                                        <span>Tier 1 Systems has been at the leading edge of technology innovation for over 40 years. Using our unique strengths as a manufacturer of premier hardware and software, we have delivered best-in-class solutions with exceptional performance and quality. Our computational systems are deployed throughout the world to drive business and growth in the new digital age.</span>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-4">
+                                    <div class="send_nl slds-text-align--center">
+                                        <div class="box">
+                                            <span class="slds-text-body--regular">More information?</span><br/><br/>
+                                            <span onclick="$('#apttuslab_contactUs').modal();" class="send_msg_wrap slds-text-align--center">
+                                                <a class="slds-button slds-button--brand" href="#" style="background-color: #0070d2 !important">
+                                                    <span class="ico-nl"></span>SEND US A MESSAGE
+                                                </a>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </apex:outputpanel>
+                    <!-- START MY APPS -->
+                    <apex:outputpanel layout="none" rendered="{!(isLoggedIn)}">
+                    
+                    </apex:outputPanel>
+                   
+                    <!-- END MY APPS -->
+                    <!-- START HARD CODED DO YOU KNOW -->
+                    <div class="row slds">
+                        <div class="box_highlight box_wrapped box_know  my_app_carousel clearfix slds-text-align--center">
+                            <span class="slds-text-heading--large"> Do you know? </span><br/><br/>
+                            <span class="slds-text-body--regular">More than 80 percent of companies are actively considering how to improve their business process according to a Tier 1 Systems-sponsored survey of 3,200 business decision-makers. Two thirds of the companies that send bills physically today aspire for digital transformation.</span>
+                        </div>
+                    </div>
+                    <!-- END HARD CODED DO YOU KNOW -->
+                    
+                    
+                    <!-- Modal Guided Selling-->
+                     <div class="modal modal_apttuslab modal_register fade" id="guidedSelling" role="dialog" >
+                            <div>
+                                <div class="slds">
+                                <!-- Step-1-->
+                                <div class="slds-modal slds-fade-in-open" role="dialog">
+                                
+                                  <!-- Modal content-->
+                                  <div class="slds-modal__container" id="guidingstep1"> <!-- don not change id as it is use in next,previous button function-->
+                                    <div class="slds-modal__header">
+                                      <button type="button" class="close" data-dismiss="modal" onClick="closeModal()">&times;</button>
+                                      <span class="slds-text-heading--medium">Transform Your Business Today</span>
+                                    </div>
+                                    <div class="slds-modal__content">
+                                       <div role="form slds-form-element"> 
+                                                                                  
+                                        <div class="form-group headerregisterInputFormG" >
+                                            <label for="shadelbl" class="slds-form-element__label">What solution are you looking for?</label>
+                                            <select class="form-control" id="solution">
+                                                <option value="BD">Big Data</option>
+                                                <option value="Cloud">Cloud</option>option>
+                                                <option value="Servers">Servers</option>
+                                                <option value="Storage">Storage</option>
+                                                <option value="Networking">Networking</option>
+                                              </select>
+                                        </div> 
+                                           
+                                          
+                                      </div>
+                                    </div>
+                                    <div class="slds-modal__footer">
+                                      <button class="slds-button slds-button--neutral" aria-hidden="true" data-dismiss="modal" id="guideMeCancelButton" type="button">Cancel</button>
+                                      <button type="button" class="slds-button slds-button--neutral slds-button--brand modal_btn_login" onClick="nextModal(1)">Next</button>&nbsp;&nbsp;&nbsp;
+                                      <!--<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>-->
+                                    </div>
+                                  </div>
+                                  
+                                </div>
+                                </div>
+                                <div class="slds-modal-backdrop slds-modal-backdrop--open"></div>
+                            </div>
+                             </div>   
+                                <!-- Step1- Over-->
+                               <!-- Step-2-->
+                            
+                            <div class="modal modal_apttuslab modal_register fade" id="guidedSelling3" role="dialog"> <!-- changed to guidedSelling3 to skip mid section-->
+                                <div>
+                                <div class="slds">
+                                
+                                <div class="slds-modal slds-fade-in-open" role="dialog">
+                                  <!-- Modal content-->
+                                  <div class="slds-modal__container" id="guidingstep2">
+                                    <div class="slds-modal__header">
+                                      <button type="button" class="close" data-dismiss="modal" onClick="closeModal()">&times;</button>
+                                      <span class="slds-text-heading--medium">Transform Your Business Today</span>
+                                    </div>
+                                    <div class="slds-modal__content">
+                                      <div role="form slds-form-element"> 
+                                          <div class="form-group headerregisterInputFormG" >
+                                            <label for="elecBillLbl" class="slds-form-element__label">How many users will you have?</label>
+                                            <input type="text" class="slds-input reg-field" id="elecBill" />
+                                        </div>
+                                          
+                                        <div class="form-group headerregisterInputFormG" >
+                                            <label for="shadelbl" class="slds-form-element__label">What type of Form-Factor are you looking for?</label>
+                                            <select class="form-control" id="shade">
+                                                <option value="1/2">Half Height</option>
+                                                <option value="FH">Full Height</option>option>
+                                                <option value="HW">Half Width</option>
+                                                <option value="FW">Full Width</option>
+                                                <option value="DW">Double Wide</option>
+                                              </select>
+                                        </div> 
+                                          
+                                          <div class="form-group headerregisterInputFormG" >
+                                            <label for="targetPerLbl" class="slds-form-element__label">What is your target % from Solar Energy?</label>
+                                            <input type="text" class="slds-input reg-field" id="targetPer" />
+                                        </div>  
+                                      </div>
+                                     </div>
+                                    <div class="slds-modal__footer">
+                                      <button type="button" class="slds-button slds-button--neutral slds-button--brand modal_btn_login" onClick="previousModal(2)">Previous</button>&nbsp;&nbsp;&nbsp; 
+                                      <button type="button" class="slds-button slds-button--neutral slds-button--brand modal_btn_login" onClick="nextModal(2)">Next</button>&nbsp;&nbsp;&nbsp;
+                                     <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>-->
+                                    </div>
+                                  </div>
+                                </div>  
+                                
+                                </div>
+                                </div>
+                                <div class="slds-modal-backdrop slds-modal-backdrop--open"></div>
+                                </div>
+                                <!-- Step2- Over-->
+                           <div class="modal modal_apttuslab modal_register fade" id="guidedSelling2" role="dialog">
+                            <div>
+                                <div class="slds">                                
+                                
+                                <div class="slds-modal slds-fade-in-open">
+                                  <!-- Modal content-->
+                                  <div class="slds-modal__container" id="guidingstep3">
+                                    <div class="slds-modal__header">
+                                      <button type="button" class="close" data-dismiss="modal" onClick="closeModal()">&times;</button>
+                                      <span class="slds-text-heading--medium">Transform Your Business Today</span>
+                                    </div>
+                                    <div class="slds-modal__content">
+                                        <div role="form slds-form-element"> 
+                                          <div class="form-group headerregisterInputFormG" >
+                                            <label for="elecBillLbl" class="slds-form-element__label">How many users will you have?</label>
+                                            <input type="text" class="slds-input reg-field" id="elecBill" />
+                                        </div>
+                                          
+                                        <div class="form-group headerregisterInputFormG" >
+                                            <label for="shadelbl" class="slds-form-element__label">What type of Form-Factor are you looking for?</label>
+                                            <select class="form-control" id="shade">
+                                                <option value="1/2">Half Height</option>
+                                                <option value="FH">Full Height</option>option>
+                                                <option value="HW">Half Width</option>
+                                                <option value="FW">Full Width</option>
+                                                <option value="DW">Double Wide</option>
+                                              </select>
+                                        </div>
+                                          <div class="form-group headerregisterInputFormG" >
+                                            <label for="shadelbl" class="slds-form-element__label">How much Memory are you looking for?</label>
+                                            <select class="form-control" id="shade">
+                                                <option value="None">128 GB</option>
+                                                <option value="A little">256 GB</option>
+                                                <option value="A lot">512 GB</option>
+                                                <option value="A lot">1024 GB</option>
+                                                <option value="A lot">2048 GB</option>
+                                              </select>
+                                        </div> 
+                                        <div class="form-group headerregisterInputFormG" >
+                                            <label for="installlbl" class="slds-form-element__label">Do you want Hot-Swappable components?</label>
+                                            <select class="form-control" id="install">
+                                                <option value="Yes">Yes</option>
+                                                <option value="No">No</option>
+                                               </select>
+                                        </div> 
+                                      </div>
+                                    </div>
+                                    <div class="slds-modal__footer">
+                                      <button type="button" class="slds-button slds-button--neutral slds-button--brand modal_btn_login" onClick="previousModal(2)">Previous</button>
+                                      <button type="button" class="slds-button slds-button--neutral slds-button--brand modal_btn_login" data-dismiss="modal" onClick="closeModal();redirectToCatalog();">Finish</button>
+                                    </div>
+                                  </div>
+                                  
+                                </div>
+                                <!-- Step3- Over-->
+                                </div>
+                                </div>
+                                <div class="slds-modal-backdrop slds-modal-backdrop--open"></div>
+</div>
+                               
+                      <!-- Modal Guided Selling ends here-->
+                </div>
+            </apex:form>
+        </apex:define>
+    </apex:composition>
+</apex:page>

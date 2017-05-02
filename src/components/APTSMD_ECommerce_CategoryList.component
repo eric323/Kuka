@@ -1,0 +1,22 @@
+<apex:component >
+<header class="side-section-header">
+    <h3 class="side-section-title" style="color:{{store.Accent_Color__c}} !important;">{!$label.ecomm_Categories}</h3><hr style="margin-bottom: 0px;"/>
+</header>
+
+<div class="" style="padding-top: 6%;padding-bottom: 6%; padding-left: 1%;">
+
+    <!-- CHECK BOX TREE -->
+    <div class="catTable vmenu unstyled slds-form-element slds-truncate"></div>
+    <!--<ul id="category-list" class="vmenu unstyled">
+        <li ng-repeat="cat in categories">
+            <div class="slds-form-element slds-truncate">
+              <label class="slds-checkbox" for="{{decodeEntities(cat.level1categoryName)}}" style="cursor:pointer">
+                <input name="checkbox" type="checkbox" id="{{decodeEntities(cat.level1categoryName)}}" ng-checked="isCheckCategory(cat.Level1CategoryId)" ng-model="cat.checked" ng-change="filterList()" style="ci"/>
+                <span class="slds-checkbox--faux"></span>
+                <span class="slds-form-element__label">{{decodeEntities(cat.level1categoryName)}}</span>
+              </label>
+            </div>
+      </li>                                                                                       
+    </ul>   -->
+</div>
+</apex:component>

@@ -1,0 +1,16 @@
+<apex:component >
+<header class="side-section-header">
+    <h3 class="side-section-title" style="color:{{store.Accent_Color__c}} !important;">{!$Label.ecomm_Price_Filter}</h3>
+</header>
+<br/>
+<div class="slider" style="padding-left: 5%;padding-right: 5%;padding-bottom: 6%;">
+    <div id="slider-range">
+    </div>
+    <span class="slds-text-body--regular">
+      <label for="amount" style="margin-top: 2%;"><span id="amount" style="color: #3BA9A4;font-weight: bold;"></span></label>
+    </span>
+</div>
+<footer class="side-section-footer text-center hide">
+    <button type="button" id="btn-filter-cat" class="btn btn-primary btn-round uppercase">Clear Filters</button>
+</footer>
+</apex:component>

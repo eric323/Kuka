@@ -1,0 +1,44 @@
+<apex:component >
+    <center>
+<div class="container-fluid">
+<div class="row">
+  <div  class="col-md-2 col-md-offset-2">
+       <table  class="table">
+               <tr>
+                   <th><b>Loyalty Rewards</b></th>
+                   <th></th>
+                 
+               </tr>
+               <tr>
+                   <td>Current Loyalty Status</td>
+                   <td>Gold</td>
+               </tr>
+               <tr>
+                   <td>Next Status</td>
+                   <td>Platinum</td>
+               </tr>
+               
+              <tr>
+                   <th><b>Progress for Next Status</b></th>
+                   <th></th>
+                 
+               </tr>
+               <tr>
+                   <td>Progress</td>
+                   <td>$500,000</td>
+               </tr>
+               <tr>
+                   <td>Remaining</td>
+                   <td>$200,000</td>
+               </tr>
+               
+           </table>
+  </div>
+  <div class="col-md-8">
+      <div id="loyalty_donut" style="width: 600px; height: 500px;"></div>
+  </div>
+</div>
+</div>
+</center>
+
+</apex:component>

@@ -1,0 +1,210 @@
+<apex:component >
+  <div id="cartSpinDiv" style="display: none;"></div>
+  <center>
+    <div class="breadcrumb-container">
+      <div class="container" style="margin-top: 2%;margin-bottom: -3%;">
+        <div class="relative slds">
+          <ul class="bc unstyled clearfix slds-text-body--regular">
+            <li><a ng-click="goHome()" href="">{!$Label.APTSDMP_Catalog}</a></li>
+            <li class="active">{!$Label.APTSDMP_Cart}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </center>
+  <center>
+    <div class="cart slds"> 
+      <!-- SITE MAIN CONTENT -->
+                <!-- SITE MAIN CONTENT -->
+                <main id="main-content" role="main">
+                <div class="container" style="margin-top:3%" id="cart-wrapper-container">
+                    <div class="row cart-wrapper">
+                <!--    <div class="col-md-10 col-md-offset-1"> -->
+                        
+                        <i id="cartSpin" class="fa fa-spinner fa-spin fa-3x" style="display: none;"></i>
+                    <section class="section">
+                        <div class="container slds" ng-show="cart.cartLineItems.length>0" style="margin-top: 2%;">
+                            <span style="font-size: 25px;float: left;"> {!$Label.APTSDMP_Cart}</span>
+                            <table class="tbl-cart" style="font-size: 11pt !important;">
+                                <colgroup>
+                    <col style="width: 48%;"/>
+                    <col style="width: 10%;"/>
+                    <col style="width: 11%;"/>
+                    <col style="width: 13%;"/>
+                    <col style="width: 13%;"/>
+                    <col style="width: 5%;"/>
+                    </colgroup>
+                    <thead>
+                      <tr>
+                        <th class="slds-text-heading--small table-head" style="text-align: center; background-color: #ECEDEF; font-size: 11pt;">{!$Label.APTSDMP_ProductName}</th>
+                        <th class="slds-text-heading--small table-head" style="text-align: center; background-color: #ECEDEF; font-size: 11pt;">{!$Label.APTSDMP_Quantity}</th>
+                        <th class="slds-text-heading--small table-head" style="text-align: center; background-color: #ECEDEF; font-size: 11pt;">{!$Label.APTSDMP_UOM}</th>
+                        <th class="slds-text-heading--small table-head" style="text-align: center; background-color: #ECEDEF; font-size: 11pt;">{!$Label.APTSDMP_BasePrice}</th>
+                        <th class="slds-text-heading--small table-head" style="text-align: center; background-color: #ECEDEF; font-size: 11pt;">{!$Label.APTSDMP_NetPrice}</th>
+                        <!--    <th class="hidden-xs slds-text-heading--small" style="width: 15%;">Sub Total</th> --> 
+                        <!--<th class="slds-text-heading--small table-head" style="width: 15%;text-align: center;"></th>-->
+                        <th class="hidden-xs slds-text-heading--small table-head"></th>
+                      </tr>
+                    </thead>
+                    <!--<tbody ng-if="cart.cartLineItems.length==0">
+                                        <tr class="hide empty-cart">
+                                            <td colspan="5">
+                                                It seems your shopping cart is empty, try looking our <a href="products.html">products</a>.
+                                            </td>
+                                        </tr>
+                                    </tbody> -->
+                    <tbody>
+                      <tr ng-repeat="cartItem in cart.cartLineItems">
+                        <td nowrap="nowrap"><div style="float:left; margin:5px; margin-right: 1.25em" class="table-body"> <a class="entry-thumbnail" href="{{sitePrefix+getProductImage(cartItem.ProductId)}}" data-toggle="lightbox"> <img  ng-if="getProductImage(cartItem.ProductId)!=null" style="width:auto;height:90px" class="thumb add-cart-image" ng-src="{{sitePrefix+getProductImage(cartItem.ProductId)}}" alt=""/> <img  ng-if="getProductImage(cartItem.ProductId)==null" style="width:auto;height:90px" class="thumb add-cart-image" ng-src="{{envPath}}/img/noimage.png" alt=""/> </a> </div>
+                          <div style="width:100%;margin-top:0px;display:block !important" class="table-body"> <a class="entry-title" href="" ng-click="GetProduct(cartItem.ProductId)" style="text-decoration: none;  margin-left: 0px;"> <span class="slds-text-heading--small" style="font-weight: bold;color:{{store.Accent_Color__c}} !important; white-space: pre-line; font-size: 11pt; line-height: 90px;" >{{decodeEntities(lineBreakName(getProductName(cartItem.ProductId), 30))}}</span> </a> 
+                            <!--<br/><span>&nbsp;&nbsp;&nbsp;&nbsp; Rating:  </span>  
+                                                <img style="width:80px;height:20px" class="thumb add-cart-image" src="{{sitePrefix+getProducRatingImage(cartItem.ProductId)}}" alt=""/>--> 
+                            
+                          </div>
+                          <br/>
+                          <div ng-if="cartItem.optionLineItems" style="margin-left: 1.25em;width:80%"> <a data-toggle="collapse" data-target="#optLines{{cartItem.ProductId}}">
+                            <label style="color:#2C99DC">{!$Label.APTSDMP_ShowOptions}</label>
+                            </a>
+                            <div id="optLines{{cartItem.ProductId}}" class="container-fluid collapse in">
+                              <div class="row" >
+                                <div class="col-md-6 table-head">
+                                  <label>{!$Label.APTSDMP_OptionName}</label>
+                                </div>
+                                <div class="col-md-3 right-text table-head">
+                                  <label>{!$Label.APTSMD_Qty}</label>
+                                </div>
+                                <div class="col-md-3 right-text table-head">
+                                  <label>{!$Label.APTSDMP_UOM}</label>
+                                </div>
+                                <div class="col-md-3 right-text table-head">
+                                  <label>{!$Label.APTSDMP_BasePrice}</label>
+                                </div>
+                                <div class="col-md-3 right-text table-head">
+                                  <label>{!$Label.APTSDMP_NetPrice}</label>
+                                </div>
+                              </div>
+                              <div class="row table-body" ng-repeat="opt in cartItem.optionLineItems" ng-class="{'evenOptCartRow':$even}">
+                                <div class="col-md-6 ">
+                                  <label>{{opt.optName}}</label>
+                                </div>
+                                <div class="col-md-3 right-text">
+                                  <label >{{opt.iQuantity}}</label>
+                                </div>
+                                <div class="col-md-3 right-text">
+                                  <label>{{getProductUOM(opt.ProductId)}}</label>
+                                </div>
+                                <div class="col-md-3 right-text">
+                                  <label >{{currency}}{{opt.lineItemPrice  *conversion}}</label>
+                                </div>
+                                <div class="col-md-3 right-text">
+                                  <label>{{currency}}{{opt.lineItemPrice  *conversion}}</label>
+                                </div>
+                              </div>
+                            </div>
+                          </div></td>
+                        <td><div class="qty-btn-group"> 
+                            <!--<select ng-init="x=cartItem.iQuantity" ng-model="x" ng-options="opt for opt in options" 
+                                                 ng-change="changeCartItemQuantity(cartItem,x)"></select>-->
+                            <input type="number" min="1" ng-model="cartItem.iQuantity" ng-change="changeCartItemQuantity(cartItem,cartItem.iQuantity)"
+                                                                style="border: 1px solid #ccc;    border-radius: 0px !important;box-shadow: inset 0 0px 0px rgba(0,0,0,0.075);height: 31px;width: 72%;" />
+                            <span id="qty{{cartItem.lineItemId}}" style="color: red; display: none;">{!$Label.APTSDMP_LimitItemsQuantity}</span> </div></td>
+                        <td><span class="slds-text-body--regular text-right table-body">{{getProductUOM(cartItem.ProductId)}}</span></td>
+                        <td><span class="slds-text-body--regular text-right table-body">{{currency}}{{formatAmount(cartItem.lineItemPrice  *conversion)}}</span></td>
+                        <td><span class="unit-price slds-text-body--regular text-right table-body">{{currency}}{{formatAmount(cartItem.netPrice  *conversion)}}</span></td>
+                        <!--<td>
+                                                <a data-target="#bundleConfigureModal" data-toggle="modal" class="slds-button slds-button--brand add-to-cart"
+                                                                        ng-click="configureItem(ciToProd(cartItem))"
+                                                                        ng-if="(ciToProd(cartItem).hasOptions==true || ciToProd(cartItem).hasAttributes==true)"
+                                                                        href="" style="font-size: 1.0vw;font-family: inherit;background-color:{{store.APTSMD_Action_Color__c}} !important;border-color:{{store.APTSMD_Action_Color__c}} !important;"><i class="fa fa-cog" style="vertical-align: middle;font-size:1.2vw;"></i>&nbsp;&nbsp;Configure</a>
+                                            </td>--> 
+                        <!--        <td class="hidden-xs"><span class="slds-text-body--regular row-total">${{formatAmount(getProductPrice(cartItem.ProductId, cartItem.iQuantity))}}</span></td> -->
+                        <td class="hidden-xs"><button type="button" ng-click="removeCartItem(cartItem)" style="font-size: 18pt;color:{{store.APTSMD_Action_Color__c}};;background-color:transparent !important; border-color:transparent !important;width:100%;cursor:pointer; height: 30px;" class="close" aria-hidden="true">×</button></td>
+                        <hr/>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <br/>
+                  <div class="row">
+                    <div class="shopcart-total pull-right clearfix" style="margin-right: 15px;"> 
+                      <!-- <div class="cart-subtotal text-xs m-b-sm clearfix">
+                                        <span class="pull-left">Sub Total:</span>
+                                        <span class="pull-right"></span>
+                                    </div> -->
+                      <div class="cart-total text-bold m-b-lg clearfix"> <span class="pull-left slds-text-heading--medium">{!$Label.APTSDMP_Total}:</span> <span class="pull-right slds-text-heading--medium">{{currency}}{{formatAmount(getProductTotal()  *conversion)}}</span> </div>
+                      <div class="text-center">
+                        <div ng-show="isValidUser =='false'"> <a href="" ng-click="goCheckout()">{!$Label.APTSDMP_LoginToContinue}</a></div>
+                        <span style="color: red; display: none;" id="checkout-cart-error-message">{!$Label.APTSDMP_ErrorQuantityCart}</span> <a id="checkout-cart-button" class="btn-block slds-button slds-button--brand ng-class:{'disabled-pro':isValidUser =='false'}" href="" style="background-color:{{store.APTSMD_Action_Color__c}} !important; border-color:{{store.APTSMD_Action_Color__c}} !important;" ng-disabled="isValidUser =='false'" ng-click="goCheckout()">{!$Label.APTSDMP_ProceedToCheckout}</a>
+                        <div class="space20"></div>
+                        <!--<a class="btn-block slds-button slds-button--brand ng-class:{'disabled-pro':isValidUser =='false'}" style="background-color:{{store.APTSMD_Action_Color__c}} !important; border-color:{{store.APTSMD_Action_Color__c}} !important;" href="" ng-disabled="isValidUser =='false'" ng-click="createQuote()">
+                                        <i id="quoteSpin" class="fa fa-spinner fa-spin" style="display: none;"></i>&nbsp;Request a Quote</a>--> 
+                        
+                      </div>
+                    </div>
+                  </div>
+                  <!--<div ng-if="alsoBoughtProds.length>0" style="margin-top: 1%;">
+                                                <div class="panel panel-default">
+                                                  <div class="panel-heading panel-heading-custom" style="color: #fff; background-color:{{store.APTSMD_Header_Color__c}} !important;">
+                                                    <h3 class="panel-title">You May Want to Consider</h3>
+                                                  </div>
+                                                  <div class="panel-body" style="margin-bottom:-15px !important;">
+                                                    <div ng-repeat="prod in alsoBoughtProds" ng-if="alsoBoughtProds">
+                                                        <div class="col-sm-3">
+                                                            <div new-scope=""  ng-init="prodItem = prod" >
+                                                                <c:APTSMD_eComm_Cart_Recommendation />
+                                                            </div>
+                                                            <!--ng-include="envPath + '/partials/cart_recom_prod.html'"></div>
+                                                        </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>--> 
+                  
+                </div>
+                <div class="container" ng-show="cart.cartLineItems.length<=0">
+                  <h2>{!$Label.APTSDMP_CartEmpty}</h2>
+                  <a ng-click="goHome()" href="">{!$Label.APTSDMP_Catalog}</a> </div>
+              </section>
+              <!--      </div>   -->
+              <div class="col-md-1"> <img ng-if="store.APTSMD_ShowSideBanner__c==true" src="{{bannerImage}}" alt="Image" style="margin-top: 50%;height: 525px;width: auto;float: right;margin-right: 2%;width: auto;"/> </div>
+            </div>
+          </div>
+
+      </main>
+      <!--<c:APTSDMP_CartBundleConfig />-->
+      <style>
+                .productDiv{
+                    float: left;
+                    border: 1px solid gainsboro;
+                    height: 300px;
+                    width: 315px;
+                }
+                .disabled-pro{
+                    cursor:not-allowed;
+                }
+                .evenOptCartRow{
+                    background-color: #bfe0f4;
+                }   
+                .right-text{
+                    text-align:right;
+                }   
+                #cartSpin{
+                    top: 20%;
+                    left: 50%;
+                    position: absolute;
+                    z-index: 1;
+                    color: #005fb2;
+                }
+                #cartSpinDiv{
+                    height: 100%;
+                    position: absolute;
+                    width: 100%;
+                    z-index: 1;
+                    background: #777;
+                    opacity: 0.5;
+                }
+        
+            </style>
+      <!-- // SITE MAIN CONTENT --> 
+    </div>
+  </center>
+</apex:component>

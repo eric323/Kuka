@@ -1,0 +1,133 @@
+<apex:component >
+    <!--<apex:stylesheet value="{!URLFOR($Resource.APTSMD_KUKAStyles)}"/>-->
+    
+    
+    <style>
+        .content-holder
+        {
+            font-size: 11pt;
+            font-weight: normal;
+        }
+        .product-holder
+        {
+            background-image: url({!URLFOR($Resource.APTSDMP_ConnectLiteBg)});
+        
+        background-size:cover;
+        background-origin: border-box;
+        background-repeat: no-repeat;
+        }
+        .input-title
+        {
+            font-size: 12pt;
+            font-weight: normal;
+        }
+        .icon-lines
+        {
+            /*width: 32px;
+            height: 32px;*/
+            margin-right: auto;
+            margin-left: auto;
+        }
+    </style>
+    
+    
+    <section class="product-holder" id="product1">
+        <div class="container" style="margin-left: auto; margin-right: auto;">
+          <div class="section-title">            
+              <picture>
+                
+                <img src="{!URLFOR($Resource.APTSDMP_ConnectLiteLogo)}" alt="image description" width="320" height="31"/>
+              </picture>
+          </div>
+          <div class="content-holder" style="max-width: 580px;">
+            <p>{!$Label.APTSDMP_ConnectLiteDesc}</p>
+          </div>
+          <form action="#" class="form-1">
+            <div class="input-holder">
+              <label>
+                <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/codition_monitoring.png')}"/></span>
+                <span class="input-title">
+                  {!$Label.APTSDMP_ConnectCondition}
+                </span>
+                <span class="jcf-checkbox jcf-checked"><span></span><input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;"/></span>
+              </label>
+            </div>
+            <div class="input-holder">
+              <label>
+                <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/timeline_with_routine_maintenance_milestones.png')}"/></span>
+                <span class="input-title">
+                  {!$Label.APTSDMP_ConnectTimeline}
+                </span>
+                <span class="jcf-checkbox jcf-checked"><span></span><input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;"/></span>
+              </label>
+            </div>
+            <div class="input-holder">
+              <label>
+                <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/robot_identification_data_icon.png')}"/></span><span class="input-title">
+                  {!$Label.APTSDMP_ConnectRobot}
+                </span>
+                <span class="jcf-checkbox jcf-checked"><span></span><input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;"/></span>
+              </label>
+            </div>
+            <div class="input-holder">
+              <label>
+                <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/controller_identification_data.png')}"/></span>
+                <span class="input-title">
+                  {!$Label.APTSDMP_ConnectController}
+                </span>
+                <span class="jcf-checkbox jcf-checked"><span></span><input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;"/></span>
+              </label>
+            </div>
+            <div class="input-holder">
+              <label>
+                <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/specifications.png')}"/></span>
+                <span class="input-title">
+                  {!$Label.APTSDMP_ConnectSpecs}
+                </span>
+                <span class="jcf-checkbox jcf-checked"><span></span><input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;"/></span>
+              </label>
+            </div>
+            <div class="input-holder">
+              <label>
+                <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/user_manual.png')}"/></span>
+                <span class="input-title">
+                  {!$Label.APTSDMP_ConnectUser}
+                </span>
+                <span class="jcf-checkbox jcf-checked"><span></span><input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;"/></span>
+              </label>
+            </div>
+            <div class="input-holder">
+              <label>
+                <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/administrative_console.png')}"/></span>
+                <span class="input-title">
+                  {!$Label.APTSDMP_ConnectAdmin}
+                </span>
+                <span class="jcf-checkbox jcf-checked"><span></span><input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;"/></span>
+              </label>
+            </div>
+            <div class="input-holder">
+              <label>
+                <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/searchable_and_sortable_robot_list.png')}"/></span>
+                <span class="input-title">
+                  {!$Label.APTSDMP_ConnectSearch}
+                </span>
+                <span class="jcf-checkbox jcf-checked"><span></span><input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;"/></span>
+              </label>
+            </div>
+            <div class="input-holder">
+              <label>
+                <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/language_support.png')}"/></span>
+                <span class="input-title">
+                  {!$Label.APTSDMP_ConnectLang}
+                </span>
+                <span class="jcf-checkbox jcf-checked"><span></span><input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;"/></span>
+              </label>
+            </div>
+          </form>
+          <p style="font-weight: bold;">*{!$Label.APTSDMP_ConnectFee}</p>
+        </div>
+        <div class="bg-stretch" id="bg-stretch1477517020051400">
+          
+        </div>
+      </section>
+</apex:component>

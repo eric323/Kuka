@@ -1,0 +1,112 @@
+<!--
+PURPOSE:
+This page allows a user to edit multiple Risk Assessment Questions
+on the same page simultaneously.
+
+VERSION; DATE (YYYY-MM-DD); AUTHOR; "CHANGE"
+2.4; 2016-11-13; John Kuhne; "All references to 'Quick Assessment' are now to 'Pre-Assessment'. Only Extended has Financial Risk."
+2.3; 2016-10-14; John Kuhne; "Made all text fields two-lines high as per Herr Preiss; originally they were six-lines high."
+2.2; 2016-09-21; John Kuhne; "Removed 'Create' buttons; instead, show fake RAQS copied from RATs when no RAQs exist."
+2.1; 2016-09-18; John Kuhne; "Added 'Create' or 'Edit' buttons, depending on if records exist or not"
+2.0; 2016-09-17; Wolfram von Reitzenstein; "Split display into Quick/Basic/Extended with Buttons"
+1.0; 2016-09-13; John Kuhne; "Added code from http://michaelwelburn.com/Visualforce-Edit-Multiple-Records/"
+0.2; 2016-09-07; John Kuhne; "Added the RAQ Columns for our input form"
+0.1; 2016-09-05; John Kuhne; "Started with the check that the user has access to the object"
+-->
+
+<apex:page standardController="Opportunity"
+            extensions="EditableRAQListExtension"
+            showHeader="true" 
+            sidebar="true"
+            title="Edit Risk Assessment Questions">
+    <!--
+    This style tag forces the multi-line text input to go WIDE.
+    It works in Chrome 52 (newest release as of 13 Sept 2016).
+    Presumably it works in other web browsers too.
+    The 'cols' parameter might work as well, if this solution
+    turns out not to be universal.
+    --> 
+    <style>
+      textarea {
+      width: 95%;
+    }
+    </style>
+    
+
+    <apex:form >
+    <apex:pageMessages id="messages"/>
+      <apex:pageBlock title="{!Opportunity.Name}" id="pageBlock">
+
+        <apex:pageBlockButtons >
+          <apex:commandButton value="Save" action="{!save}"/>
+          <apex:commandButton value="Edit Pre-Assessment" action="{!startQuickAssessment}" rerender="pageBlock" rendered="{!NOT(isQuickAssessment)}" />
+          <apex:commandButton value="Edit Basic Risk Assessment" action="{!startBasicAssessment}" rerender="pageBlock" rendered="{!NOT(isBasicAssessment)}" />
+          <apex:commandButton value="Edit Extended Risk Assessment" action="{!startExtendedAssessment}" rerender="pageBlock" rendered="{!AND(NOT(isExtendedAssessment),isBasicAssessmentComplete)}" />
+          <apex:commandButton value="Cancel" action="{!cancel}" />
+        </apex:pageBlockButtons>
+
+
+<!--
+ PRE-ASSESSMENT / FORMERLY QUICK ASSESSMENT
+ -->
+      <apex:pageBlockSection id="quickChildList" columns="1" title="Pre-Assessment Questions" collapsible="false" rendered="{!isQuickAssessment}" >
+          <apex:variable var="rowNum" value="{!ZERO}" />
+          <apex:outputLabel value="No Risk Assessment Questions exist for this KUKA-subgroup" rendered="{!NOT(hasChildren)}"/>
+          <apex:pageBlockTable value="{!children}" var="raq" rendered="{!hasChildren}" >
+            <apex:column headerValue="Question" value="{!raq.Question__c}" width="30%">
+            </apex:column>
+            <apex:column headerValue="Answer" width="10%" >
+              <apex:inputField value="{!raq.Answer__c}" rendered="{!raq.isYesNo__c}" />
+              <apex:inputField value="{!raq.AnswerLowMediumHigh__c}" rendered="{!raq.isLowMediumHigh__c}" />
+            </apex:column>
+            <apex:column headerValue="Remarks" width="50%">
+              <apex:inputTextarea value="{!raq.Clarification__c}" rows="2" />
+            </apex:column>
+          </apex:pageBlockTable>
+      </apex:pageBlockSection>
+
+          
+<!--
+ BASIC ASSESSMENT
+ -->
+      <apex:pageBlockSection id="basicChildList" columns="1" title="Basic Risk Assessment Questions" collapsible="false" rendered="{!isBasicAssessment}" >
+          <apex:variable var="rowNum" value="{!ZERO}" />
+          <apex:outputLabel value="No Risk Assessment Questions exist for this KUKA-subgroup" rendered="{!NOT(hasChildren)}"/>
+          <apex:pageBlockTable value="{!children}" var="raq" rendered="{!hasChildren}" >
+            <apex:column headerValue="Question" value="{!raq.Question__c}" width="30%">
+            </apex:column>
+            <apex:column headerValue="Answer" width="10%" >
+              <apex:inputField value="{!raq.Answer__c}" rendered="{!raq.isYesNo__c}" />
+              <apex:inputField value="{!raq.AnswerLowMediumHigh__c}" rendered="{!raq.isLowMediumHigh__c}" />
+            </apex:column>
+            <apex:column headerValue="Remarks" width="50%">
+              <apex:inputTextarea value="{!raq.Clarification__c}" rows="2" />
+            </apex:column>
+          </apex:pageBlockTable>
+      </apex:pageBlockSection>
+
+<!--
+ EXTENDED ASSESSMENT
+ -->
+      <apex:pageBlockSection id="extendedChildList" columns="1" title="Extended Risk Assessment Questions" collapsible="false" rendered="{!isExtendedAssessment}" >
+          <apex:variable var="rowNum" value="{!ZERO}" />
+          <apex:outputLabel value="No Risk Assessment Questions exist for this KUKA-subgroup" rendered="{!NOT(hasChildren)}"/>
+          <apex:pageBlockTable value="{!children}" var="raq" rendered="{!hasChildren}" >
+            <apex:column headerValue="Question" value="{!raq.Question__c}" width="30%">
+            </apex:column>
+            <apex:column headerValue="Answer" width="10%" >
+              <apex:inputField value="{!raq.Answer__c}" rendered="{!raq.isYesNo__c}" />
+              <apex:inputField value="{!raq.AnswerLowMediumHigh__c}" rendered="{!raq.isLowMediumHigh__c}" />
+            </apex:column>
+            <apex:column headerValue="Remarks" width="50%">
+              <apex:inputTextarea value="{!raq.Clarification__c}" rows="2" />
+            </apex:column>
+            <apex:column headerValue="Financial Risk" width="10%">
+              <apex:inputField value="{!raq.Financial_Risk__c}" rendered="{!raq.isNumericResult__c}" />
+            </apex:column>
+          </apex:pageBlockTable>
+      </apex:pageBlockSection>
+
+    </apex:pageBlock>
+  </apex:form>
+</apex:page>

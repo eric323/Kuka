@@ -1,0 +1,208 @@
+<apex:component >
+    
+<!--[if IE 7 ]><html class="ie ie7 lte9 lte8 lte7 no-js" lang="en-US"><![endif]-->
+<!--[if IE 8]><html class="ie ie8 lte9 lte8 no-js" lang="en-US">    <![endif]-->
+<!--[if IE 9]><html class="ie ie9 lte9 no-js" lang="en-US"><![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--><html class="noIE no-js" lang="en-US"> <!--<![endif]-->
+<center>
+<main id="main-content" role="main">
+        <div class="container slds" >
+                <div class="row">
+
+                    <div class="m-t-b clearfix">
+                        <!-- SIDEBAR -->
+                        <!--
+                        <aside class="col-xs-12 col-sm-4 col-md-3">
+
+                            <section class="side-section" style="text-align: left;">
+                                <h3 class="text-bold slds-text-align--center"><span class="text-xs slds-text-heading--medium">Your Links</span></h3>
+
+                                <ul class="nav nav-tabs nav-stacked">
+                                    <li><a href="#" ng-click="goHome()"><span class="slds-text-body--regular">Homepage</span></a></li>
+                                    <li><a href="#"><span class="slds-text-body--regular">About us</span></a></li>
+                                    <li><a href="#" ng-click="goHome()"><span class="slds-text-body--regular">Shop</span></a></li>
+                                    <li><a href="#" >Single Product Details</a></li> 
+                                    <li><a href="#"><span class="slds-text-body--regular">Contact us</span></a></li>
+                                </ul>
+                            </section>
+
+                       
+                        </aside>
+                        -->
+                        <!-- // SIDEBAR -->
+
+                        <section class="col-xs-12 col-sm-12 col-md-12" >
+                            <img src="{{envPath}}/img/bx_loader.gif" ng-if="!proposalInfo.lineItems"/>
+                            <div class="panel panel-default panel-order" ng-if="proposalInfo.lineItems">
+                                              <div class="panel-heading" style="color:#FFF;background: #12312 !important;background-color:{{store.APTSMD_Header_Color__c}} !important;">
+                                                  <strong >Proposal Detail</strong>
+                                                  
+                                                 <div class="btn-group pull-right">
+
+                                                    </div>
+                                              </div>
+
+                                            <div class="panel-body" id="orderConfirm" >
+                                                <div class="row order">
+                                                  <div class="col-md-12">
+                                                    <div class="row" style="text-align: left;">
+
+                                                      <div class="col-md-12">
+
+                                                          <h3 style="margin: 0 0 0px 0;" class="slds-text-heading--medium"><span><strong>Thank you for requesting a quote.</strong></span> <br/>                                                       </h3>
+                                                      <span class="orderdate slds-text-body--regular">
+                                                        We have saved your configuration and a representative will contact you shortly. 
+                                                          <br/>
+                                                        
+                                                          <br/>    
+                                                        If you have any questions or require additional information, please don't hesitate to contact us direct at 1-650-445-770    
+                                                          </span><br/>
+                                                          <br/><br/>        
+                                                          <br/> 
+                                                          <h3 style="margin: 0 0 0px 0;" class="slds-text-heading--medium"><span><strong>Proposal Number:</strong></span>{{proposalInfo.proposalNumber}}<br/>                                                       </h3>
+                                                        
+
+                                                        <h5 style="margin: 20px 0 10px 0;">Proposal details: </h5>
+                                                        <table border="1" class="table table-bordered">
+                                                            <tr style="background:#444;color:white;">
+                                                                <td>
+                                                                    Part Number
+                                                                </td>
+                                                                <td>
+                                                                    Item
+                                                                </td>
+
+                                                                <td style="text-align: right;">
+                                                                    Quantity
+                                                                </td>
+                                                                <td style="text-align: right;">
+                                                                    Unit Price
+                                                                </td>
+                                                                <td style="text-align: right;">
+                                                                    Total Price
+                                                                </td>
+                                                            </tr>
+                                                            <tr ng-repeat="item in proposalInfo.lineItems" ng-class="{'bold-font':item.lineType!='Option','option-Prod':item.lineType=='Option'}" >
+                                                                <td> {{item.productCode}} </td>
+                                                                <td> {{item.itemName}} </td>
+
+                                                                <td style="text-align: right;"> {{item.quantity}} </td>
+                                                                <td style="text-align: right;"> {{currency}}{{formatAmount(item.listPrice)}} </td>
+                                                                <td style="text-align: right;"> {{currency}}{{formatAmount(item.netPrice)}} </td>
+                                                            </tr>
+
+                                                        </table>
+
+                                                            <ul ng-show="proposalInfo.lineItems.length<=0">
+                                                                    <li style="margin: 0px 0 10px 0;">
+                                                                    No detail available!
+                                                                    </li>
+                                                            </ul>
+
+                                                        <!-- <div style="display:block;overflow:hidden;">
+                                                            <table class="pull-right slds-col slds-table slds-size--6-of-12 totals" width="37%">
+                                                                <tr>
+                                                                    <td align="right">Sub Total:</td>
+                                                                    <td align="right"> {{confirmOrder.dOrderAmount | currency}} </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td align="right">Shipping Charges:</td>
+                                                                    <td align="right"> {{confirmOrder.dShippingCharges | currency}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td align="right"> Taxes: </td>
+                                                                    <td align="right">{{confirmOrder.dTaxAmount | currency}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td align="right"> Promotion: </td>
+                                                                    <td align="right">{{confirmOrder.Promotion | currency}}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td align="right">&nbsp;</td>
+                                                                    <td align="right">&nbsp;</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td align="right"><span class="slds-text-heading--medium">Grand Total:</span></td>
+                                                                    <td align="right"><span class="slds-text-heading--medium">{{confirmOrder.dOrderAmount +confirmOrder.dShippingCharges + confirmOrder.dTaxAmount-confirmOrder.Promotion | currency}}</span></td>
+                                                                </tr>
+                                                            </table>
+                                                        </div> -->
+
+                                                        <!--  Sub Total: {{confirmOrder.dOrderAmount | currency}}<br>
+                                                         Shipping Charges {{confirmOrder.dShippingCharges | currency}}<br>
+                                                         Taxes: {{confirmOrder.dTaxAmount | currency}}</p>
+                                                         <h5>Grand Total: {{confirmOrder.dOrderAmount +confirmOrder.dShippingCharges + confirmOrder.dTaxAmount | currency}}</h5>
+                                                         <hr>
+                                                          -->
+                                                        <!-- <h5 style="padding:3px;background:#444;color:white;">Shipping details: </h5>
+
+
+
+                                                        <table class="table confOrderTable" style="width:50%;">
+                                                            <tr>
+                                                                <td style="text-align: right;">Shipping Method:</td>
+                                                                <td> {{confirmOrder.Shipping_Method_Value}}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="text-align: right;">Shipping Address:</td>
+                                                                <td>
+                                                                    <p ng-show="isValidUser == 'true'">
+                                                                        {{confirmOrder.Shipto_Name}}</br>
+                                                                        {{confirmOrder.Shipto_Address1}} <br>
+                                                                        {{confirmOrder.Shipto_City}}<br>
+                                                                        {{confirmOrder.Shipto_State}},
+                                                                        {{confirmOrder.Shipto_Zip}} <br>
+                                                                    </p>
+                                                                    <p ng-show="isValidUser == 'false'">
+                                                                        {{confirmOrder.Shipto_Name}}</br>
+                                                                        {{confirmOrder.GuestShipTo_Street}} <br>
+                                                                        {{confirmOrder.GuestShipTo_City}}<br>
+                                                                        {{confirmOrder.GuestShipTo_State}},
+                                                                        {{confirmOrder.GuestShipTo_Code}} <br>
+                                                                      
+                                                                    </p>
+                                                                </td>
+                                                            </tr>
+                                                        </table> -->
+                                                        <style type="text/css">
+                                                        .confOrderTable tr td{
+                                                            border:none;
+                                                        }
+                                                        </style>
+
+                                                      </div>
+                                                   <!--   <div class="col-md-12 " ng-show="!confirmOrder.isOrderDetailAvailable">
+                                                     <p>No order detail available!</p>
+                                                    </div>
+
+                                                     <div class="col-md-12">
+                                                        <a href="#" ng-show="isValidUser == 'true'" ng-click="OrderHistory()" style="margin: 20px 0 0px 0;" class="slds-button slds-button--brand add-to-cart"> Review previous orders </a>
+                                                      </div> -->
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+        </div>
+
+    </main>
+</center>
+    <!-- // SITE MAIN CONTENT -->
+<style type="text/css">
+    .right-text{
+        text-align: right;
+    }
+    .bold-font{
+        font-weight: bold;
+    }
+    .option-Prod{
+        font-style: italic;
+    }
+</style>
+
+
+    </html>
+</apex:component>

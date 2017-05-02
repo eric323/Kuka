@@ -1,0 +1,91 @@
+<apex:component >
+    
+<center>
+<!-- SITE MAIN CONTENT -->
+        <main id="main-content" role="main">
+        
+            <div class="container slds" ng-controller="OrderHistoryCtrl">
+                <div class="row">
+                    
+                    <div class="m-t-b clearfix">
+                    
+                        
+                        <section class="col-xs-12 col-sm-8 col-md-9">
+                            <img src="{{envPath}}/img/bx_loader.gif" ng-if="!assetHistory"/>
+                            <div class="panel panel-default panel-asset" style="text-align:left !important;">
+                                              <div class="panel-heading" style="color: #FFF">
+                                                  <strong>Asset history</strong>
+                                                  <div class="btn-group pull-right">
+                                                     
+                                                    </div>
+                                              </div>
+
+                                        <div class="panel-body" id="assethistory">
+                                            <div id="spinAsset"></div>
+                                            <div class="row asset ng-class:{
+                                            'evenCls':$even}"  ng-repeat="asset in assetHistory" style="padding-top:1%; border-bottom: 1px solid #679275;margin-bottom:3%; !important">
+                                                  <div class="col-md-12">
+                                                    <div class="row">
+                                                      <div class="col-md-12">
+                                                        <div class="pull-right">
+                                                            <div class="btn-div"><a class="btn-block slds-button slds-button--brand" href="" style="background-color:{{store.APTSMD_Action_Color__c}} !important; border-color:{{store.APTSMD_Action_Color__c}} !important;" >Renew</a></div>
+                                                            <div class="btn-div"><a class="btn-block slds-button slds-button--brand" href="" style="background-color:{{store.APTSMD_Action_Color__c}} !important; border-color:{{store.APTSMD_Action_Color__c}} !important;" ng-click="">Terminate</a></div>
+                                                            <div class="btn-div"><a class="btn-block slds-button slds-button--brand" href="" style="background-color:{{store.APTSMD_Action_Color__c}} !important; border-color:{{store.APTSMD_Action_Color__c}} !important;" ng-click="">Modify</a></div>
+                                                            <div class="btn-div"><a class="btn-block slds-button slds-button--brand" href="" style="background-color:{{store.APTSMD_Action_Color__c}} !important; border-color:{{store.APTSMD_Action_Color__c}} !important;" ng-click="">Swap</a></div>
+                                                        
+                                                        <!--    <div class="btn-div"><label class="label  order-button">Renew</label></div>
+                                                            <div class="btn-div"><label class="label  order-button">Terminate </label></div>
+                                                            <div class="btn-div"><label class="label  order-button">Modify </label></div>
+                                                            <div class="btn-div"><label class="label  order-button">Swap </label></div> -->
+                                                        </div>
+                                                          <span><strong>Asset number : </strong></span>{{asset.AssetNumber}}<br/>
+                                                          <span><strong>Product Name : </strong></span>{{asset.ProductName}}<br/>
+                                                          <span><strong>Start Date : </strong></span>{{asset.StartDate |timestampToDate}}<br/>
+                                                          <span><strong>End Date : </strong></span>{{asset.EndDate |timestampToDate}}<br/>
+                                                        <p class="assetlink" >
+                                                        <a  href="#" ng-click="GetAssetDetail(asset)"  >
+                                                        View My Asset</a></p>
+                                                        <div class="btn-div"><label class="label">{{asset.AssetStatus}}</label></div>
+                                                    </div>
+                                                      <div class="col-md-12" style="height: 7px;">
+                                                        <!--<p class="AssetDate">Asset made on: {{asset.StartDate | timestampToDate}} by <a href="#">{{asset.UserName }}</a></p>-->
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                
+                                        </div>   
+                            </div>
+                        </section>
+                        
+                        <img ng-if="store.APTSMD_ShowSideBanner__c==true" src="{{bannerImage}}" alt="Image" style="height: 100%;width: 8%;"/>
+                        
+                    </div>
+                
+                </div>
+            </div>
+        
+        </main>
+        <style>
+            .btn-div{
+                background-color:#679275 !important;
+                width:117px;
+                text-align:center;
+                margin-top: 6px !important;
+            }
+            .order-button{
+                font-size: 13px !important;
+                margin-top: 6px !important;
+            }
+            .aasset{
+                margin-bottom:10px;
+            }
+            .evenCls{
+                background-color:#eee !important;
+            }
+        </style>
+<!-- // SITE MAIN CONTENT -->
+    </center>       
+
+    
+</apex:component>

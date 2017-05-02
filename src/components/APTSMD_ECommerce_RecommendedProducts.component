@@ -1,0 +1,44 @@
+<apex:component >
+<header class="side-section-header">
+    <h3 class="side-section-title"  style="color:{{store.Accent_Color__c}} !important;">Product Recommendations</h3>
+</header>
+<div class="side-section-content">
+
+    <!-- CHECK BOX TREE -->
+
+    <ul id="category-list" class="vmenu unstyled">
+        <li>
+            <div class="slds-form-element slds-truncate">
+              <label class="slds-checkbox"  style="cursor:pointer">
+                <input name="checkbox" type="checkbox"  ng-model="showTopDealTemp" ng-change="prodFilterTopDeal();" style="ci"/>
+                <span class="slds-checkbox--faux"></span>
+                <span class="slds-form-element__label" style="white-space: pre-wrap;">Top Trending Deals</span>
+              </label>
+            </div>
+        </li>                                                                                       
+    </ul>
+    <ul id="category-list" class="vmenu unstyled">
+        <li>
+            <div class="slds-form-element slds-truncate">
+              <label class="slds-checkbox"  style="cursor:pointer">
+                <input name="checkbox" type="checkbox" ng-model="showPickedUpTemp" ng-change="prodFilterpicked()" style="ci"/>
+                <span class="slds-checkbox--faux"></span>
+                <span class="slds-form-element__label" style="white-space: pre-wrap;">Picked For You</span>
+              </label>
+            </div>
+         </li>                                                                                       
+    </ul>
+    <ul id="category-list" class="vmenu unstyled">
+        <li>
+            <div class="slds-form-element slds-truncate">
+              <label class="slds-checkbox"  style="cursor:pointer">
+                <input name="checkbox" type="checkbox" ng-model="showPastTemp" ng-change="prodFilterPastorder()" style="ci"/>
+                <span class="slds-checkbox--faux"></span>
+                <span class="slds-form-element__label" style="white-space: pre-wrap;">Based on Past Order</span>
+              </label>
+            </div>
+        </li>                                                                                       
+    </ul>                                           
+</div>
+                                        
+</apex:component>

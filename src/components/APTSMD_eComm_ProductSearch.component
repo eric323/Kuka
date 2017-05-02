@@ -1,0 +1,59 @@
+<apex:component >
+    <style>        
+        .dropdown-menu li a
+        {
+            //white-space: pre-line;
+            font-size: 10pt;
+        }
+        
+        .slds-tabs__item a {
+            line-height: 24px !important;
+        	height: auto !important;
+        	white-space: normal !important;
+        	margin-bottom: 2%;
+        } 
+        
+        .dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus {
+            background-image: linear-gradient(to bottom, #f5f5f5 0%, #e8e8e8 100%) !important;
+        }
+        .dropdown-menu > .active > a, .dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus {
+            background-image: linear-gradient(to bottom, #f5f5f5 0%, #e8e8e8 100%) !important;
+        }
+        
+        .dropdown-menu > .active > a, .dropdown-menu > .active > a:focus, .dropdown-menu > .active > a:hover {
+            background-color: grey !important;
+        }        
+       
+        #searchProduct.slds-tabs--default__nav a:hover,
+        #searchProduct.slds-tabs--default__nav a:focus {
+        	border-color: grey !important;
+        }        
+        
+        #globalSearch:focus {
+          border-color: #999 !important;
+          outline: 0 !important;
+          -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(100,100,100,.6) !important;
+          box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(100,100,100,.6) !important;
+        } 
+    </style>
+    <!--<div class="col-xs-12 col-sm-6 col-md-6 slds" style="text-align: right; width: 100%;">-->
+            <ul class="slds-tabs--default__nav" role="tablist" id="searchProduct">
+                <li class="slds-tabs__item slds-text-heading--label slds-form--inline" role="presentation" style="width:100%!important;">
+                    <div class="slds-form-element slds-form--inline" style="width:100%!important;">
+                        <div class="slds-form-element__control" style="width:100%!important;" id="globalSearchDiv" >
+                            <span>
+                                <div class="inner-addon right-addon" style="border: 1px solid #EAECF1; border-radius: 4px;">
+                                  <i class="icon-Icon_090 search-icon"></i>
+                                  <input  class="slds-input" id="globalSearch" placeholder="{!$Label.APTSDMP_Search}"  type="text" ng-model="searchedVal" ng-change="showsearch(searchedVal)" typeahead="pName for pName in prodNames | filter:searchedVal | limitTo:10" typeahead-on-select="showsearch(searchedVal)" />
+                                </div>
+                                
+                                <!-- <i class="fa fa-search" style="font-size: 16pt;position: fixed;margin-top: -30px;margin-left: -25px;"></i> -->
+                                <!--<img src="/resource/Search" style="cursor:pointer" ng-click="showsearch(searchedVal)" ng-model="searchedVal">-->
+                            </span>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+          <!--</div>-->
+          <br/>
+</apex:component>

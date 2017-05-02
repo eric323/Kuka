@@ -1,0 +1,486 @@
+<apex:component >
+
+  <script>
+
+
+
+    kuka.controller("BannerController", function($scope, $model, $compile){
+      $scope.model = $model;
+      $("#promo-carousel").carousel({interval: 5000});
+    })
+
+    kuka.controller("BaseController", function($scope, $user, $model, $compile, $cart, cartCache, $timeout, $rootScope, cfpLoadingBar, $window){
+      $rootScope.$on("$stateChangeStart", function(event, toState, toParams, fromState, fromParams){
+        cfpLoadingBar.start();
+      })
+      $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
+        $window.scrollTo(0, 0);
+        cfpLoadingBar.complete();
+      });
+
+      var mylanguage = $model.userLanguage;
+      $scope.user = $user;
+      $scope.model = $model;
+      $scope.cart = $cart;
+      $scope.loginModel = {
+        username : '',
+        password : ''
+      };
+      $scope.doLogin = function(){
+
+        var appendix  = '.kuka';
+        var loginUser = $scope.loginModel.username + appendix;
+
+        APTSMD_ApttusLabAngularJS.login(loginUser, $scope.loginModel.password, function(r){
+          if(r.success == 'false')
+            $timeout(function(){$scope.loginModel.error = r.message});
+          else{
+            $(".loginUsername").val(loginUser);
+            $(".loginPassword").val($scope.loginModel.password);
+            loginJS();
+          }
+
+        });
+      }
+      cartCache.registerObserver(function(cart){
+        $timeout(function(){$scope.cart = cart});
+      });
+      $scope.removeCartItem = function(cartItem) {
+          var found = -1;
+          for (var i = 0; i < $scope.cart.cartWrapper.cartLineItems.length; i++) {
+              if ($scope.cart.cartWrapper.cartLineItems[i].lineItemId == cartItem.lineItemId) {
+                  found = i;
+                  break;
+              }
+          }
+          if (found > -1) {
+            APTSMD_ApttusLabAngularJS.removeCartItem($scope.cart.cartWrapper.cartLineItems[found].lineItemId, $scope.cart.cartWrapper.CartId, function(data){
+              var cartDetails = data.result;
+              if (cartDetails && cartDetails.cartWrapper) {
+                  $scope.alsoBoughtProds = [];
+                  $rootScope.$apply(function() {
+                      $scope.alsoBoughtProds = $scope.getSuggestedProds(cartDetails.suggestedProdIds);
+                  });
+              }
+            });
+            $scope.cart.cartWrapper.cartLineItems.splice(found, 1);
+            cartCache.setCart($scope.cart);
+          }
+      }
+
+      $scope.selectLanguage = function(language){
+        var mylanguage = language;
+        if($scope.model.isValidUser == 'true'){
+          APTSMD_ApttusLabAngularJS.updateUserLanguage(language, function(r){window.location.reload();})
+        }else{
+            window.location.href = (language == 'de') ? '../de' : '../';
+        }
+      }
+
+      var me = function(){
+        var _this = this;
+        $(this).popover("show");
+        $(".popover").on("mouseleave", function () {
+            $(_this).popover('hide');
+        });
+      }
+
+      var ml = function(){
+        var _this = this;
+        setTimeout(function () {
+            if (!$(".popover:hover").length) {
+                $(_this).popover("hide");
+            }
+        }, 300);
+      }
+
+      if($scope.model.isValidUser == 'true'){
+        $("#user-logo").popover({
+          html : true,
+          content : $compile('<div class="list-group">'+
+                      '<a href="#" class="list-group-item" ui-sref="index.history" ng-if="model.localAccountId != model.accountId">{!$Label.APTSDMP_OrderHistory}</a>'+
+                      '<a href="../secur/logout.jsp?retUrl=/" class="list-group-item"">{!$Label.APTSDMP_Logout}</a>'+
+                    '</div>')($scope),
+          trigger : 'click',
+          container : '.header-content',
+          placement : 'bottom'
+        }).on("mouseenter", me).on("mouseleave", ml);
+      }
+
+
+
+      $(".cart-hover").popover({
+        html : true,
+        content : $compile(document.getElementById("cart.html").innerHTML)($scope),
+        trigger : 'click',
+        container : '.header-content',
+        placement : 'bottom'
+      }).on("mouseenter", me).on("mouseleave", ml);
+    });
+
+    kuka.controller("ProductDetailsController", function($scope, $product, $model, $sce, cartCache, cfpLoadingBar){
+      console.log($product);
+      $scope.product = $product;
+      $scope.model = $model;
+      $scope.collegeURL = 'https://college.kuka.com//sites/5/en-US/all/all/action?oid=';
+      $scope.collegePostURL = '-&SessionContextID=DEFAULT_ID';
+      if($scope.product.productDetails.APTSDMP_VideoURL__c){
+        $scope.trustedVideoUrl =  $sce.trustAsResourceUrl('https://www.youtube.com/embed/' + $scope.product.productDetails.APTSDMP_VideoURL__c);
+      }
+
+      if ($model.userLanguage == "de") {
+          $scope.collegeURL = 'https://college.kuka.com//sites/5/de-de/all/all/action?oid=';
+      }
+
+      APTSMD_ApttusLabAngularJS.getProductConfigurations(JSON.stringify($product), function(res){
+        $scope.configModel = res;
+      });
+
+      $scope.addToCart = function(productForm){
+        cfpLoadingBar.start();
+        $("#bundle-modal").modal("hide");
+        cartCache.getCart().then(function(cart){
+          APTSMD_ApttusLabAngularJS.addBundleWithOptions(JSON.stringify($scope.product), cart.cartWrapper.CartId, function(result){
+            cartCache.setCart(result);
+            cfpLoadingBar.complete();
+            $.notify({
+                // options
+                message: $scope.product.ProductName + " {!$Label.APTSDMP_AddedToCart}"
+            },{
+                // settings
+                type: 'info'
+            });
+          })
+        });
+      }
+      $scope.$on("$viewContentLoaded", function(){
+        $("#bundle-modal").on("show.bs.modal", function(){
+          $scope.$apply(function(){
+            $scope.today = new Date();
+            $scope.today.setHours(0, 0, 0, 0);
+            angular.forEach($scope.configModel.prodAttributeGroups, function(attGroup) {
+                angular.forEach(attGroup.productAttributes, function(att) {
+                    if (att.fieldType.toUpperCase() == 'DATE') {
+                        att.selectedValue = $scope.today ;
+                    }
+                });
+            });
+            $scope.product.prodAttributeGroups = $scope.configModel.prodAttributeGroups;
+            $scope.product.Quantity = 1;
+          });
+        })
+        $('#product-image-carousel').carousel({interval: 5000})
+      });
+    })
+
+    kuka.controller("ProductListController", function($scope, $model, $categories, $featuredProducts,  $stateParams, $state, $q, productCache, cfpLoadingBar){
+      $scope.selected = undefined;
+      $scope.categories = $categories;
+      $scope.model = $model;
+      $scope.isFeaturedOpen = true;
+      $scope.isProductsOpen = true;
+      $scope.featuredProducts = $featuredProducts;
+
+      APTSMD_ApttusLabAngularJS.getProductsWithLimit($scope.model.store.APTSMD_Price_List__c, $stateParams.categoryId, null, 15, function(r){
+        $scope.$apply(function(){$scope.products = r});
+        for(var i in r){
+          productCache.setProduct(r[i]);
+        }
+      }, {buffer : false, escape : false});
+
+      $scope.getProducts = function(val){
+        var deferred = $q.defer();
+        cfpLoadingBar.start();
+        APTSMD_ApttusLabAngularJS.searchProducts($model.store.APTSMD_Price_List__c, null, val, 50, function(res){
+          deferred.resolve(res);
+          cfpLoadingBar.complete();
+        })
+        return deferred.promise;
+      }
+
+      $scope.expandCategory = function(category){
+        category.isCategoryOpen = false;
+        if(category.childcat){
+          for(var c in category.childcat){
+            if($scope.expandCategory(category.childcat[c])){
+              category.isCategoryOpen = true;
+              break;
+            }
+          }
+        }else{
+          if(category.Level1CategoryId == $stateParams.categoryId){
+            category.isCategoryOpen = true;
+          }
+        }
+        return category.isCategoryOpen;;
+      }
+      $scope.onSelect = function($item, $model, $label, $event){
+        $state.go("index.product", {productId : $item.ProductId});
+      }
+      for(var c in $categories){
+        $scope.expandCategory($categories[c]);
+      }
+    })
+
+    kuka.controller("OrderHistoryController", function($scope, $orderHistory, $model, $state){
+      $scope.orderHistory = $orderHistory;
+      $scope.getOrderTotal = function(order){
+        var total = 0;
+        for(var i = 0; i< order.orderline.length; i++){
+          total += order.orderline[i].Netprice;
+        }
+        return total;
+      }
+      $scope.goToSummary = function(id){
+        $scope.loading = id;
+        $state.go("index.summary", {orderId : id});
+      }
+    });
+
+    kuka.controller("OrderController", function($scope, $order, $model){
+      $scope.order = $order;
+    })
+
+    kuka.controller("CheckoutController", function($scope, $addressInfo, $timeout, cartCache, $state, $model){
+      $scope.model = $model;
+      $scope.addressInfo = $addressInfo;
+      $scope.model.shipMethods = shipMethods=[{value:"OE5",text:"Ground"},{value:"OE3",text:"Second Day"},{value:"OE1",text:"Overnight"}];
+      $scope.model.terms = false;
+      $scope.formData = {};
+      $scope.newAddress = {
+          Name : 'New Location',
+          Apttus_Config2__AccountId__c : 'not set',
+          Apttus_Config2__Type__c : 'New Shipping Address'
+        };
+      cartCache.getCart().then(function(cart){
+        $timeout(function(){$scope.cart = cart});
+      });
+      cartCache.registerObserver(function(cart){
+          $timeout(function(){$scope.cart = cart});
+      })
+      $scope.getAddress = function(addressId){
+        if(addressId == -1)
+          return {Shipping_Street: $scope.newAddress.Apttus_Config2__Street__c,
+                  Shipping_City : $scope.newAddress.Apttus_Config2__City__c,
+                  Shipping_State : $scope.newAddress.Apttus_Config2__State__c,
+                  Shipping_Postal_Code : $scope.newAddress.Apttus_Config2__PostalCode__c
+                }
+        else
+          return _.findWhere($scope.addressInfo.addressWrapper, {Id : addressId})
+      }
+
+      $scope.submitOrder = function(){
+        $scope.loading = true;
+        var doSubmit = function(shippingAddress){
+          cartCache.getCart().then(function(cart){
+
+            if($scope.model.accountId == $scope.model.localAccountId){
+              $scope.formData.ShipTo_Account_Id = $scope.model.localAccountId;
+              $scope.formData.BillTo_Account_Id = $scope.model.localAccountId;
+            }else{
+              var billingAddress = $scope.getAddress($scope.formData.BillTo_Account_Id);
+              $scope.formData.ShipTo_Account_Id = shippingAddress.accountId;
+              $scope.formData.BillTo_Account_Id = billingAddress.accountId;
+              $scope.formData.accLocation_Id = billingAddress.Id;
+              $scope.formData.Shipto_Address1 = shippingAddress.Apttus_Config2__Street__c;
+              $scope.formData.Shipto_City = shippingAddress.Shipping_City;
+              $scope.formData.Shipto_State = shippingAddress.Shipping_State;
+              $scope.formData.Shipto_Zip = shippingAddress.Shipping_Postal_Code;
+            }
+
+            $scope.formData.dOrderAmount = cartCache.getTotal();
+            $scope.formData.dTaxAmount = 0;
+            $scope.formData.Cart_Id = cart.cartWrapper.CartId;
+            $scope.formData.multipleShipment = false;
+            $scope.formData.Order_ID = cart.cartWrapper.OrderId;
+            $scope.formData.Shipping_Method_Value = 'Ground';
+            $scope.formData.Shipping_Method = 'OE5';
+            APTSMD_ApttusLabAngularJS.SubmitOrder($scope.formData, function(res){
+              cartCache.clearCart().then(function(){
+                $state.go("index.summary", {orderId : res});
+              });
+            })
+          });
+        }
+
+        if($scope.formData.ShipTo_Account_Id == -1){
+          APTSMD_ApttusLabAngularJS.saveSingleAddress($scope.newAddress, function(r){
+            doSubmit({
+              accountId : r.Apttus_Config2__AccountId__c,
+              Id : r.Id,
+              Shipping_Street : r.Apttus_Config2__Street__c,
+              Shipping_State : r.Apttus_Config2__State__c,
+              Shipping_City : r.Apttus_Config2__City__c,
+              Shipping_Postal_Code : r.Apttus_Config2__PostalCode__c
+            })
+          });
+        }else{
+          doSubmit($scope.getAddress($scope.formData.ShipTo_Account_Id));
+        }
+      }
+    })
+
+    kuka.controller("CartDetailController", function($scope, cartCache, $timeout, cfpLoadingBar){
+      cartCache.getCart().then(function(cart){
+        $timeout(function(){$scope.cart = cart});
+      });
+      cartCache.registerObserver(function(cart){
+          $timeout(function(){$scope.cart = cart});
+      })
+
+      $scope.removeCartItem = function(cartItem) {
+          var found = -1;
+          for (var i = 0; i < $scope.cart.cartWrapper.cartLineItems.length; i++) {
+              if ($scope.cart.cartWrapper.cartLineItems[i].lineItemId == cartItem.lineItemId) {
+                  found = i;
+                  break;
+              }
+          }
+          if (found > -1) {
+            APTSMD_ApttusLabAngularJS.removeCartItem($scope.cart.cartWrapper.cartLineItems[found].lineItemId, $scope.cart.cartWrapper.CartId, function(data){
+              var cartDetails = data.result;
+              if (cartDetails && cartDetails.cartWrapper) {
+                  $scope.alsoBoughtProds = [];
+                  $rootScope.$apply(function() {
+                      $scope.alsoBoughtProds = $scope.getSuggestedProds(cartDetails.suggestedProdIds);
+                  });
+              }
+            });
+            $scope.cart.cartWrapper.cartLineItems.splice(found, 1);
+            cartCache.setCart($scope.cart);
+          }
+      }
+      $scope.udpateQuantity = function(cartItem){
+        if(cartItem.iQuantity <= 5000){
+          cfpLoadingBar.start();
+          APTSMD_ApttusLabAngularJS.modifyCartItemQuantity(cartItem.lineItemId, $scope.cart.cartWrapper.CartId, cartItem.iQuantity, cartItem.ProductId, function(r){
+            cartCache.clearCart().then(function(){
+                cfpLoadingBar.complete();
+            })
+          });
+        }
+      }
+    })
+
+    kuka.directive("total", function(cartCache){
+      return {
+        restrict : 'E',
+        scope : {
+          cart : "=",
+          model : "="
+        },
+        template : '{{cartTotal | exchange : model.exchangeRate | currency : model.currency : 2}}',
+        link : function($scope, element, attrs){
+          $scope.cartTotal = 0;
+          $scope.$watchCollection("cart.cartWrapper.cartLineItems", function(items, oldItems){
+              $scope.cartTotal = cartCache.getTotal();
+          });
+        }
+      }
+    });
+
+    kuka.service("productCache", function($q){
+      var productList = {};
+      return{
+        getProduct : function(priceListId, productId){
+          var deferred = $q.defer();
+          if(productList[productId])
+            deferred.resolve(productList[productId])
+          else{
+            APTSMD_ApttusLabAngularJS.getProductWrapper(priceListId, productId, function(r){
+              productList[productId] = r;
+              deferred.resolve(r);
+            }, {escape : false});
+          }
+          return deferred.promise;
+        },
+        setProduct : function(product){
+          productList[product.ProductId] = product;
+        }
+      }
+    })
+
+    kuka.service("cartCache", function($q, cfpLoadingBar){
+      var cart;
+      var observerCallbacks = [];
+
+      return {
+        getCart : function(){
+          var deferred = $q.defer();
+          if(cart)
+            deferred.resolve(cart);
+          else{
+            cfpLoadingBar.start();
+            APTSMD_ApttusLabAngularJS.getCartDetails(function(r){cfpLoadingBar.complete(); cart = r; deferred.resolve(r);}, {buffer : true});
+          }
+
+          return deferred.promise;
+        },
+        setCart : function(cartObj){
+          cart = cartObj;
+          angular.forEach(observerCallbacks, function(callback){
+            callback(cart);
+          });
+        },
+        registerObserver : function(callback){
+          observerCallbacks.push(callback);
+        },
+        clearCart : function(){
+          var deferred = $q.defer();
+          var that = this;
+          APTSMD_ApttusLabAngularJS.getCartDetails(function(r){that.setCart(r); deferred.resolve(r);}, {buffer : true});
+          return deferred.promise;
+        },
+        getTotal : function(){
+          var total = 0;
+          if(cart){
+            var items = cart.cartWrapper.cartLineItems;
+            if(items && items.length){
+              for (var i = 0; i < items.length; i++) {
+                    total += items[i].netPrice;
+              }
+              if (isNaN(total) == true) {
+                APTSMD_ApttusLabAngularJS.repriceCart(function(cartDetails){
+                  if (cartDetails.cartWrapper) {
+                      cart.cartWrapper.CartId = cartDetails.cartWrapper.CartId;
+                      cart.cartWrapper.OrderId = cartDetails.cartWrapper.OrderId;
+                      cart.cartWrapper.cartLineItems = cartDetails.cartWrapper.cartLineItems
+                  }
+                });
+              }
+            }
+          }
+          return total;
+        }
+      }
+    })
+
+    kuka.filter("exchange", function(){
+      return function(amount, exchangeRate){
+        return amount * exchangeRate;
+      }
+    })
+
+    kuka.filter("address", function(){
+      return function(address, type){
+        var defined = function(val){
+          return (val) ? val : '';
+        }
+        if(address){
+          if(type == 'Shipping')
+            return defined(address.Shipping_Street) + ' '
+                  + defined(address.Shipping_City) + ', '
+                  + defined(address.Shipping_State) + ' '
+                  + defined(address.Shipping_Postal_Code);
+          else if(type == 'Billing')
+          return defined(address.Billing_Street) + ' '
+                + defined(address.Billing_City) + ', '
+                + defined(address.Billing_State) + ' '
+                + defined(address.Billing_Postal_Code);
+        }else return '--Select--';
+      }
+    })
+
+  </script>
+
+</apex:component>

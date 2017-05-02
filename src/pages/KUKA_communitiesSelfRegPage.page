@@ -1,0 +1,1467 @@
+<!-- **********************************************************************
+Name:  KUKA_communitiesSelfRegPage.page
+======================================================
+Purpose:
+
+This page displays the custom user registration form
+======================================================
+History
+-------
+Date        AUTHOR                  DETAIL
+09/11/2016  Benjamin Pfahl          if email and customer number are prefilled by url the fields should be read only 
+21/11/2016  Andreas Meyer           take error message for email field into consideration when it comes to disabled attribute
+05/12/2016  Andreas Meyer           add error message for mobile
+05/12/2016  Benjamin Pfahl          dynamic partner account detection
+13/12/2016  Andreas Meyer           change RegEx expression to meet more requirements
+15/12/2016  Andreas Meyer           remove TOS
+23/12/2016  Andreas Meyer           remove password handling
+11/01/2016  Andreas Meyer           remove contact checkboxes / change position
+02/02/2017  Benjamin Pfahl          changed phone fields - no more field validation - added js to just allow numbers 
+02/07/2017  Arokia Joseph           updated select2.full.js and added script to auto search salutation, country and state fields.
+03/20/2017  Jade Fischer            Set the submit to disabled unless the Privacy Policy check box is selected. 
+03/24/2017  Jade Fischer            Updated the english privacy policy.
+03/28/2017  Arokia Suresh Kumar		Updated the page layout and section alignment.
+********************************************************************** -->
+<apex:page id="communitiesSelfRegPage" showHeader="false" standardStylesheets="false" controller="CommunitiesSelfRegController" title="{!$Label.site.user_registration}" applyHtmlTag="false" applyBodyTag="false" action="{!autoFillRelationToKuka}">
+
+<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<head>
+  <title>{!$Label.CommunitySelfReg_PageTitle}</title>
+  <meta name="description" content=""/>
+  <meta name="keywords" content=""/>
+  <meta name="robots" content="index, nofollow"/>
+  <meta charset="utf-8"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  
+  <meta name="viewport" id="viewport-meta" content="width=device-width, initial-scale=1.0"/>
+  <meta name="application-name" content="Terrific Net Sample"/>
+  <meta name="language" content="en-DE"/>
+  
+  <link rel="icon" href="https://static.kuka.com/salesforce/SsoPageResources/-/media/kuka-corporate/images/home/logos/kuka-favicon-16.ico"/>
+  
+  <link rel="apple-touch-icon-precomposed" href="https://static.kuka.com/salesforce/SsoPageResources/-/media/kuka-corporate/images/home/logos/kuka_touchicon-152.png"/>
+  
+  <meta name="msapplication-TileColor" content="#FFFFFF"/>
+  <meta name="msapplication-TileImage" content="https://static.kuka.com/salesforce/SsoPageResources/-/media/kuka-corporate/images/home/logos/kuka_touchicon-152.png"/>
+  
+  
+  
+<apex:includeScript value="{!URLFOR($Resource.KUKA_Resources,  'KUKA_Resources/js/jquery-1.11.2.min.js')}"/>
+<apex:stylesheet value="{!URLFOR($Resource.KUKA_Resources,'KUKA_Resources/css/main.css' )}"/>
+<link rel="icon" href="{!URLFOR($Resource.KUKA_Images, 'Images/favicon.ico')}"/>
+  <apex:stylesheet value="{!$Resource.KUKA_Images}"/>
+<apex:stylesheet value="{!$Resource.KUKA_BG_Images}"/>
+<apex:stylesheet value="{!$Resource.KUKA_UserReg}"/>
+
+  <style>:lang(en-DE) {
+    
+      font-family: 'kuka-bulo', Calibri, Segoe UI, Helvetica, Arial, Sans-Serif;
+    
+    }
+      
+  </style>
+
+  <link rel="stylesheet" href="https://static.kuka.com/salesforce/SsoPageResources/bundle_app.css" type="text/css" />
+  <script>       
+    // Picuter element HTML5 shiv
+    document.createElement('picture');
+    
+    
+    // onload for setting the submitt to disabled Jade Fischer 3/20/2017
+    function setSubmitButtonDisabled() {
+          if ({!tos_accepted} == false ) {
+            var submitButton = document.getElementById("{!$Component.theForm.submit}");
+            submitButton.disabled = "true";
+        }  
+  }
+    
+
+  </script>
+  <script src="https://static.kuka.com/salesforce/SsoPageResources/assets/js/app/picturefill.min.js" async="async"></script>
+  <!--[if lte IE 9]>
+    <script src="https://static.kuka.com/salesforce/SsoPageResources/assets/js/app/media.match.min.js"></script>
+  <![endif]-->
+  <style>
+  
+      .m-form-error {
+        background-color: #FFFFFF;
+        padding: 20px 20px 20px 0;
+        margin-bottom: 20px;
+      }
+     .main__content--registration-page {
+        background-image: url('{!URLFOR($Resource.KUKA_UserReg, 'KUKA_UserReg/images/kuka_registration_header.png')}');       
+        background-repeat: no-repeat;        
+        background-size: 1300px;
+         
+     
+      }
+      
+      .main__content--register {
+        background-image: url('{!URLFOR($Resource.KUKA_UserReg, 'KUKA_UserReg/images/kuka_registration_header.png')}');       
+        background-position: top center;
+        background-repeat: no-repeat;
+        background-size: 100%;
+        background-color: white;
+        padding: 18rem 0 0 0;
+      }
+      .section-register__header {
+        text-align: center;
+        margin: 0;
+        padding: 3rem 0 1rem;
+       }
+      .section-register__headline {
+        margin: 0 0 1rem;
+        font-weight: bold;
+        font-size: 4rem;
+      }
+      .section-register__subheadline {
+        font-weight: normal;
+      }
+      .regForm{
+     <!--  background-color: #ECEDEE; -->
+       background-color: #FFFFFF;
+     <!--   padding: 2em; -->
+      }
+      
+      .subheadline__underline {
+        border-bottom: 1px solid #d4d5d7;
+        max-width: 70%;
+        margin: 0 auto -2rem;
+        padding: 1rem 0 2.5rem;
+        display: block;
+      }
+      .section-login__headline {
+        margin: 0;
+        font-weight: normal;
+        font-size: 2.75rem;
+       }
+ 
+       .section-login__subheadline {
+        font-size: 1.35rem;
+        text-align: center;
+        margin-bottom: 1.75rem;
+       }
+       .main__content {
+      <!--  padding: 12rem 0; -->
+        background-color: #FFFFFF;
+        
+       }
+       .intro {
+    padding: 46px 0 22px;
+    /* border-bottom: 15px solid #f1f1f1; */
+}
+     
+      .popupBox{
+        background-color: #ECEDEE;
+        padding: 2em!important;
+      }    
+
+      h3{
+        box-sizing: border-box;
+        color: rgb(103, 108, 113);
+        font-family: "kuka-bulo",Calibri,Segoe UI,Helvetica,Arial,sans-serif;
+        font-size: 32px;
+        font-weight: 400;
+        hyphens: manual;
+        line-height: 35px;
+        margin-top: 20px;
+        text-align: left;       
+      }
+
+      h1{
+        font-size: 2.75rem;
+        text-align: center;   
+      }
+
+      .row{
+            padding-bottom: 1.5em;
+      }
+        .row1{
+            padding-bottom: 1.5em;
+             background-color: #FFFFFF;
+      }
+
+/*
+      input[type="search"]:focus {
+        box-shadow: 0 0 5px #ff5800!important;
+        padding: 3px 0px 3px 3px;
+        margin: 5px 1px 3px 0px;
+        border: 1px solid #ff5800!important;
+      } 
+*/
+      .select2-search__field:focus{
+        box-shadow: 0 0 5px #cccccc!important;
+        padding: 3px 0px 3px 3px;
+        margin: 5px 1px 3px 0px;
+        border: 1px solid #cccccc!important;
+      }
+
+      input:-webkit-autofill:focus {
+          -webkit-box-shadow: 0 0 5px #cccccc!important;
+      } 
+
+      .errorM3{
+        padding-left: 20%;
+      }
+  
+      .select2-selection__rendered {
+          color: rgb(103, 108, 113);
+      }
+      
+      hr {
+  width: 40%;
+  margin: 1.85rem auto 1.75rem;
+  background: #d4d5d7;
+  border: none;
+  height: 1px;
+}
+
+.submit-button {
+  display: block;
+  width: 100%;
+  padding: 1rem 0 1.1rem;
+  margin-top: 1rem;
+  font-size: 1.35rem;
+  line-height: 1.5rem;
+}
+
+.submit-button[disabled],
+.submit-button.state-disabled {
+  cursor: not-allowed;
+  opacity: 0.8;
+  filter: alpha(opacity=0.8);
+}
+      
+    
+  </style>
+  <!--
+<link rel="stylesheet" href="https://www.kuka.com//bundle_app.css" type="text/css"></link>
+<script type="text/javascript" src="https://www.kuka.com//bundle_app.js" async=""></script>
+-->
+<!-- <apex:includeScript value="{!URLFOR($Resource.KUKA_comm, 'jquery-3.1.1.min.js')}"/> -->
+
+<script type="text/javascript" src="https://static.kuka.com/salesforce/SsoPageResources/bundle_app.js"></script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script> -->
+<!-- <script src="https://static.kuka.com/salesforce/SsoPageResources/assets/js/select2/4.0.3/select2.min.js"></script> -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.full.js"></script>
+<!-- <apex:includeScript value="{!URLFOR($Resource.KUKA_comm, 'jquery-3.1.1.min.js')}"/> -->
+<!-- <apex:includeScript value="{!URLFOR($Resource.KUKA_comm, 'select2.min.js')}"/> -->
+
+<!-- Include jQuery Popup Overlay (http://dev.vast.com/jquery-popup-overlay/) -->
+<!-- <script src="https://cdn.rawgit.com/vast-engineering/jquery-popup-overlay/1.7.13/jquery.popupoverlay.js"></script> -->
+<script src="https://static.kuka.com/salesforce/SsoPageResources/assets/js/jquery-popup-overlay/1.7.13/jquery.popupoverlay.js"></script> 
+<!-- <apex:includeScript value="{!URLFOR($Resource.KUKA_comm, 'jquery.popupoverlay.js')}"/> -->
+ 
+
+
+
+ 
+
+</head>
+
+
+<body class="mod mod-layout" data-connectors="responsive, toggle" onload="setSubmitButtonDisabled()">
+
+<header class="o-header js-header">
+<nav class="mod mod-nav" data-connectors="responsive, toggle">
+  <script type="text/template" id="scroll-overlay">
+    <div class="mod-nav__scroll-overlay mod-nav__scroll-overlay--top text-center hide-xs hide-sm js-scroll-overlay" data-direction="top">
+      <span class="mod-nav__scroll-btn icon-arrow-up"></span>
+    </div>
+    <div class="mod-nav__scroll-overlay mod-nav__scroll-overlay--bot text-center hide-xs hide-sm js-scroll-overlay state-visible" data-direction="bottom">
+      <span class="mod-nav__scroll-btn icon-arrow-down"></span>
+    </div>
+  </script>
+</nav>
+
+<div class="o-header__wrapper container h-expand-background h-expand-background--white">
+  <div class="o-header__bar">
+    <nav class="mod mod-nav-meta" data-connectors="nav, toggle">
+      <ul class="mod-nav-meta"></ul>
+    </nav>
+    
+          
+    <a class="mod mod-logo" href="https://www.kuka.com/" target="" data-ignore="true">
+        <figure class="mod-logo__wrapper pull-right">
+        <!--
+        <img src="https://static.kuka.com/salesforce/SsoPageResources/-/media/kuka-corporate/images/home/logos/kuka_logo.svg?h=37&amp;la=en-DE&amp;w=200&amp;hash=972AEC58E0277525F9C06683AD76EB6B285D189D" alt="KUKA" width="200" height="37" />
+        -->
+
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+   viewBox="-429 303 558 240" style="enable-background:new -429 303 558 240;" xml:space="preserve">
+<style type="text/css">
+  .st0{fill:none;}
+  .st1{fill:#FF6C2C;}
+</style>
+<rect x="-429" y="303" class="st0" width="558" height="240"/>
+<g>
+  <polygon class="st1" points="-321.5,421.6 -321.5,382.2 -347,382.2 -347,462.3 -321.5,462.3   "/>
+  <polygon class="st1" points="-238.7,462.3 -288.1,421.6 -238.7,382.2 -274.9,382.2 -321.5,421.6 -274.9,462.3  "/>
+  <path class="st1" d="M-122.4,434.3v-52.1H-148v47.5c0,10.2-3.8,13.2-14.3,13.2h-25.3c-10.5,0-14.3-3-14.3-13.2v-47.5h-25.6v52.1
+    c0,19.9,10.7,29.4,34.2,29.4h36.6C-133.1,463.8-122.4,454.3-122.4,434.3"/>
+  <polygon class="st1" points="-76.8,421.6 -76.8,382.2 -102.3,382.2 -102.3,462.3 -76.8,462.3  "/>
+  <polygon class="st1" points="5.9,462.3 -43.5,421.6 5.9,382.2 -30.2,382.2 -76.8,421.6 -30.2,462.3  "/>
+  <path class="st1" d="M78.8,382.2H56.2L6,462.2h29.4l8.5-13.9h47.4l8.5,13.9h29.4L78.8,382.2z M52.6,432.4l14.9-25.5l14.9,25.5H52.6
+    z"/>
+</g>
+</svg>
+
+
+        </figure>
+    </a>
+  </div>
+</div>
+<div class="a-site-overlay js-site-overlay"></div>              
+</header>
+
+<!-- <main class="container js-anchorbar-trigger"> -->
+   <div class="main__content main__content--register"> 
+  <!--  <div class="row" > 
+    <div class="col-sm-10 col-sm-offset-1">    -->  
+    
+    <!--    <section class="mod mod-page-intro h-no-margin-top text-left">     
+   <div class="row h-pull-row-right-1 h-pull-row-left-1 mod-page-intro__bd state-moved">  -->
+     <!--   <div class="row ">      
+         <div class="col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 regForm" >
+      
+          <h1 class="section-register__headline">{!$Label.CommunitySelfReg_PageHeading_New}</h1>
+          <p class="section-login__subheadline"><span class="subheadline__underline">{!$Label.CommunitySelfReg_PageHeadingDesc_New}</span>             
+          </p>
+           
+            <br/>           
+      </div> 
+    
+      </div>  -->
+     
+      <main class="container js-anchorbar-trigger">             
+         <div class="col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 regForm" >  
+         <div class="section-register__header">    
+          <h1 class="section-register__headline">{!$Label.CommunitySelfReg_PageHeading_New}</h1>
+           <p class="section-login__subheadline">{!$Label.CommunitySelfReg_PageHeadingDesc_New}         
+          </p>        
+      </div>      
+      </div>
+       <hr/>
+       <br/>
+    <div class="row" > 
+     <div class="col-sm-10 col-sm-offset-1">
+    <section class="mod mod-page-intro h-no-margin-top text-left">     
+<apex:form id="theForm" styleClass="m-form regForm" forceSSL="true">
+                 
+                              
+                <apex:outputPanel rendered="{!hasError}">                 
+                    <div class="m-form-error">                        
+                        <p class="m-form-error__message">
+                          <span class="m-form-error__message-text intro">
+                          {!$Label.CommunitySelfReg_ValidationErrors}
+                          <apex:pageMessages id="error"/>
+                          </span>
+                        </p>
+                    </div>
+                </apex:outputPanel>
+                  
+                  <div class="row">
+                        <h3>{!$Label.CommunitySelfReg_HeaderPersonaData_New}</h3>
+                  </div>
+            <!--        <div class="input-holder">
+                      <apex:selectRadio value="{!helperContact.Salutation}">
+                      <apex:selectOptions  html-name="salutation" id="salutation" value="{!helperContact.Salutation}"/>
+            </apex:selectRadio><p/>
+            </div>  -->
+                  <div class="row">
+                        <div class="col-xs-12 col-sm-3">
+                          <span class="a-select__container">                                                
+                          <apex:inputField required="false" styleClass="select2-hidden-accessible .js-select2 s2element"   html-data-placeholder="{!$Label.CommunitySelfReg_Salutation}" html-aria-hidden="true" html-tabindex="-1" html-name="salutation" id="salutation" value="{!helperContact.Salutation}" /> 
+                          <apex:outputLabel styleClass="a-select__label js-select-label" value="{!$Label.CommunitySelfReg_Salutation}" for="salutation"/>
+                          <span class="a-field-error"><div class="errorMsg">{!error_salutation}</div></span>  
+                          </span>
+                        </div>
+                        <div class="col-xs-12 col-sm-9">
+                          <span class="a-input__container clearfix">   
+                          <apex:inputText required="false"  styleClass="a-input__field a-input__field--animated" id="firstName" value="{!firstName}" />
+                          <apex:outputLabel styleClass="a-input__label a-input__label--animated" value="{!$Label.CommunitySelfReg_FirstName}" for="firstName"/>    
+                          <span class="a-field-error"><div class="errorMsg">{!error_firstName}</div></span>                                   
+                          </span>                      
+                        </div>
+                        <div class="col-xs-12 col-sm-9">
+                          <span class="a-input__container clearfix">   
+                          <apex:inputText required="false"  styleClass="a-input__field a-input__field--animated" id="lastName" value="{!lastName}" />
+                          <apex:outputLabel styleClass="a-input__label a-input__label--animated" value="{!$Label.CommunitySelfReg_LastName}" for="lastName"/>
+                          <span class="a-field-error"><div class="errorMsg">{!error_lastName}</div></span>                
+                          </span>                      
+                        </div>  
+                        <!--
+                        <div class="col-xs-12">
+                          <span class="a-input__container clearfix">   
+                          <apex:inputText required="false"  styleClass="a-input__field a-input__field--animated" id="communityNickname" value="{!communityNickname}" />
+                          <apex:outputLabel styleClass="a-input__label a-input__label--animated" value="{!$Label.site.community_nickname}" for="communityNickname"/>
+                          <span class="a-field-error"><div class="errorMsg">{!error_communityNickname}</div></span>                
+                          </span>                      
+                        </div>
+                        -->    
+                        <!--
+                        <div class="col-xs-12">
+                          <span class="a-input__container clearfix">   
+                          <apex:inputText required="false" styleClass="a-input__field a-input__field--animated" label="" id="email" value="{!email}" disabled="{!IF(email== '',false,true)}"/>
+                          <apex:outputLabel styleClass="a-input__label a-input__label--animated" value="{!$Label.site.email}" for="email"/>
+                              <apex:outputText value="{!email}"/>
+                          <span class="a-field-error"><div class="errorMsg">{!error_email}</div></span>                
+                          </span>                      
+                        </div> 
+                        -->
+                        <div class="col-xs-12">
+                          <span class="a-input__container clearfix">   
+                          <apex:outputPanel rendered="{!IF(email!= '' && helperKukaconnect == true,true,false)}">
+                          <apex:inputText required="false" styleClass="a-input__field a-input__field--animated" label="" id="email-readonly" value="{!email}" html-readonly="readonly" />
+                          <apex:outputLabel styleClass="a-input__label a-input__label--animated" value="{!$Label.site.email}" for="email-readonly"/>
+                          </apex:outputPanel>
+                          <apex:outputPanel rendered="{!IF(email== '' || helperKukaconnect == false,true,false)}">
+                          <apex:inputText required="false" styleClass="a-input__field a-input__field--animated" label="" id="email" value="{!email}" />
+                          <apex:outputLabel styleClass="a-input__label a-input__label--animated" value="{!$Label.site.email}" for="email"/>
+                          </apex:outputPanel>
+                              <!-- <apex:outputText value="{!email}"/> -->
+                          <span class="a-field-error"><div class="errorMsg">{!error_email}</div></span>                
+                          </span>                      
+                        </div>
+                        <div class="col-xs-12">
+                          <span class="a-input__container clearfix">                     
+                          <apex:inputText styleClass="a-input__field a-input__field--animated" required="false" id="position" value="{!position}" label="Position"/>
+                          <apex:outputLabel styleClass="a-input__label a-input__label--animated" value="{!$Label.CommunitySelfReg_Position}" for="position"/>
+                          <span class="a-field-error"><div class="errorMsg">{!error_position}</div></span>  
+                          </span>                      
+                        </div>                                                 
+                </div>
+              
+                <div class="row">                        
+                        <h3>{!$Label.CommunitySelfReg_HeaderCompanyData_New}</h3> 
+                </div>
+                <div class="row">    
+                <!--                        
+                        <div class="col-xs-12">
+                          <span class="a-input__container clearfix">                     
+                          <apex:inputText styleClass="a-input__field a-input__field--animated" required="false" id="position" value="{!position}" label="Position"/>
+                          <apex:outputLabel styleClass="a-input__label a-input__label--animated" value="{!$Label.CommunitySelfReg_Position}" for="position"/>
+                          <span class="a-field-error"><div class="errorMsg">{!error_position}</div></span>  
+                          </span>                      
+                        </div>
+                -->                        
+                        <div class="col-xs-12">
+                          <span class="a-input__container clearfix">                     
+                          <apex:inputText styleClass="a-input__field a-input__field--animated" required="false" id="company" value="{!company}" label="Company Name"/>
+                          <apex:outputLabel styleClass="a-input__label a-input__label--animated" value="{!$Label.CommunitySelfReg_CompanyName}" for="company"/>
+                          <span class="a-field-error"><div class="errorMsg">{!error_company}</div></span>  
+                          </span>                      
+                        </div>
+                        <div class="col-xs-12 col-sm-6">
+                          <span class="a-input__container clearfix">                     
+                          <apex:inputText styleClass="a-input__field a-input__field--animated" required="false" id="duns" value="{!duns}" label="DUNS Number"/>
+                          <apex:outputLabel styleClass="a-input__label a-input__label--animated" value="{!$Label.CommunitySelfReg_DUNSNumber}" for="duns"/>
+                          </span>                      
+                        </div>
+                        <!--
+                        <div class="col-xs-12 col-sm-6">
+                          <span class="a-input__container clearfix">                     
+                          <apex:inputText styleClass="a-input__field a-input__field--animated" required="false" id="customernumber" value="{!customernumber}" label="Customer Number (KUKA)" disabled="{!IF(customernumber== '',false,true)}"/>
+                          <apex:outputLabel styleClass="a-input__label a-input__label--animated" value="{!$Label.CommunitySelfReg_CustomerNumber}" for="customernumber"/>
+                          </span>                      
+                        </div>
+                        -->   
+                        <div class="col-xs-12 col-sm-6">
+                          <span class="a-input__container clearfix">  
+                          <apex:outputPanel rendered="{!IF(customernumber!= '',true,false)}">
+                          <apex:inputText styleClass="a-input__field a-input__field--animated" required="false" id="customernumber-readonly" value="{!customernumber}" label="Customer Number (KUKA)" html-readonly="readonly"/>
+                          <apex:outputLabel styleClass="a-input__label a-input__label--animated" value="{!$Label.CommunitySelfReg_CustomerNumber}" for="customernumber-readonly"/>
+                          </apex:outputPanel>
+                          <apex:outputPanel rendered="{!IF(customernumber== '',true,false)}">
+                          <apex:inputText styleClass="a-input__field a-input__field--animated" required="false" id="customernumber" value="{!customernumber}" label="Customer Number (KUKA)" />
+                          <apex:outputLabel styleClass="a-input__label a-input__label--animated" value="{!$Label.CommunitySelfReg_CustomerNumber}" for="customernumber"/>
+                          </apex:outputPanel>
+                          </span>                      
+                        </div>
+                </div>
+                <div class="row">
+                        <h3>{!$Label.CommunitySelfReg_HeaderAddress_New}</h3>
+                </div>
+                <div class="row">                            
+                        <!--
+                        <div class="col-xs-12">
+                          <span class="a-textarea__container clearfix">   
+                          <apex:inputField  required="true" styleClass="a-textarea__field a-textarea--animated" id="street" value="{!helperContact.MailingStreet}" />
+                          <apex:outputLabel styleClass="a-textarea__label a-textarea__label--animated" value="Street" for="street"/>              
+                          </span>                      
+                        </div> #
+                        -->
+                        <div class="col-xs-12">
+                          <span class="a-input__container clearfix">   
+                          <apex:inputText styleClass="a-input__field a-input__field--animated" id="street" value="{!hMailingStreet}" />
+                          <apex:outputLabel styleClass="a-input__label a-input__label--animated" value="{!$Label.CommunitySelfReg_Street}" for="street"/>
+                          <span class="a-field-error"><div class="errorMsg">{!error_street}</div></span>                
+                          </span>                      
+                        </div>   
+                        <div class="col-xs-12 col-sm-3">
+                          <span class="a-input__container clearfix">   
+                          <apex:inputField styleClass="a-input__field a-input__field--animated" id="zip" value="{!helperContact.MailingPostalCode}" />
+                          <apex:outputLabel styleClass="a-input__label a-input__label--animated" value="{!$Label.CommunitySelfReg_PostalCode}" for="zip"/>
+                          <span class="a-field-error"><div class="errorMsg">{!error_zip}</div></span>                
+                          </span>                      
+                        </div> 
+                         <div class="col-xs-12 col-sm-9">
+                          <span class="a-input__container clearfix">   
+                          <apex:inputField styleClass="a-input__field a-input__field--animated" id="city" value="{!helperContact.MailingCity}" />
+                          <apex:outputLabel styleClass="a-input__label a-input__label--animated" value="{!$Label.CommunitySelfReg_City}" for="city"/>
+                          <span class="a-field-error"><div class="errorMsg">{!error_city}</div></span>                
+                          </span>                      
+                        </div>  
+                        <div class="col-xs-12 col-sm-6">
+                          <span class="a-select__container">                                                
+                          <apex:inputField required="false" styleClass="select2-hidden-accessible .js-select2 s2element" html-data-placeholder="{!$Label.CommunitySelfReg_Country}" html-aria-hidden="true" html-name="country" id="country" value="{!helperContact.MailingCountryCode}" onchange="initSelect2();" /> 
+                          <apex:outputLabel styleClass="a-select__label js-select-label" value="{!$Label.CommunitySelfReg_Country}" for="country"/> 
+                          <span class="a-field-error"><div class="errorMsg">{!error_country}</div></span>  
+                          </span>
+                        </div>
+                        <div class="col-xs-12 col-sm-6">
+                          <span class="a-select__container changeTrigger">                                                
+                          <apex:inputField required="false"  styleClass="select2-hidden-accessible .js-select2 s2element" html-data-placeholder="State" html-aria-hidden="true"  html-name="state" id="state" value="{!helperContact.MailingStateCode}" /> 
+                          <apex:outputLabel styleClass="a-select__label js-select-label" value="{!$Label.CommunitySelfReg_State}" for="state"/>
+                          <span class="a-field-error"><div class="errorMsg">{!error_state}</div></span>  
+                          </span>
+                        </div>                                                                       
+                </div>
+                  <div class="row">
+                        <h3>{!$Label.CommunitySelfReg_HeaderPhonenumbers_New}</h3>
+                </div>
+                <div class="row">                       
+                        <div class="col-xs-12 col-sm-6">
+                          <span class="a-input__container clearfix">   
+                              <apex:inputText required="false" styleClass="a-input__field a-input__field--animated" id="phone" value="{!helperContact.Phone}" 
+                                              onkeypress='return event.charCode >= 48 && event.charCode <= 57'/>
+                          <apex:outputLabel styleClass="a-input__label a-input__label--animated" value="{!$Label.CommunitySelfReg_Phone}" for="phone"/>
+                          <span class="a-field-error"><div class="errorMsg">{!error_phone}</div></span>                
+                          </span>                      
+                        </div>   
+                        <div class="col-xs-12 col-sm-6">
+                          <span class="a-input__container clearfix">   
+                          <apex:inputField styleClass="a-input__field a-input__field--animated" id="mobile" value="{!helperContact.MobilePhone}"
+                                           onkeypress='return event.charCode >= 48 && event.charCode <= 57'/>
+                          <apex:outputLabel styleClass="a-input__label a-input__label--animated" value="{!$Label.CommunitySelfReg_Mobile}" for="mobile"/>    
+                          <span class="a-field-error"><div class="errorMsg">{!error_mobile}</div></span>             
+                          </span>                      
+                        </div> 
+                </div>
+                <apex:outputPanel rendered="{!showPassword}">
+                <div class="row">
+                        <h3>{!$Label.CommunitySelfReg_HeaderPassword}</h3>
+                        <apex:outputText escape="false" styleClass="intro" value="{!$Label.CommunitySelfReg_InfoHeaderPassword}: {!$Label.CommunitySelfReg_InfoPassword}" />
+                </div>
+                <div class="row">                   
+                        <div class="col-xs-12 col-sm-6">
+                          <span class="a-input__container clearfix">   
+                          <apex:inputSecret required="false" styleClass="a-input__field a-input__field--animated" id="password" value="{!password}" onkeyup="return passwordChanged();"/>
+                          <apex:outputLabel styleClass="a-input__label a-input__label--animated" value="{!$Label.site.password}" for="password"/>
+                          <span class="a-field-error"><div class="errorMsg">{!error_password}</div></span>                
+                          </span>                      
+                        </div>   
+                        <div class="col-xs-12 col-sm-6">
+                          <span class="a-input__container clearfix">   
+                          <apex:inputSecret required="false" styleClass="a-input__field a-input__field--animated" id="confirmPassword" value="{!confirmPassword}" onkeyup="checkPass(); return false;" />
+                          
+                          <apex:outputLabel styleClass="a-input__label a-input__label--animated" value="{!$Label.site.confirm_password}" for="confirmPassword"/>
+                          <span class="a-field-error"><div class="errorMsg">{!error_passwordconfirm}</div></span>                
+                          </span>                      
+                        </div>                        
+                </div> 
+                </apex:outputPanel>
+                <div class="row">
+                        <h3>{!$Label.CommunitySelfReg_HeaderContact}</h3>
+                </div>
+                <div class="row">        
+                        <div class="col-xs-12 col-sm-6">
+                         <div class="input-holder--half">
+                      <div class="input-holder">
+                          <span class="a-select__container">                                                
+                  <!--     <apex:outputLabel value="{!$Label.KUKA_SelfREg_Bez_zu_KUKA}" /> -->
+                      <apex:selectList size="1" value="{!SelectedValue}">
+                        <apex:selectOptions value="{!statusOptions}"/>
+
+                      </apex:selectList>
+                          </span>
+                          </div>
+                          </div>
+                        </div>                       
+                        <div class="col-xs-12">
+                          <span class="a-input__container clearfix">   
+                          <label class="a-checkbox">
+                            <apex:inputCheckbox styleClass="a-checkbox__input js-ignore-manipulation" id="helperPermNewsletter" value="{!helperPermNewsletter}" />
+                            <span class="a-checkbox__markbox"></span>
+                            <span class="a-checkbox__caption copy">{!$Label.KUKA_SelfREg_ContactPermission}</span>
+                          </label>             
+                          </span>                      
+                        </div>
+                        <div class="col-xs-12">
+                          <span class="a-input__container clearfix">   
+                          <label class="a-checkbox">
+                            <apex:inputCheckbox styleClass="a-checkbox__input js-ignore-manipulation"  onclick="ToSChecked(this);" id="tos_accepted" value="{!tos_accepted}"/> 
+                             
+                            <span class="a-checkbox__markbox"></span>
+                              <span class="a-checkbox__caption copy">
+                                  {!$Label.KUKA_SelfREg}
+                                  <a href="" class="tos_popup_open" style="color:#676c71; text-decoration:underline;">{!$Label.KUKA_SelfREg_TandC}</a>
+                                  {!$Label.KUKA_SelfREg_and}
+                                  <a href="" class="datapriv_popup_open" style="color:#676c71; text-decoration:underline;">{!$Label.KUKA_SelfREg_PrivacyPolicy}</a>
+                              </span>
+                          
+                          </label>
+                          </span>                        
+                        </div>                     
+                        <div style="visibility:hidden">  
+                            <apex:inputCheckbox styleClass="a-checkbox__input js-ignore-manipulation" id="helperKukaconnect" value="{!helperKukaconnect}" />           
+                            <apex:inputText required="false" html-name="hexternalSfId" id="hexternalSfId" value="{!hexternalSfId}" />                                                                                                                                                           
+                        </div>                     
+                </div>   
+                              
+                                                      
+                <div class="row">
+                    <!-- <div class="col-xs-12 col-sm-6">
+                      <apex:commandButton styleClass="a-btn a-btn--primary"  action="{!registerUser}"  value="{!$Label.site.submit}" id="submit" /> -->
+                      <div class="col-xs-12">
+                       <apex:commandButton styleClass="submit-button a-btn--primary --inline"  action="{!registerUser}"  value="{!$Label.site.submit}" id="submit" />
+                      </div>        
+                </div>                                                                
+</apex:form>
+
+     <!--  </div>
+   </div>  -->
+</section>
+        
+        
+        
+<apex:outputPanel id="tcenglish" rendered="{!mylangu != 'de'}">  
+      <div id="tos_popup" style="margin-top:25px;margin-bottom:25px;">
+        <div class="col-sm-10 col-sm-offset-2 col-md-8 col-md-offset-2 popupBox">
+           <div class="row">
+            <div class="col-xs-12">
+                  <h3>{!$Label.CommunitySelfReg_HeaderTandD}</h3>
+            </div>
+          </div>        
+          <div class="row">
+            <div class="col-xs-12">            
+            <p>
+              THIS AGREEMENT IS A LEGALLY BINDING CONTRACT. BY SIGNING AN ORDERING DOCUMENT THAT REFERENCES THIS AGREEMENT, YOU ACCEPT AND ARE BOUND BY THIS AGREEMENT. IF YOU DO NOT AGREE TO THIS AGREEMENT, PLEASE DO NOT ACCEPT OR SIGN THE ORDERING DOCUMENT.
+              <br/><center>KUKA CONNECT AGREEMENT</center>
+            </p>
+        <ol>
+                      <br/>
+                      <li><span style="text-decoration: underline; font-weight: bold">Introduction.</span>
+                          In accordance with one or more Ordering Documents, this KUKA Connect Agreement (“Agreement”) is entered into by 
+                          the entity or other business designated in the applicable Ordering Document or, if no entity or other business 
+                          is designated in the applicable Ordering Document, the entity or other business acted for and implicitly represented 
+                          by the individual signing the Ordering Document (the entity or other business hereinafter “you”) on the one hand and 
+                          KUKA Roboter GmbH, a corporation with a principal place of business at Zugspitzstrasse 140, 86165 Augsburg, Germany (“KUKA”) 
+                          on the other hand. This Agreement incorporates by reference any applicable Ordering Documents. If any term of this KUKA Connect 
+                          Agreement directly conflicts with any term of any applicable Ordering Document, the term of the Ordering Document will control. 
+                          This Agreement is effective on the date you accept the applicable Ordering Document (“Effective Date”). “Ordering Document” 
+                          means any quotation, proposal, order form, or similar document issued by KUKA and that references this KUKA Connect Agreement.
+                      </li>
+                      <br/><li><span style="text-decoration: underline; font-weight: bold">Service and Equipment Terms.</span> In accordance with this Agreement, KUKA will provide and allow you to access and use, during the Term (as defined in Section 4 below), the services and equipment as set forth in the applicable Ordering Document (“Services”). The right to access and use the Services will be granted to you for individual pieces of machinery you operate and control, such as robots and similar terminal devices located at your premises (each such piece of machinery a “Terminal Device”). Subject to the applicable Ordering Document, you will be issued a separate license for each single Terminal Device you would like to access and use the Services for. Licenses issued for a particular Terminal Device cannot be used for or transferred to any other Terminal Device. Use of the Services may be made solely by your employees, officers, agents, representatives and contractors (“Users”) and solely for your business purposes. The Ordering Document may set forth a Service plan (such as “KUKA Connect Lite” or “KUKA Connect Plus”) that describes the particular set of Services that KUKA will provide to you (“Selected Plan”). You may downgrade the Selected Plan before the start of any Renewal Term (as defined in Section 4 below). You will handle any equipment included within the Services (“Equipment”) with reasonable care and exercise commercially reasonable efforts to keep the Equipment from being lost, damaged, destroyed, or stolen (each of those instances a “Loss”). You will notify KUKA of any such Loss within 10 days of the Loss. KUKA may update the software, firmware, and other components of the Equipment at any time and without notice to you, provided such update does not impair the operability, usability, functionality or features of the Equipment. The Services contain or use certain third party products or products subject to the open source licenses listed in the applicable Ordering Document. By signing the applicable Ordering Document you accept and agree to be bound by the respective open-source licenses. KUKA will respond to related inquiries in response to messages sent to opensource@kuka.com. The Services are designed to facilitate your operation, control and maintenance of each Terminal Device you have acquired a license for by providing you with certain data on the status and performance of the Terminal Device (“Data”). The Data is meant to help you make a decision on whether to take action or apply adjustments in order to optimize the efficiency and avoid malfunctions of the Terminal Device (“Operational Decisions”). Notwithstanding, the Data is based solely on the information that, to the best of KUKA’s technical abilities and depending on Your Technical Infrastructure (as defined in Section 6 below), can be collected through the Equipment. For this reason, it is imperative that you confirm the accuracy and reliability of the Data before making any Operational Decisions by taking into account information regarding the Terminal Device that is available to you on site and is not processed by the Equipment. By signing the Ordering Document and entering into this Agreement, you acknowledge that, as part of the Services, KUKA cannot and does not promise to provide correct and reliable Data or any other work results but commits to exercise commercially reasonable efforts to make available to you Data that help you exercise your responsibility for the Terminal Device and make appropriate Operational Decisions.</li>
+                      <br/><li><span style="text-decoration: underline; font-weight: bold">Ownership. </span> As between you and KUKA, (i) you own all data you provide using the Services, (ii) KUKA is the owner of all intellectual property in and related to the Services, and (iii) KUKA retains all ownership, title and interest in the Equipment. KUKA has the right to store, use, analyze and otherwise process any information pertaining to your Terminal Devices that is collected through the Equipment for the purposes of improving or developing existing or new products or services. Other than as expressly set forth in this Agreement, KUKA does not grant or otherwise convey any license or other right in or to the Services to you. There are no implied licenses under this Agreement. </li>
+                      <br/><li><span style="text-decoration: underline; font-weight: bold">Term.</span> The initial term of this Agreement is specified in the applicable Ordering Document (“Initial Term”). Unless either party terminates this Agreement in accordance with its terms 30 days before the end of the Initial Term or the then current Renewal Term, this Agreement will automatically renew under the terms set forth in the applicable Ordering Document and for the shorter of (i) the same period of time as the Initial Term, or (ii) one (1) year (“Renewal Term”; the Initial Term and any applicable Renewal Terms collectively “Term”), except that KUKA may increase the Fees (as defined in Section 5 (Fees)) for each Renewal Term by providing notice to you at least 45 days before the first day of the Renewal Term. If either party terminates this Agreement in accordance with the above terms, this Agreement will terminate on the last day of the Initial Term or the then current Renewal Term. The right of either party to terminate this Agreement for cause shall remain unaffected. Either party may, in particular, terminate this Agreement for cause if the other party has materially breached any part of this Agreement and has failed to cure that breach within 30 days of its receipt of written notice from the non breaching party describing the breach. If you do not make payments due under this Agreement, KUKA may suspend the Services following two (2) weeks written notice to you. Sections 3 and 11 through 13 will survive the termination or expiration of this Agreement.</li>
+                      <br/><li><span style="text-decoration: underline; font-weight: bold">Fees. </span> You will pay KUKA the fees in accordance with the applicable Ordering Document (“Fees”). All Fees are exclusive of and will be paid in addition to any statutory taxes applicable at the time an invoice is issued by KUKA. The applicable Ordering Document may specify certain limitations. If you exceed those limitations, you may be responsible for additional charges as set forth in the applicable Ordering Document. Unless otherwise specified in the applicable Ordering Document, your payment of Fees will become due within 30 days of receiving an invoice from KUKA. The statutory default interest rate shall apply to any unpaid Fees due under this Agreement. You will pay any reasonable fees and costs that KUKA incurs in collecting any unpaid Fees due under this Agreement. </li>
+                      <br/><li><span style="text-decoration: underline; font-weight: bold">Your Responsibilities.</span> Except as provided in the applicable Ordering Document, you are solely responsible, at your own expense, for acquiring, installing and maintaining all connectivity equipment, hardware, software and other equipment not part of the Equipment as may be necessary for you and your users to connect to, access and use the Services (“Your Technical Infrastructure”). Unless set forth in the applicable Ordering Document, you are also solely responsible, at your own expense, for properly installing the Equipment at your premises in order to be able to use the Services. You are solely responsible for the consequences of any lack of availability of the Services resulting out of your Technical Infrastructure or the improper installation on your part of the Equipment at your premises. You are responsible for providing complete and accurate information and account set-up data to KUKA, keeping confidential all Services, account passwords, usernames, and training material provided to you. You have sole responsibility for the accuracy, quality, integrity, legality, reliability, and appropriateness of all information you submit in connection with your use of the Services. You are responsible for all claims, liabilities, and damages of third parties and all damages, cost or other losses you may incur as a result of your use of the Services provided in accordance with the applicable Ordering Document and the Selected Plan or any data provided by such Services. You will use the Services in accordance with all applicable laws. You will not (a) license, sublicense, sell, rent, lease, transfer, assign, distribute, time share, or otherwise commercially exploit or make the Services available to any third party, other than as contemplated by this Agreement; (b) send to or cause to be sent to KUKA or the Services any material containing software viruses, worms, Trojan horses, or other harmful computer code, files, scripts, agents, or programs; (c) interfere with or disrupt the integrity or performance of the Services or the data contained in the Services; (d) attempt to gain unauthorized access to the Services or its related systems or networks; or (e) conceal or remove any title, trademark, copyright, proprietary or restricted rights notice contained in the Services. You will not (i) download, reproduce, copy, alter, adapt, modify, improve, enhance, translate, or create derivative works based on the Services; (ii) create links to or from the Services, or frame or mirror any content forming part of the Services, other than on your own networks for your own internal business purposes; or (iii) disassemble, reverse engineer, decompile, or otherwise attempt to reveal the code, trade secrets or know-how underlying the Services, or access the Services in order to (A) build a competitive product or service, (B) build a product or service using similar features, functions or graphics, or (C) copy any features, functions or graphics of the Services. You will exercise commercially reasonable efforts and implement commercially reasonable measures to ensure that the Services are only used by your Users in accordance with this Agreement. You will notify KUKA without undue delay if the Equipment, or any part thereof, becomes inoperative or otherwise does not operate as contemplated by this Agreement. Following the expiration or termination of this Agreement, you will uninstall and return the Equipment to KUKA.</li>
+                      <br/><li><span style="text-decoration: underline; font-weight: bold">Wrongful Uses of the Services.</span> You agree not to use the Services for any wrongful or unlawful purpose or in any wrongful or unlawful way, including to intimidate, harass, libel or otherwise violate the right of privacy or publicity or other rights of another person. Your use of the Services is at your sole risk and responsibility. KUKA is not obligated to monitor the Services to examine the activity and information made available through it. If KUKA is made aware of any activity on your part in relation to the Services that is offensive, indecent, obscene, violent, abusive, a misuse of the Services, or unlawful, KUKA may discontinue the Services, or any part thereof, unless you immediately cease such activity upon notice by KUKA and KUKA will not be liable in any way for the disconnection of the Services or any part thereof.</li>
+                      <br/><li><span style="text-decoration: underline; font-weight: bold">Indemnification. </span>You agree not to use the Services for any wrongful or unlawful purpose or in any wrongful or unlawful way, including to intimidate, harass, libel or otherwise violate the right of privacy or publicity or other rights of another person. Your use of the Services is at your sole risk and responsibility. KUKA is not obligated to monitor the Services to examine the activity and information made available through it. If KUKA is made aware of any activity on your part in relation to the Services that is offensive, indecent, obscene, violent, abusive, a misuse of the Services, or unlawful, KUKA may discontinue the Services, or any part thereof, unless you immediately cease such activity upon notice by KUKA and KUKA will not be liable in any way for the disconnection of the Services or any part thereof.</li>
+                      <br/><li><span style="text-decoration: underline; font-weight: bold">Failure to Provide Services. </span>If KUKA suspends the Services in accordance with this Agreement, KUKA will not be responsible for any losses you incur due to the suspension of the Services. KUKA’s sole obligation, and your exclusive remedy, for any failure, defect, inaccuracy or interruption in the Services occurring despite KUKA’s commercially reasonable efforts to avoid such occurrences will be that KUKA will use commercially reasonable efforts to restore the Services as soon as reasonably possible.</li>                                                                                     
+                      <br/><li><span style="text-decoration: underline; font-weight: bold">Defects of the Equipment. </span>KUKA hereby explicitly disclaims any no-fault liability for deviations of the Equipment from the contractual specifications (each such deviation a “Defect”) in existence at the Effective Date of this Agreement (verschuldensunabhängige Haftung für anfängliche Mängel). Otherwise, your rights regarding Defects of the Equipment are subject to the applicable statutory provisions.</li>                                                                                      
+                      <br/>
+                        <li>
+                            <span style="text-decoration: underline; font-weight: bold">LIMITATION OF LIABILITY..</span>
+                        <ol>
+                          <br/>
+                            <li>
+                                <span style="text-decoration: underline; font-weight: bold; margin-left:10px">Unlimited Liability.</span>
+                                    KUKA’s liability is unlimited if and to the extent that (i) it relates to the injury of life, body or health, (ii) is due to gross negligence, 
+                                    willful misconduct or malice, or (iii) results out of a contractual guarantee (Garantieversprechen) furnished by KUKA.
+                            </li>
+              <br/><li><span style="text-decoration: underline; font-weight: bold; margin-left:10px">Breach of Essential Contractual Obligations.</span>Subject to Section 11.1, KUKA’s liability for the simply negligent breach of essential contractual obligations (wesentliche Vertragspflichten) shall be limited to the typically foreseeable damage. For the purposes of this Section 11.2, essential contractual obligations (wesentliche Vertragspflichten) are obligations whose fulfillment is essential to the proper implementation of this Agreement, whose breach jeopardizes the achievement of the purpose underlying this Agreement and which may be and regularly are trusted to be complied with.</li>
+              <br/><li><span style="text-decoration: underline; font-weight: bold; margin-left:10px">Exclusion of Liability.</span>Subject to Sections 11.1 and 11.2, KUKA’s liability, under any theory of law, shall be excluded.</li>
+              <br/><li><span style="text-decoration: underline; font-weight: bold; margin-left:10px">Product Liability Act.</span> KUKA’s liability under the German Product Liability Act (Produkthaftungsgesetz) shall remain unaffected by Sections 11.2 and 11.3.</li>
+              <br/><li><span style="text-decoration: underline; font-weight: bold; margin-left:10px">Personal Liability.</span>Sections 11.1 through 11.4 shall apply mutatis mutandis to the personal liability of KUKA’s employees, officers, agents, representatives and contractors. </li>                                                                                            
+                        </ol>                      
+                      </li>
+                      <br/><li><span style="text-decoration: underline; font-weight: bold">Governing Law and Jurisdiction. </span>This Agreement is governed by and shall be construed according to the laws of the Federal Republic of Germany, without giving effect to its conflict of laws provisions. The parties expressly disclaim the applicability of the United Nations Convention on Contracts for the International Sale of Goods (CISG). The parties will submit all disputes arising out of or in connection with this Agreement to the exclusive jurisdiction of the courts located in Munich, Germany.</li>
+                      <br/><li><span style="text-decoration: underline; font-weight: bold">General Provisions. </span>This Agreement constitutes the entire agreement between you and KUKA with respect to the subject matter of this Agreement and supersedes all prior representations and understandings, whether written or oral, with respect to that subject matter. You may not assign this Agreement or any of its rights or delegate any of your duties without KUKA’s prior written consent. Except for obligations to make payment, neither party shall be liable for any failure to perform or delay in performing any obligation under this Agreement if such failure or delay is due to fire, flood, earthquake, strike, war (declared or undeclared), embargo, blockade, legal prohibition, governmental action, riot, insurrection, damage, destruction, component or materials shortage or any other cause beyond the reasonable control of such party. References to and mentions of the word “include(ing)” or the phrase “e.g.” mean “including, without limitation.”</li>
+                      <br/><li><span style="text-decoration: underline; font-weight: bold">Typographical Errors.  </span>If a Service is mistakenly listed in the applicable Ordering Document with an incorrect price, KUKA may refuse or cancel the Ordering Document for the Service listed at the incorrect price in accordance with the applicable statutory law.</li>                     
+                      <center>* * * * *</center>
+                </ol>
+              <!-- Add an optional button to close the popup -->
+              <center><button class="tos_popup_close a-btn a-btn--primary">{!$Label.CommunitySelfReg_ButtonTandDClose}</button></center>
+            </div>
+          </div> 
+        </div>
+      </div>   
+</apex:outputPanel> 
+<apex:outputPanel id="tcdeutsch" rendered="{!mylangu == 'de'}">  
+  <div id="tos_popup" style="margin-top:25px;margin-bottom:25px;">
+        <div class="col-sm-10 col-sm-offset-2 col-md-8 col-md-offset-2 popupBox">
+           <div class="row">
+            <div class="col-xs-12">
+                  <h3>{!$Label.CommunitySelfReg_HeaderTandD}</h3>
+            </div>
+          </div>        
+          <div class="row">
+            <div class="col-xs-12">            
+            <p>
+              DIE VORLIEGENDE VEREINBARUNG STELLT EINEN RECHTLICH VERBINDLICHEN VERTRAG DAR. MIT UNTERZEICHNUGN EINES BESTELLFORMULARS, DAS AUF DIE VORLIEGENDE VEREINBARUING VERWEIST, VERPFLICHTEN SIE SICH ZUR EINHALTUNG DER VERTRAGLICHEN BESTIMMUNGEN. SOLLTEN SIE DIESE VEREINBARUNG NICHT ABSCHLIEßEN WOLLEN, SEHEN SIE BITTE VON DER ANNAHME ODER UNTERZEICHNUNG DES BESTELLFORMULARS AB.
+                   <br/><br/>
+                    <center>KUKA CONNECT VEREINBARUNG</center>
+                    <br/>
+            </p>
+          <ol>
+                      <br/><li><span style="text-decoration: underline; font-weight: bold">Vertragspartner </span> Die vorliegende KUKA Connect Vereinbarung (nachfolgend “Vereinbarung”) wird auf der Grundlage eines oder mehrerer Bestellformulare zwischen dem im jeweiligen Bestellformular benannten Unternehmen und der KUKA Robert GmbH, Zugspitzstrasse 140, 86165 Augsburg (nachfolgend „KUKA“) abgeschlossen. Falls im jeweiligen Bestellformular kein Unternehmen benannt wird, wird Vertragspartner von KUKA dasjenige Unternehmen, für dessen Betrieb das Bestellformular unterzeichnet wird (das im Bestellformular benannte oder für die Unterzeichnung des Bestellformulars betrieblich verantwortliche Unternehmen nachfolgend „Sie“). Sämtliche dieser Vereinbarung zugrunde liegenden Bestellformulare sind Bestandteil der Vereinbarung. Im Fall von Widersprüchen zwischen der vorliegenden Vereinbarung und einem Bestellformular kommt den Regelungen des Bestellformulars Vorrang vor dieser Vereinbarung zu. Der Begriff „Bestellformular“ bezeichnet jegliche Kostenvoranschläge, Angebote, Bestellscheine und ähnliche von KUKA ausgestellte Dokumente, die auf die vorliegende Vereinbarung verweisen. </li>
+                      <br/><li><span style="text-decoration: underline; font-weight: bold">Leistungsbestandteile</span> Auf der Grundlage dieser Vereinbarung wird Ihnen KUKA während der Vertragslaufzeit (siehe Ziffer 4) die im Bestellformular beschriebenen Dienstleistungen und technische Ausstattung (nachfolgend zusammen „Leistungen“) zur Verfügung stellen und deren Benutzung gestatten. Das Nutzungsrecht an den Leistungen wird Ihnen für einzelne Maschinen wie etwa Roboter und ähnliche industrielle Fertigungsanlagen eingeräumt, die Sie in Ihrer Betriebsstätte vor Ort einsetzen (nachfolgend jeweils „Endgerät“). Abhängig von den näheren Angaben im Bestellformular wird Ihnen für jedes einzelne Endgerät, für das Sie die Leistungen nutzen möchten, eine gesonderte Lizenz erteilt. Für ein bestimmtes Endgerät erteilte Lizenzen können nicht für andere Endgeräte genutzt oder auf diese übertragen werden. Die Nutzung der Leistungen ist ausschließlich zur Wahrnehmung Ihrer internen Geschäftszwecke durch Ihre Mitarbeiter, leitenden Angestellten, gesetzlichen Vertreter, Bevollmächtigten und Auftragnehmer (nachfolgend zusammen „Nutzer“) erlaubt. Im Einzelfall kann das Bestellformular eine Leistungsbeschreibung (wie etwa „KUKA Connect Lite“ oder „KUKA Connect Plus“) enthalten oder in Bezug nehmen, die die von KUKA im Einzelnen an Sie zu erbringenden Leistungen festlegt (nachfolgend „Gewählter Leistungstarif“). Sie können den von Ihnen Gewählten Leistungstarif jederzeit mit zukünftiger Wirkung zu Beginn eines beliebigen nachfolgenden Verlängerungszeitraums der Vertragslaufzeit (siehe Ziffer 4) herabstufen. Sie sind verpflichtet, jegliche in den Leistungen enthaltene technische Ausstattung (nachfolgend „Ausstattung“) mit angemessener Sorgfalt zu behandeln sowie nach Treu und Glauben zumutbare Maßnahmen zu ergreifen, um den Verlust, die Beschädigung, Zerstörung oder Entwendung der Ausstattung (jedes dieser Ereignisse nachfolgend „Beeinträchtigung“) zu verhindern. Jegliche Beeinträchtigung der Ausstattung oder von Teilen der Ausstattung ist KUKA innerhalb von 10 Tagen anzuzeigen. KUKA ist berechtigt, die Software, Firmware oder andere Bestandteile der Ausstattung jederzeit und ohne vorherige Mitteilung Ihnen gegenüber zu aktualisieren, soweit dadurch nicht die Betriebsfähigkeit, Nutzbarkeit, Funktionalität oder die Leistungsmerkmale der Ausstattung beeinträchtigt werden. Die Leistungen enthalten oder verwenden bestimmte Drittbestandteile oder Bestandteile, die den im Bestellformular bezeichneten Open Source-Lizenzen unterliegen. Mit Unterzeichnung des Bestellformulars verpflichten Sie sich, die betreffenden Open Source-Lizenzen einzuhalten. Mit etwaigen Fragen in diesem Zusammenhang können Sie sich unter folgender E-Mail-Adresse an KUKA wenden: opensource@kuka.com. Die Leistungen sind dazu bestimmt, Ihnen den Betrieb, die Überwachung sowie die Wartung von Ihnen lizenzierter Endgeräte durch die Bereitstellung verschiedener Daten betreffend den Betriebsstatus und die Leistung der Endgeräte (nachfolgend „Betriebsdaten“) zu erleichtern. Die Betriebsdaten sollen Sie bei Entscheidungen über Maßnahmen oder Anpassungen zur Effizienzoptimierung und Vermeidung von Störungen der Endgeräte unterstützen (nachfolgend „Operative Entscheidungen“). Die Betriebsdaten beruhen jedoch ausschließlich auf denjenigen Informationen, die im Rahmen der technischen Möglichkeiten von KUKA sowie abhängig von Ihrer Technischen Infrastruktur (siehe Ziffer 6) mittels der Ausstattung gesammelt werden können. Daher ist eine Verifizierung der Betriebsdaten von Ihrer Seite vor der Umsetzung etwaiger Operativer Entscheidungen unter Berücksichtigung solcher Informationen zu den betreffenden Endgeräten unverzichtbar, die Ihnen vor Ort zur Verfügung stehen und nicht mittels der Ausstattung erfasst werden. Mit Unterzeichnung des Bestellformulars und Abschluss dieser Vereinbarung erkennen Sie an, dass KUKA als Bestandteil der Leistungen keinerlei Zusicherungen betreffend die Richtigkeit, Vollständigkeit oder Verlässlichkeit der Betriebsdaten machen oder die Lieferung sonstiger Leistungsergebnisse zusagen kann. Die von KUKA erbrachten Leistungen sind vielmehr ausschließlich dazu bestimmt, auf die Bereitstellung von Betriebsdaten hinzuwirken, die Ihnen bei der Wahrnehmung Ihrer Verantwortung für die betreffenden Endgeräte und dem Treffen zweckmäßiger Operativer Entscheidungen behilflich sind.</li>
+                      <br/><li><span style="text-decoration: underline; font-weight: bold">Rechteinhaberschaft</span> Den Parteien stehen folgende Rechte zu: (i) Ihnen stehen die Rechte an sämtlichen Daten zu, die Sie im Rahmen des Erhalts der Leistungen zur Verfügung stellen; (ii) KUKA ist Inhaberin sämtlicher geistiger Eigentums- und gewerblicher Schutzrechte an und in Zusammenhang mit den Leistungen; und (iii) die Ausstattung ist und verbleibt im Eigentum von KUKA. KUKA ist berechtigt, jegliche über die Ausstattung erfasste Daten und Informationen bezüglich Ihrer Endgeräte zur Verbesserung bestehender oder Entwicklung neuer Produkte und Dienstleistungen zu speichern, nutzen, analysieren oder anderweitig zu verarbeiten. Soweit nicht ausdrücklich abweichend vereinbart, gewährt Ihnen KUKA keinerlei Lizenzen oder Nutzungsrechte an oder in Zusammenhang mit den Leistungen. Aus dieser Vereinbarung ergeben sich insbesondere keine implizit oder konkludent eingeräumten Lizenzen oder Nutzungsrechte.</li>
+                      <br/><li><span style="text-decoration: underline; font-weight: bold"> Vertragslaufzeit, Anpassung der Vergütung und Aussetzung der Leistungen</span> Die anfängliche Laufzeit dieser Vereinbarung (nachfolgend „Anfängliche Laufzeit“) ist im Bestellformular festgelegt. Soweit diese Vereinbarung nicht von einer der Parteien mit einer Kündigungsfrist von mindestens 30 Tagen vor Ende der Anfänglichen Laufzeit oder des zum gegebenen Zeitpunkt aktuellen Verlängerungszeitraums gekündigt wird, verlängert sich die Laufzeit dieser Vereinbarung jeweils automatisch und gegebenenfalls wiederholt entsprechend der Regelungen im Bestellformular (i) um einen der Anfänglichen Laufzeit entsprechenden Zeitraum oder (ii) um ein Jahr, je nachdem welcher der in (i) oder (ii) genannten Zeiträume kürzer ist (der Zeitraum jeder entsprechenden Laufzeitverlängerung nachfolgend „Verlängerungszeitraum“). KUKA ist berechtigt, die vertraglich vereinbarte Vergütung (siehe Ziffer 5) mit zukünftiger Wirkung zu Beginn eines beliebigen nachfolgenden Verlängerungszeitraums mit Benachrichtigung an Sie mindestens 45 Tage vor dem ersten Tag des betreffenden Verlängerungszeitraums zu erhöhen oder sonst anzupassen. Im Fall der Kündigung dieser Vereinbarung durch eine Partei entsprechend der vorstehenden Bestimmungen endet die Laufzeit dieser Vereinbarung am letzten Tag der Anfänglichen Laufzeit oder des zum gegebenen Zeitpunkt aktuellen Verlängerungszeitraums. Das Recht jeder Partei zur Kündigung dieser Vereinbarung aus wichtigem Grund bleibt unberührt. Jede Partei ist insbesondere berechtigt, diese Vereinbarung aus wichtigem Grund zu kündigen, wenn die andere Partei ihre Verpflichtungen aus dieser Vereinbarung in erheblichem Maß verletzt und die Pflichtverletzung nicht innerhalb von 30 Tagen nach Erhalt einer schriftlichen Benachrichtigung der kündigenden Partei unter Beschreibung der Pflichtverletzung behoben hat. Im Fall des Verzugs der Leistung von Ihnen geschuldeter Zahlungen ist KUKA zwei (2) Wochen nach schriftlicher Benachrichtigung an Sie zur Aussetzung der vertraglichen Leistungen berechtigt. Ziffer 3 sowie Ziffern 11 bis 13 dieser Vereinbarung bleiben über die Kündigung dieser Vereinbarung hinaus in Kraft.</li>
+                      <br/><li><span style="text-decoration: underline; font-weight: bold">Vergütung</span> Sie sind verpflichtet, KUKA die im Bestellformular festgelegte vertragliche Vergütung (nachfolgend „Vergütung“) zu bezahlen. Sämtliche Vergütung versteht sich zuzüglich gesetzlich anwendbarer Steuern im Zeitpunkt der Rechnungsstellung. Das Bestellformular kann im Einzelfall bestimmte Beschränkungen hinsichtlich des Leistungsumfangs oder -gegenstands beinhalten. Bei Überschreitung der betreffenden Beschränkungen kann nach Maßgabe des Bestellformulars eine zusätzliche Vergütung anfallen. Soweit nicht im Bestellformular abweichend festgelegt, wird die Zahlung jeglicher Vergütung 30 Tage nach Erhalt der betreffenden Rechnung von KUKA fällig. Die gesetzlichen Verzugszinsen finden auf sämtliche Zahlungen nach dieser Vereinbarung Anwendungen, mit denen Sie sich in Verzug befinden. Sie sind verpflichtet, KUKA die Kosten einer angemessenen Forderungsbeitreibung für solche Vergütung zu erstatten, mit deren Zahlung Sie sich in Verzug befinden.</li>
+                      <br/><li><span style="text-decoration: underline; font-weight: bold">Mitwirkungs- und sonstige Pflichten Ihrerseits</span> Soweit nicht abweichend im Bestellformular vereinbart, sind Sie ausschließlich selbst sowie auf eigene Kosten für die Beschaffung, Installation und Wartung sämtlicher Netzwerkkomponenten, Hardware, Software und solcher anderer Geräte und Einrichtungen einschließlich Zubehör verantwortlich, die für die Anbindung an die Leistungen, den Zugriff auf die Leistungen sowie die Nutzung der Leistungen durch Sie und Ihre Nutzer erforderlich sind (nachfolgend zusammen „Ihre Technischen Einrichtungen“). Vorbehaltlich einer abweichenden Vereinbarung im Bestellformular gilt dasselbe für die zur Nutzung der Leistungen erforderliche fachgerechte Installation der Ausstattung bei Ihnen vor Ort. Sie sind ausschließlich selbst verantwortlich für die Folgen der mangelnden Verfügbarkeit der Leistungen aufgrund von Mängeln oder Störungen Ihrer Technischen Einrichtungen oder aufgrund der nicht fachgerechten Installation der Ausstattung bei Ihnen vor Ort. Sie sind verpflichtet, KUKA vollständige und zutreffende Informationen und Daten zu Ihrem Benutzerkonto zur Verfügung zu stellen und die Leistungen, Benutzerpasswörter, Benutzernamen und Ihnen etwa zur Verfügung gestellte Schulungsmaterialen vertraulich zu behandeln. Sie sind zudem ausschließlich selbst für die Richtigkeit, Beschaffenheit, Unversehrtheit, Rechtmäßigkeit, Verlässlichkeit und Zweckmäßigkeit sämtlicher Informationen verantwortlich, die Sie in Zusammenhang mit Ihrer Nutzung der Leistungen bereitstellen. Sie sind darüber hinaus ausschließlich selbst haftbar und verantwortlich für etwaige Ansprüche oder Schäden Dritter oder eigene Schäden, Kosten oder sonstige Verluste aufgrund der Nutzung der in Übereinstimmung mit dem Bestellformular und gegebenenfalls dem Gewählten Leistungstarif vertragskonform erbrachten Leistungen oder bereitgestellten Betriebsdaten. Sie sind verpflichtet, die Leistungen unter Beachtung der geltenden gesetzlichen Bestimmungen zu nutzen. Es ist Ihnen untersagt, (a) die Leistungen im Wege der Lizenzierung, Sublizenzierung, des Verkaufs, der Vermietung, der Übertragung oder sonstigen Verbreitung, der Teilzeitnutzung oder anderweitig kommerziell zu verwerten oder Dritten zugänglich zu machen soweit dies nicht im Rahmen dieser Vereinbarung vorgesehen ist; (b) an KUKA oder die von KUKA zur Leistungserbringung genutzten Systeme und Einrichtungen Informationen zu übermitteln, die Viren, Würmer, Trojaner oder sonstige potentiell schadensverursachende Codebestandteile, Dateien, Skripte, Software-Agenten oder Programme enthalten; (c) die Unversehrtheit oder Leistungsfähigkeit der Leistungen oder der leistungsgegenständlichen Informationen zu beeinträchtigen oder zu stören; (d) den Versuch zu unternehmen, unberechtigt auf die Leistungen oder die damit in Zusammenhang stehenden Systeme und Netzwerke Zugriff zu nehmen; sowie (e) in den Leistungen enthaltene Kennzeichen, Marken, Urhebervermerke oder sonstige rechtlich relevante Bekanntmachungen zu verbergen oder zu entfernen. Sie werden es unterlassen, (i) die Leistungen oder Teile der Leistungen herunterzuladen, zu vervielfältigen, kopieren, abzuändern, anzupassen oder zu modifizieren, zu verbessern, weiterzuentwickeln, zu übersetzen oder zu bearbeiten; (ii) Links auf oder in den Leistungen zu erstellen oder Inhalte der Leistungen in Zusammenhang mit Frames zu verwenden oder zu spiegeln soweit dies nicht innerhalb Ihres eigenen Netzwerks und zur Wahrnehmung Ihrer internen Geschäftszwecke erfolgt; und (iii) den Leistungen zugrunde liegende oder darin enthaltene Programmcodes, Geschäftsgeheimnisse, oder Know-how-Bestandteile im Wege des Disassembling, des Reverse Engineering, der Dekompilierung oder anderweitig offenzulegen oder Zugriff auf die Leistungen zu nehmen, um (A) Konkurrenzprodukte oder -leistungen zu erstellen, (B) Produkte oder Leistungen mit ähnlichen Eigenschaften und Funktionen oder mit ähnlichem Erscheinungsbild zu erstellen, oder um (C) Eigenschaften, Funktionen oder das Erscheinungsbild der Leistungen zu kopieren. Soweit nach Treu und Glauben zumutbar, werden Sie darauf hinwirken und geeignete Maßnahmen ergreifen, um sicherzustellen, dass die Leistungen ausschließlich von Ihren Nutzern und entsprechend der Anforderungen dieser Vereinbarung genutzt werden. Sie sind verpflichtet, KUKA unverzüglich davon in Kenntnis zu setzen, sollte die Ausstattung oder Teile der Ausstattung nicht betriebsfähig sein oder werden oder ansonsten nicht entsprechend der vertraglichen Vereinbarungen funktionieren. Nach Kündigung dieser Vereinbarung werden Sie die Ausstattung unverzüglich deinstallieren und an KUKA zurücksenden.</li>
+                      <br/><li><span style="text-decoration: underline; font-weight: bold">Missbräuchliche Nutzung</span> Sie sind verpflichtet, die Leistungen nicht für unrechtmäßige Zwecke oder auf eine unrechtmäßige Art und Weise zu nutzen. Insbesondere werden Sie die Leistungen nicht nutzen, um Drohungen auszusprechen, Dritte zu belästigen oder zu verleumden oder anderweitig die Persönlichkeitsrechte oder sonstigen Rechte Dritter zu verletzen. Die Nutzung der Leistungen erfolgt ausschließlich auf Ihr eigenes Risiko und auf eigene Gefahr. KUKA trifft keine Verpflichtung, die Leistungen im Hinblick auf Ihre Nutzungshandlungen oder die in Zusammenhang mit den Leistungen von Ihnen zur Verfügung gestellten Informationen zu überwachen. Falls KUKA von Nutzungshandlungen Ihrerseits Kenntnis erlangt, die beleidigend, sittenwidrig, obszön, gewalttätig, missbräuchlich oder rechtswidrig sind, ist KUKA zur Einstellung der Leistungen oder von Teilen der Leistungen berechtigt, sofern und solange Sie die betreffenden Nutzungshandlungen nicht unverzüglich nach betreffender Mitteilung durch KUKA einstellen. Insoweit ist KUKA nicht für die Folgen der mangelnden Verfügbarkeit der Leistungen oder von Teilen der Leistungen verantwortlich.</li>
+                      <br/><li><span style="text-decoration: underline; font-weight: bold"> Schadensersatzansprüche der Gesellschaft </span> Sie sind verpflichtet, KUKA sämtliche Schäden zu ersetzen, die KUKA aufgrund Ihrer schuldhaften Verletzung dieser Vereinbarung oder Ihrer gesetzlichen Verpflichtungen gegenüber KUKA entstehen.</li>
+                      <br/><li><span style="text-decoration: underline; font-weight: bold">Mangelnde Verfügbarkeit der Leistungen </span> Soweit KUKA die Leistungen nach Maßgabe dieser Vereinbarung einstellt, ist KUKA nicht für Schäden oder Kosten verantwortlich, die Ihnen aufgrund der Einstellung der Leistungen entstehen. Bei Ausfällen oder Störungen der Leistungen, die sich trotz nach Treu und Glauben zumutbarer Bemühungen von KUKA zur Vermeidung solcher Vorfälle ereignen, ist KUKA ausschließlich dazu verpflichtet, nach Treu und Glauben auf eine zeitnahe Behebung der Ausfälle oder Störungen hinzuwirken.</li>    
+                      <br/><li><span style="text-decoration: underline; font-weight: bold">Mängel der Ausstattung</span> Die verschuldensunabhängige Haftung von KUKA für anfängliche Mängel der Ausstattung ist ausgeschlossen. Im Übrigen richten sich Ihre Ansprüche im Fall von Mängeln der Ausstattung nach den anwendbaren gesetzlichen Vorschriften.</li>    
+                      <br/><li><span style="text-decoration: underline; font-weight: bold">Haftung</span>
+                        <ol>
+              <br/><li><span style="text-decoration: underline; font-weight: bold; margin-left:10px">Unbegrenzte Haftung</span> Die Haftung von KUKA (i) im Fall der Verletzung von Leben, Körper und Gesundheit, (ii) im Fall von grober Fahrlässigkeit, Vorsatz oder Arglist, sowie (iii) aufgrund der Verletzung von KUKA abgegebener Garantieversprechen ist unbegrenzt.</li>
+                        <br/><li><span style="text-decoration: underline; font-weight: bold; margin-left:10px">Verletzung wesentlicher Vertragspflichten </span> Vorbehaltlich Ziffer 11.1 ist die Haftung von KUKA für die einfach fahrlässige Verletzung wesentlicher Vertragspflichten auf den vertragstypischen vorhersehbaren Schaden beschränkt. Als wesentliche Vertragspflichten im Sinne dieser Ziffer 11.2 gelten sämtliche Verpflichtungen, deren Erfüllung die ordnungsgemäße Durchführung der Vereinbarung überhaupt erst ermöglicht und auf deren Einhaltung der Vertragspartner regelmäßig vertraut und vertrauen darf.</li>
+                        <br/><li><span style="text-decoration: underline; font-weight: bold; margin-left:10px">Haftungsausschluss im Übrigen</span> Vorbehaltlich der Ziffern 11.1 und 11.2 ist die Haftung von KUKA unabhängig vom Rechtsgrund der Haftung ausgeschlossen.</li>
+                        <br/><li><span style="text-decoration: underline; font-weight: bold; margin-left:10px">Haftung nach dem Produkthaftungsgesetz</span> Die Haftung von KUKA nach dem Produkthaftungsgesetz bleibt von Ziffern 11.2 und 11.3 unberührt.</li>
+                        <br/><li><span style="text-decoration: underline; font-weight: bold; margin-left:10px">Persönliche Haftung</span> Ziffern 11.1 bis 11.4 gelten entsprechend für die persönliche Haftung der Arbeitnehmer, Mitarbeiter, leitenden Angestellten, gesetzlichen Vertreter, Bevollmächtigten und Erfüllungsgehilfen von KUKA.</li>
+                        </ol>
+                      
+                      </li>    
+                      <br/><li><span style="text-decoration: underline; font-weight: bold">Anwendbares Recht und Gerichtsstand </span> Diese Vereinbarung einschließlich ihrer Auslegung unterliegt dem Recht der Bundesrepublik Deutschland unter Ausschluss der ansonsten anwendbaren kollisionsrechtlichen Bestimmungen. Die Anwendung des Übereinkommens der Vereinten Nationen über Verträge über den internationalen Warenkauf (CISG) ist ausgeschlossen. Ausschließlich zuständig für alle Streitigkeiten aus oder in Zusammenhang mit dieser Vereinbarung sind die Gerichte in München, Bundesrepublik Deutschland.</li>    
+                      <br/><li><span style="text-decoration: underline; font-weight: bold">Allgemeine Bestimmungen </span> Diese Vereinbarung stellt die gesamte Vereinbarung zwischen Ihnen und KUKA betreffend den Vertragsgegenstand dar und ersetzt sämtliche vorherigen mündlichen oder schriftlichen Übereinkünfte und Abmachungen betreffend den Vertragsgegenstand. Die Abtretung dieser Vereinbarung oder von Rechten und Pflichten nach dieser Vereinbarung ohne die vorherige schriftliche Zustimmung von KUKA ist Ihnen untersagt. Mit Ausnahme von Zahlungsverpflichtungen ist keine Partei für die Nichterfüllung oder die verzögerte Erfüllung von Pflichten nach dieser Vereinbarung verantwortlich, soweit die Nichterfüllung oder verzögerte Erfüllung auf folgenden, nicht von der betreffenden Partei verschuldeten Umständen beruht: Feuer, Überschwemmung, Erdbeben, Streik, Krieg (erklärt oder nicht erklärt), Embargos, Handelsblockaden, rechtliche Verbote, behördliche Verfügungen, Aufstände, Aufruhr, Sachschäden, Zerstörung, Materialknappheit oder sonstige Umstände, die nach Treu und Glauben außerhalb des Einflussbereichs der betreffenden Partei liegen. Aufzählungen in dieser Vereinbarung unter Verwendung der Begriffe „einschließlich“ oder „z.B.“ sind nicht abschließend und sind als „einschließlich, unter anderem“ zu verstehen.</li>                     
+                      <br/><li><span style="text-decoration: underline; font-weight: bold">Drucktechnische Fehler</span> Falls im Bestellformular fälschlicherweise ein unzutreffender Preis für eine Leistung ausgewiesen ist, ist KUKA dazu berechtigt, die auf dem Bestellformular beruhende Vereinbarung betreffend die unzutreffend bepreiste Leistung nach den geltenden gesetzlichen Bestimmungen anzufechten.</li>  
+                      <center>* * * * *</center>
+                    </ol>
+              <!-- Add an optional button to close the popup -->
+                <center><button class="tos_popup_close a-btn a-btn--primary">{!$Label.CommunitySelfReg_ButtonTandDClose}</button></center>
+            </div>
+          </div> 
+        </div>
+      </div>   
+</apex:outputPanel>
+        <!-- Updated the Privacy Policy Jade Fischer 3/24/2017 --> 
+        <apex:outputPanel id="dataprivenglish" rendered="{!mylangu != 'de'}">
+            <div id="datapriv_popup" style="margin-top:25px;margin-bottom:25px;">
+                <div class="col-sm-10 col-sm-offset-2 col-md-8 col-md-offset-2 popupBox">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <h3>Privacy Policy for the KUKA Marketplace and Declarations of Consent</h3>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <p>
+                                Effective Date: March 23 2017
+                            </p>
+                            <ol>
+                                
+                         
+                                <br/>
+                                <li>
+                                  <span style="text-decoration: underline; font-weight: bold">Who We Are and What This Policy is About</span>
+                                    Welcome to https://shop.kuka.com, the digital marketplace of KUKA Aktiengesellschaft, Zugspitzstrasse 140, 86165 Augsburg, 
+                                    Germany (“KUKA”, “we,” “us”, and “our”, etc.). KUKA is one of the world’s leading manufacturers of intelligent automation 
+                                    solutions such as industrial robots as well as production systems and machines. To provide to our customers easy access to 
+                                    information about our products and services and facilitate their communication with us, we have implemented the KUKA digital 
+                                    marketplace. It allows users to create an online account through which they can review or download product or service descriptions, 
+                                    related pricing information, product manuals and guidelines and similar information about our solutions. In addition, users can initiate 
+                                    a dialog with us or request to be contacted about products or services they might be interested in purchasing. For additional information 
+                                    on the KUKA marketplace please visit https://shop.kuka.com. We respect the privacy of the users of the KUKA marketplace (“you”, “your”) 
+                                    and are committed to protecting their personal data and information according to the applicable law. This privacy policy (“Policy”) explains 
+                                    how, to what extent and for what purposes we are collecting and subsequently processing personal data and information on the KUKA marketplace. 
+                                    KUKA is the responsible entity for the processing of your personal data and information on the KUKA marketplace. The contact details of our 
+                                    data protection officer are as follows: support.ecommerce@kuka.com
+                                </li>
+                                <br/>
+                                <li>
+                                  <span style="text-decoration: underline; font-weight: bold">Definitions</span>
+                                      In addition to terms defined elsewhere in this Policy, the following terms shall have the following meaning throughout this Policy:
+                                      “Associated Entity” means any entity worldwide that, as of the effective date hereof or any time thereafter, directly or indirectly, controls, or is controlled by, or is under common control with KUKA;
+                                      “Personal Information” means any information that either (a) personally identifies a natural person; or (b) pertains to an identifiable natural person, i.e. someone who can be identified, directly or indirectly, in particular, by reference to an identifier such as a name, an identification number, location data, an online identifier or to one or more factors specific to his or her physical, physiological, genetic, mental, economic, cultural or social identity, or (c) constitutes individually identifiable information about an individual user collected by us in connection with the Marketplace and that we maintain in an accessible form, or that (d) we are otherwise required to protect under the applicable data privacy laws (including, but not limited to, national, international and supranational data protection and privacy laws, directives, regulations and comparable legal acts). Examples of Personal Information include your contact details such as your name, email address, or phone number as well as information about your workplace or professional background, etc.;
+                                      “Processing” (and variations such as “Process”) means any operation or set of operations which is performed on Personal Information or on sets of Personal Information, whether or not by automated means, such as the collection, recording, organization, structuring, storage, adaptation or alteration, retrieval, consultation, use, disclosure by transmission, dissemination or otherwise making available, alignment or combination, blocking,  restriction, erasure or destruction;
+                                      “Sensitive Personal Information” means Personal Information revealing racial or ethnic origin, political opinions, religious or philosophical beliefs, or trade union membership, and genetic data, biometric data for the purpose of uniquely identifying a natural person, data concerning health or data concerning a natural person's sex life or sexual orientation;
+                                      “Marketplace” means https://shop.kuka.com and all web pages hosted at that domain.
+                                </li>
+                                <br/>
+                                <li>
+                                  <span style="text-decoration: underline; font-weight: bold">Processing of Your Personal Information</span>
+                                    Depending on your interaction with the Marketplace, your Personal Information is Processed as follows:
+
+                                    <div style="margin-left: 50px">
+                                      <br/>
+                                      <ol  type="i">
+                                        <li>
+                                          <span style="text-decoration: underline; font-weight: bold; margin-left:10px">Registration for the Marketplace – Declaration of Consent</span>
+                                          To have access to the full range of features and functionality of the Marketplace you need to create a Marketplace account (“Account”) on https://my.kuka.com/KUKA_communitiesSelfRegPage. As part of the registration process, we ask you to provide us with certain mandatory information including your salutation, first and last name, email address, position within your business or with your employer, your landline phone number, the name of the company on whose behalf you are interacting with us, and the complete address of your workplace. This information is necessary for us or our Associated Entities to contact you upon your request as described below. In addition, it allows us to understand your professional role and background and assess the kind of information on our products and services that might be most important to you when contacting us. If you decide not to provide mandatory information, you cannot create an Account to use the Marketplace.
+
+                                          Beyond the mandatory information, you may choose to provide us with additional information that makes it easier for us to identify and contact you upon your request. This information may include all or any of the following: your mobile phone number and the D-U-N-S Number or KUKA customer number (if any) of the company on whose behalf you are interacting with us (if any). None of this information is necessary for you to create an Account and providing it to us is purely voluntary on your part.
+
+                                          As part of the registration process, you can also determine what means of communication we may use to contact you in response to future requests you might make through the Marketplace. For this purpose, you can give us permission to contact you either on the phone and/or by mailing you a letter.To conclude the registration process, you will have to choose a username assigned to you and need to choose a password that will allow you to sign into your Account in the future.
+
+                                          The registration process does not include the collection or other Pprocessing of any Sensitive Personal Information.
+
+                                          To verify the accuracy and integrity of the Personal Information provided during the registration process, we may use the contained email-address or phone numbers to contact and obtain confirmation from you that the Personal Information provided during the registration process is correct. Unlike any subsequent communication with you, this will occur without prior request on your part.
+
+                                          The mandatory information, any voluntary information you might provide, your contact permissions and your user username and password (collectively “Registration Information”) will mainly be Pprocessed by KUKA. However, depending on your future inquiries and requests on the Marketplace, your Registration Information might, in addition, be Pprocessed by our Associated Entities as described in Section 3.2 below.
+
+                                          Your Registration Information will be shared with third parties as follows:
+                                            <br/>
+                                            <br/>
+                                          <div style="margin-left: 50px"> 
+                                            <ul style="list-style-position: inside">    
+                                                <li>
+
+                                                  Your Registration Information will be stored in databases located exclusively in Member Statesvarious countries ofthroughout the European Union (EU)world. The servers hosting the databases are operated by and accessible to third-party service providers acting on behalf and as per the instruction of KUKA. The third-party service providers include affiliates of Salesforce.com, Inc. with a principal place of business in the European Union (EU); and its affiliated companies. In the event that you are located in the European Economic Area (EEA) while providing your Registration Information to us, your Registration Information will be stored exclusively on servers operated by Salesforce.com, Inc. or its affiliated companies in the European Union (EU).
+                                                </li>
+                                                <li>
+                                                  Your Registration Information, or parts thereof, may be accessed by third-party service providers rendering IT services to KUKA. The third-party service providers will Process your Registration Information exclusively if and to the extent necessary to provide their services and act solely on behalf and as per the instruction of KUKA. To the extent that you have provided your Registration Information to us from the European Economic Area (EEA) and the third-party service providers are located outside of the European Economic Area (EEA) your Registration Information, or parts thereof, is provided to them based on Standard Contractual Clauses for the transfer of personal data to third countries issued by the EU Commission;
+                                                </li>
+                                                <li>
+                                                  Via the databases, your Registration Information will also be available to the officers and employees of our Associated Entities worldwide for the purposes of following up with you on your inquiries about products sold and distributed by them.
+
+                                                </li>
+                                           </ul>
+                                           </div>
+                                           <br/>
+                                              In this context, please be aware that various of our Associated Entities are located in countries outside of the European Economic Area (EEA) that have not been found by the European Union (EU) to provide an adequate level of protection of personal data, i.e. a level of protection of fundamental rights and freedoms that is essentially equivalent to that guaranteed within the European Union (EU). For this reason, the Processing of your Registration Information in such countries deviating from essential privacy principles applicable in the European Union (EU) cannot be completely excluded. This applies, in particular, to the access to your Registration Information by third parties such as governmental authorities, its use for purposes other than it was collected for and its disclosure or onward transfer to third parties unrelated to the Marketplace. YIn the event that you are located in the European Economic Area (EEA) while providing your Registration Information to us, your Registration Information will be shared with our Associated Entities in such countries based on your below declaration of consent given to us when completing the registration for your Account[description of the adequate safeguards in place with the Associated Entities].
+                                            
+                                            
+                                              Other than as described above, your Registration Information will not be shared with any third parties.
+                        
+                                            
+                                    Your Registration Information will be Processed by us and our Associated Entities solely for the purposes described in Section 3.2 below. At no point will your Registration Information be matched, linked or otherwise connected with Personal Information other than your Transaction History (see Section 3.2 below). Your Registration Information will be Processed until the earlier of your revocation of the  your below declaration of consent given to us when completing the registration for your Account or the deletion of your Account. Upon the revocation of your declaration of consent or the deletion of your Account, we will delete your Registration Information from all databases.
+                                             
+                                    <br/>  
+                                    <br/>      
+                                    <center><h4>Declaration of Consent:</h4></center>                        
+                                        
+                                      <div style="margin-left: 50px">       
+                                            By completing the registration process and creating an Account, you explicitly consent to the 
+                                            Processing of your Registration Information as described above. This includes, without limitation, 
+                                            the transfer of your Registration Information, or of parts thereof, to countries not providing an 
+                                            adequate level of protection of personal data according to the standards of the European Union (EU). 
+                                            You acknowledge that you are under no obligation to provide your consent and that, if you choose to 
+                                            do so nonetheless, you may revoke your declaration of consent at any time with future effect by 
+                                            using the following contact details: support.ecommerce@kuka.com
+                                      </div>
+                                </li>    
+                            
+                          
+                                <br/>
+                                <li>
+                                  <span style="text-decoration: underline; font-weight: bold">Communications on the Marketplace – Declaration of Consent</span>
+
+                                  Following your creation of an Account, your Registration Information will be Processed by us and our Associated Entities solely to contact you in response to inquiries you make on the Marketplace about products or services sold and distributed by KUKA or our Associated Entities. In particular, we will not contact you without your prior request or use your Registration Information for direct marketing purposes.
+
+                                  When you make an inquiry on the Marketplace regarding a product or service that is sold or distributed by an Associated Entity of KUKA, your inquiry will be accessible to the particular Associated Entity. You might then be contacted by officers or employees of the respective entity using your Registration Information.
+
+                                  In addition, the username and password contained in your Registration Information may be used in the future to grant you access to particular online services you might be involved in purchasing in the future.
+
+                                  As you continue to use the Marketplace, we will track and store your various inquiries regarding the products or services of KUKA or our Associated Entities together with any follow-up communication and sale or purchase transactions potentially resulting therefrom (collectively “Transaction History”). Your Transaction History enables us to follow up with you on your inquiries in a timely fashion and efficiently provide proper advice and support requested on your part with respect to products and services you were previously involved in purchasing. Your Transaction History will not contain any Sensitive Personal Information.
+
+                                  Your Transaction History will be linked to your Account and Registration Information. It will be stored and shared with third parties in the same manner as your Registration Information (see Section 3.1 above). This includes, without limitation, the disclosure of your Transaction History to Associated Entities that are located in countries outside of the European Economic Area (EEA) that have not been found by the European Union (EU) to provide an adequate level of protection of personal data, i.e. a level of protection of fundamental rights and freedoms that is essentially equivalent to that guaranteed within the European Union (EU). For this reason, the Processing of your Transaction History in such countries deviating from essential privacy principles applicable in the European Union (EU) cannot be completely excluded. This applies, in particular, to the access to your Transaction History by third parties such as governmental authorities, its use for purposes other than it was collected for and its disclosure or onward transfer to third parties unrelated to the Marketplace. Your Transaction History will be shared with our Associated Entities in such countries based on your below declaration of consent given to us when completing the registration for your Account.
+
+                                  At no point will your Transaction History be matched, linked or otherwise connected with Personal Information other than your Registration Information (see Section 3.1 above). Your Transaction History will be Processed until the earlier of your revocation of your below declaration of consent given to us when completing the registration for your Account or the deletion of your Account. Upon the revocation of your declaration of consent or the deletion of your Account, we will delete your Transaction History from all databases.
+                                    <br/>
+                                    <br/>
+                                    <center><h4>Declaration of Consent:</h4></center>                        
+                                        
+                                      <div style="margin-left: 50px">       
+                                            By completing the registration process and creating an Account, you explicitly consent to the Processing of your Registration Information and Transaction History as described above. This includes, without limitation, the transfer of your Registration Information and Transaction History, or of parts thereof, to countries not providing an adequate level of protection of personal data according to the standards of the European Union (EU). You acknowledge that you are under no obligation to provide your consent and that, if you choose to do so nonetheless, you may revoke your declaration of consent at any time with future effect by using the following contact details:  support.ecommerce@kuka.com.
+                                      </div>
+
+                                </li>
+                                <br/>
+                                <li>
+                                  <span style="text-decoration: underline; font-weight: bold"> Cookies</span>
+
+                                  The Marketplace makes use of cookies. Cookies are small text files downloaded by your Internet browser and stored on the device you use to access the Marketplace (e.g., your desktop computer, tablet or smartphone). Depending on their purpose, cookies log specific user-related information such as your user preferences, authentication information, or security parameters. Where necessary during your visit of the Marketplace, your Internet browser transmits the cookies including the contained information back to the servers they were initially downloaded from. The analysis and Processing of such information allows us to ensure the functionality of the Marketplace and improve your online experience.
+
+                                  We exclusively use first-party session cookies on the Marketplace. First-party cookies are cookies that we store and access on your device in our capacity as controller of your Personal Information when you visit the Marketplace. Session cookies are cookies that allow us to collect information about what you do during a browsing session each time you visit the Marketplace. When connecting to our server, your device will be allocated a session ID, which enables our server to identify your device during the session and ensures the usability of the Marketplace. These cookies are temporary and are set to be deleted when you leave the Marketplace.
+
+                                  All first-party session cookies used on the Marketplace are either used for the sole purpose of carrying out the transmission of communications over the electronic communications network used to access the Marketplace, or are strictly necessary in order for us to provide to you the services you have explicitly requested on the Marketplace.
+
+                                  You may influence the scope and extent to which we use cookies when you visit the Marketplace. In particular, you may prevent cookies from being stored on your device by adjusting the respective settings on your Internet browser. However, please be aware that this might render certain functions of the Marketplace inoperable.
+
+                                </li>
+                              </ol>
+                            </div>
+                          </li>
+                                <br/>
+                                <li>
+                                  <span style="text-decoration: underline; font-weight: bold">Data Security</span>
+
+                                  Protecting your Personal Information is important to us. We use appropriate technical and organizational measures to protect your Personal Information against accidental or unlawful destruction or accidental loss, alteration, unauthorized disclosure or access and against all other unlawful forms of Processing. This includes, for example, the encryption of your communication with us over the Marketplace based on the Secure Socket Layer (SSL) protocol.
+
+                                </li>
+                                <br/>
+                                <li>
+                                  <span style="text-decoration: underline; font-weight: bold">Your Rights</span>
+                                  In addition to any rights mentioned elsewhere in this Policy, You have the following rights with respect to the Processing of your Personal Information:
+                                  <div style="margin-left: 50px">  
+                                    <ul>
+                                      <li>
+                                        the right to obtain confirmation whether your Personal Information is being Processed;
+                                      </li>
+                                      <li>
+                                        the right to access, i.e. obtain a copy of Your Personal Information and be provided with supplemental information regarding details of the Processing and the underlying purposes;
+                                      </li>
+                                      <li>
+                                        the right to have inaccurate Personal Information rectified;
+                                      </li>
+                                      <li>
+                                        the right to have incomplete Personal Information completed;
+                                      </li>
+                                     <li>
+                                        the right to object, at any time, to the Processing of your Personal Information on grounds relating to your particular situation, provided the Processing is based on legitimate interests of KUKA or our Associated Entities;
+                                      </li>
+                                      <li>
+                                        the right to obtain erasure of your Personal Information (i) that is no longer necessary in relation to the purposes for which it was collected or otherwise Processed, (ii) where you have withdrawn your consent underlying the Processing and where there is no other legal ground for the Processing, (iii) where you have exercised your right to object to the Processing and we do not demonstrate compelling legitimate grounds which override your interests, rights and freedoms or Process the Personal Information for the establishment, exercise or defense of legal claims, or (iv) where Personal Information is Processed unlawfully;
+                                      </li>
+                                      <li>
+                                        the right to the restriction of the Processing of your Personal Information to its storage (i) if you have contested the accuracy of the Personal Information, for a period enabling us to verify the accuracy of the Personal Information, (ii) where the Processing of the Personal Information is unlawful, you have opposed its erasure and instead requested restriction, (iii) in case we no longer need the Personal Information for the purposes of the Processing but you require the Personal Information for the establishment, exercise or defense of legal claims, or (iv) in the event you have exercised your right to object the Processing pending the verification whether our legitimate grounds override your interests, rights and freedoms;
+                                      </li>
+                                      <li>
+                                        the right to receive Personal Information that you have provided to us in a structured, commonly used and machine-readable form and the right to transmit it to a third party without hindrance;
+                                      </li>
+                                      <li>
+                                        the right to lodge a complaint with a supervisory authority.
+                                      </li>
+                                    </ul>
+                                  </div>
+                                  To exercise any of these rights in relation to KUKA, please use the contact details provided in Section 7 below.
+
+                                </li>
+                                <br/>
+                                <li>
+                                  <span style="text-decoration: underline; font-weight: bold">Amendments to this Policy</span>
+                                  From time to time we may change our business activities and/or our policies and procedures with respect to the Processing of Personal Information in connection with the Marketplace. Where appropriate in these cases, we will, subject to the applicable law, revise, supplement, or replace this Policy. When the Policy changes, we will post the substitute version and change the effective date listed at the beginning of the Policy.
+                                </li>
+                                <br/>
+                                <li>
+                                  <span style="text-decoration: underline; font-weight: bold">How to Contact Us</span>
+                                    We encourage your questions and comments about this Policy and our Processing of your Personal Information. Please contact us at <a href="mailto:webmaster@kuka.com">webmaster@kuka.com</a> and we will respond to you as soon as reasonably possible
+                                    
+                                   <!-- Please contact us using the information below and we will respond to you as soon as reasonably possible:
+
+                                  KUKA Aktiengesellschaft 
+                                  Zugspitzstrasse 140, 
+                                  86165 Augsburg, Germany
+                                  [title of corporate officer or employee handling privacy inquiries]
+                                  Phone: [phone number]
+                                  Email: [email address]-->
+                                  <center>* * * * *</center>
+                                </li>
+                            </ol>
+                        
+                            <!-- Add an optional button to close the popup -->
+                            <center><button class="datapriv_popup_close a-btn a-btn--primary">{!$Label.CommunitySelfReg_ButtonTandDClose}</button></center>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </apex:outputPanel>
+        <apex:outputPanel id="dataprivgerman" rendered="{!mylangu == 'de'}">
+            <div id="datapriv_popup" style="margin-top:25px;margin-bottom:25px;">
+                <div class="col-sm-10 col-sm-offset-2 col-md-8 col-md-offset-2 popupBox">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <h3>Datenschutz</h3>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <p>
+                                DIE VORLIEGENDE VEREINBARUNG STELLT EINEN RECHTLICH VERBINDLICHEN VERTRAG DAR. MIT UNTERZEICHNUGN EINES BESTELLFORMULARS, DAS AUF DIE VORLIEGENDE VEREINBARUING VERWEIST, VERPFLICHTEN SIE SICH ZUR EINHALTUNG DER VERTRAGLICHEN BESTIMMUNGEN. SOLLTEN SIE DIESE VEREINBARUNG NICHT ABSCHLIEßEN WOLLEN, SEHEN SIE BITTE VON DER ANNAHME ODER UNTERZEICHNUNG DES BESTELLFORMULARS AB.
+                                <br/><br/>
+                            <center>KUKA CONNECT VEREINBARUNG</center>
+                            <br/>
+                            </p>
+
+                            <!--Updated Privacy for German -->
+
+                                <ol>
+                                
+                         
+                                <br/>
+                                <li>
+                                  <span style="text-decoration: underline; font-weight: bold">Über uns und den Inhalt dieser Datenschutzerklärung</span>
+                                   
+                                    Willkommen auf dem KUKA Marketplace (https://shop.kuka.com), dem digitalen Marktplatz der KUKA Aktiengesellschaft, Zugspitzstrasse 140, 86165 Augsburg, Germany (“KUKA”, “wir,” “uns”, “unser”, etc.). 
+                                    KUKA ist einer der weltweit führenden Hersteller intelligenter Automatisierungslösungen wie etwa Industrierobotern und automatisierten Produktionssystemen und -maschinen. Um unseren Kunden den Zugang zu Informationen über unsere Produkte und Dienstleistungen zu erleichtern und ihnen auf einfachem Weg die Kommunikation mit uns zu ermöglichen, haben wir den KUKA Marketplace erschaffen. Über den KUKA Marketplace können die Nutzer ein Online-Konto eröffnen, um Produkt- und sonstige Leistungsbeschreibungen, zugehörige Preisangaben, Betriebsanleitungen und Handbücher sowie weitere Informationen zu unseren Lösungen einzusehen oder herunterzuladen. Darüber hinaus können uns Nutzer zu Produkten oder Dienstleistungen, an denen Sie interessiert sind, kontaktieren oder diesbezüglich um Kontaktaufnahme bitten. Weitere Informationen betreffend den KUKA Marketplace finden Sie auf https://shop.kuka.com.
+                                    Wir achten die Privatsphäre der Nutzer des KUKA Marketplace („Sie“, „Ihr“, etc.) und legen besonderen Wert darauf, Ihre personenbezogenen Daten unter Beachtung der anwendbaren gesetzlichen Vorschriften zu schützen. In dieser Datenschutzerklärung („Datenschutzerklärung“) erfahren Sie, wie, in welchem Umfang und für welche Zwecke wir personenbezogene Daten auf dem KUKA Marketplace erheben und anschließend verarbeiten.
+                                    KUKA ist die verantwortliche Stelle für die Verarbeitung Ihrer personenbezogenen Daten in Zusammenhang mit dem KUKA Marketplace. Sie können wie folgt Kontakt mit unserem Datenschutzbeauftragten aufnehmen: [Kontaktdaten].
+
+                                </li>
+                                <br/>
+                                <li>
+                                  <span style="text-decoration: underline; font-weight: bold">Begriffsdefinitionen</span>
+                                      Zusätzlich zu sonstigen in dieser Datenschutzerklärung enthaltenen Begriffsdefinitionen haben folgende Begriffe im Rahmen dieser Datenschutzerklärung die nachfolgend beschriebene Bedeutung:
+                                      “Marketplace” meint https://shop.kuka.com und alle unter dieser Domain bereitgestellten Webseiten;
+                                      “Personenbezogene Daten” meint jegliche Informationen, die (a) eine natürliche Person identifizieren, oder die (b) sich auf eine identifizierbare natürliche Person beziehen, d.h. eine natürliche Person, die unmittelbar oder mittelbar über die Bezugnahme auf Identifikationsmerkmale wie insbesondere Namen, Identifikationsnummern, Ortsangaben, im Internet benutzte Kennzeichen oder körperlich, psychologisch, genetisch, mental, wirtschaftlich, kulturell oder gesellschaftlich spezifische Merkmale identifiziert werden kann, oder die (c) von uns über einen individuellen Nutzer des Marketplace erhoben und in zugänglicher Form aufbewahrt werden, oder die (d) wir anderweitig nach dem anwendbaren Datenschutzrecht (einschließlich nationalem sowie inter- und supranationalem Datenschutzgesetzen, Richtlinien, Verordnungen und vergleichbaren Rechtsakten) zu schützen verpflichtet sind. Beispiele Personenbezogener Daten beinhalten Ihre Kontaktdaten wie etwa Ihr Name, Ihre E-Mail-Adresse oder Ihre Telefonnummer sowie Informationen betreffend Ihren Arbeitsplatz oder Ihren beruflichen Hintergrund;
+                                      “Sensible Personenbezogene Daten” meint Personenbezogene Daten, aus denen die rassische und ethnische Herkunft, politische Meinungen, religiöse oder weltanschauliche Überzeugungen oder die Gewerkschaftszugehörigkeit hervorgehen, sowie genetische Daten, biometrische Daten zur eindeutigen Identifizierung einer natürlichen Person, Gesundheitsdaten oder Daten zum Sexualleben oder zur sexuellen Orientierung einer natürlichen Person;
+                                       “Verarbeitung” (und davon abgeleitete Begriffe wie etwa “Verarbeiten”) meint jeden Vorgang oder jede Vorgangsreihe in Zusammenhang mit Personenbezogenen Daten wie etwa das Erheben, die Aufzeichnung, Organisation, das Ordnen, die Speicherung, Anpassung oder Veränderung, das Auslesen, Abfragen, die Verwendung, die Offenlegung durch Übermittlung, die Verbreitung durch eine andere Form der Bereitstellung, den Abgleich oder die Verknüpfung, die Einschränkung, das Löschen oder die Vernichtung;
+                                      “Verbundenes Unternehmen” meint jegliches Unternehmen weltweit, das zum Zeitpunkt der Veröffentlichung dieser Datenschutzerklärung oder zu einem beliebigen Zeitpunkt danach unmittelbar oder mittelbar von KUKA kontrolliert wird.
+
+                                </li>
+                                <br/>
+                                <li>
+                                  <span style="text-decoration: underline; font-weight: bold">Die Verarbeitung Ihrer Personenbezogenen Daten</span>
+                                    Abhängig davon, wie Sie den Marketplace im Einzelfall nutzen, werden Ihre Personenbezogenen Daten wie folgt verarbeitet:
+
+                                    <div style="margin-left: 50px">
+                                      <br/>
+                                      <ol  type="i">
+                                        <li>
+                                          <span style="text-decoration: underline; font-weight: bold; margin-left:10px">Registrierung für den Marketplace – Einwilligungserklärung</span>
+                                         
+                                            Um Zugang zu allen Funktionen des Marketplace zu haben, müssen Sie sich auf https://my.kuka.com/KUKA_communitiesSelfRegPage registrieren und ein Marketplace Benutzerkonto („Benutzerkonto“) anlegen. Im Rahmen des Registrierungsprozesses werden Sie gebeten, uns verschiedene notwendige Informationen einschließlich Anrede, Vor- und Nachname, E-Mail-Adresse, Funktion innerhalb Ihres Geschäfts oder bei Ihrem Arbeitgeber, Festnetznummer, die Firma des Unternehmens, auf dessen Veranlassung oder in dessen Interesse Sie uns kontaktieren, sowie die vollständige Anschrift Ihres Arbeitsplatzes zur Verfügung zu stellen. Die betreffenden Informationen werden von uns und unseren Verbundenen Unternehmen benötigt, um Sie auf entsprechende Anfrage wie nachstehend beschrieben kontaktieren zu können. Darüber hinaus erlauben uns die betreffenden Informationen, Ihre berufliche Funktion und Rolle zu verstehen und die Art der Produktberatung zu bestimmen, die für Sie im Fall der Kontaktaufnahme voraussichtlich am wichtigsten ist. Soweit Sie uns die betreffenden Informationen nicht zur Verfügung stellen, können Sie kein Benutzerkonto zur Nutzung des Marketplace erstellen.
+
+                                            Neben den zur Registrierung erforderlichen Informationen können Sie uns weitere Informationen zur Verfügung stellen, die es uns erleichtern, Sie zu identifizieren und auf entsprechende Anfrage zu kontaktieren. Dazu gehören Ihre Mobilfunknummer, die D-U-N-S Nummer oder gegebenenfalls die Kundennummer des Unternehmens, auf dessen Veranlassung oder in dessen Interesse Sie uns kontaktieren. Keine dieser Informationen ist erforderlich zur Erstellung eines Benutzerkontos und Ihre Bereitstellung durch Sie erfolgt vollständig auf freiwilliger Basis.
+                                            Um die Registrierung abzuschließen, müssen Sie ein Passwort wählen, das es Ihnen in Zukunft erlauben wird, sich zusammen mit dem Ihnen zugewiesenen Benutzernamen in Ihrem Benutzerkonto anzumelden.
+
+                                            Im Rahmen der Registrierung werden keine Sensiblen Personenbezogene Daten erhoben oder anderweitig Verarbeitet.
+                                            Im Einzelfall kann es sein, dass wir die von Ihnen im Rahmen der Erstellung des Accounts zur Verfügung gestellte E-Mail-Adresse oder Telefonnummern verwenden, um Sie zwecks Bestätigung der während des Registrierungsprozesses angegebenen Personenbezogenen Daten zu kontaktieren. Dies erfolgt anders als nachfolgende Kommunikation mit Ihnen ohne vorherige Anfrage von Ihrer Seite.
+                                            Die zur Registrierung erforderlichen Informationen, etwa von Ihnen zusätzlich zur Verfügung gestellte freiwillige Informationen sowie Ihr Benutzername und Ihr Passwort (nachfolgend zusammen „Registrierungsdaten“) werden hauptsächlich von KUKA Verarbeitet. Abhängig von Ihren zukünftigen Nutzeranfragen über den Marketplace können Ihre Registrierungsdaten aber auch wie in Ziffer 3.2 beschrieben von unseren Verbundenen Unternehmen Verarbeitet werden.
+                                            <br/>
+                                            Ihre Registrierungsdaten werden wie nachfolgend beschrieben Dritten zur Verfügung gestellt:
+                                            <br/>
+                                            <br/>
+                                          <div style="margin-left: 50px"> 
+                                            <ul style="list-style-position: inside">    
+                                                <li>
+
+                                                  Ihre Registrierungsdaten werden ausschließlich in Datenbanken in verschiedenen Mitgliedstaaten der Europäischen Union (EU) gespeichert. Die Server, auf denen die Datenbanken betrieben werden, werden im Auftrag und entsprechend den Anweisungen von KUKA durch Dienstleister betrieben. Zu den betreffenden Dienstleistern gehören in der Europäischen Union (EU) ansässige, mit Salesforce.com, Inc. verbundene Unternehmen.
+                                                </li>
+                                                <li>
+
+                                                  Vereinzelt können Ihre Registrierungsdaten oder Teile Ihrer Registrierungsdaten Dienstleistern zugänglich sein, die IT-Dienstleistungen an KUKA erbringen. Die Dienstleister werden Ihre Registrierungsdaten ausschließlich dann und nur in dem Umfang in unserem Auftrag und entsprechend unseren Anweisungen Verarbeiten, wie es zur Erbringung der IT-Dienstleistungen erforderlich ist. Soweit Sie uns Ihre Registrierungsdaten aus dem Europäischen Wirtschaftsraum (EWR) zur Verfügung stellen und die Dienstleister außerhalb des Europäischen Wirtschaftsraums (EWR) ansässig sind, werden Ihre Registrierungsdaten den Dienstleistern auf der Grundlage der Standardvertragsklauseln für die Übermittlung personenbezogener Daten in Drittländer zugänglich gemacht, die von der EU Kommission herausgegeben wurden.
+                                                </li>
+                                                <li>
+
+                                                  Über die Datenbanken sind Ihre Registrierungsdaten darüber hinaus den leitenden Angestellten und sonstigen Mitarbeitern unserer weltweit Verbundenen Unternehmen zugänglich, damit sie auf Anfragen Ihrerseits zu Produkten reagieren können, die von den verbundenen Unternehmen verkauft und vertrieben werden. 
+
+                                                </li>
+                                                <br/>
+                                           </ul>
+                                          </div>
+                                           
+                                              Bitte beachten Sie in diesem Zusammenhang, dass sich verschiedene unserer Verbundenen Unternehmen in Ländern außerhalb des Europäischen Wirtschaftsraums (EWR) befinden, denen von der Europäischen Union (EU) kein angemessenes Datenschutzniveau, d.h. ein Schutzniveau der Freiheiten und Grundrechte bescheinigt wurde, das dem in der Europäischen Union (EU) garantierten Niveau der Sache nach gleichwertig ist. Aus diesem Grund kann nicht vollständig ausgeschlossen werden, dass Ihre Registrierungsdaten in entsprechenden Ländern abweichend von grundlegenden Datenschutzprinzipien Verarbeitet werden, wie sie in der Europäischen Union (EU) gelten. Dies gilt etwa für den Zugriff auf Ihre Registrierungsdaten durch Dritte wie beispielsweise Regierungsbehörden, die Nutzung Ihrer Registrierungsdaten für andere als die ihrer Erhebung zugrunde liegenden Zwecke sowie die Offenlegung oder weitere Übermittlung Ihrer Registrierungsdaten an Dritte ohne Zusammenhang mit dem Marketplace. Ihre Registrierungsdaten werden unsere Verbundenen Unternehmen in entsprechenden Ländern auf der Grundlage Ihrer unten abgedruckten Einwilligungserklärung übermittelt, die Sie im Rahmen des Registrierungsprozesses für Ihr Benutzerkonto abgeben haben.
+
+                                              Soweit nicht zuvor beschrieben werden Ihre Registrierungsdaten keinen Dritten zur Verfügung gestellt.
+
+                                              Ihre Registrierungsdaten werden von uns und unseren Verbundenen Unternehmen ausschließlich zu den in Ziffer 3.2 beschriebenen Zwecken Verarbeitet. Mit Ausnahme Ihrer Transaktionshistorie (siehe Ziffer 3.2) werden Ihre Registrierungsdaten zu keinem Zeitpunkt mit anderen Personenbezogenen Daten abgeglichen, verknüpft oder anderweitig verbunden. Ihre Registrierungsdaten werden Verarbeitet, bis Sie die unten abgedruckte Einwilligungserklärung widerrufen, die Sie im Rahmen des Registrierungsprozesses für Ihr Benutzerkonto abgegeben haben, oder bis Sie Ihr Benutzerkonto schließen. In diesen Fällen werden Ihre Registrierungsdaten von sämtlichen Datenbanken gelöscht.
+
+                                             
+                                    <br/>  
+                                    <br/>      
+                                    <center><h4>EINWILLIGUNGSERKLÄRUNG:</h4></center>                        
+                                        
+                                      <div style="margin-left: 50px">       
+                                            Indem Sie sich registrieren und ein Benutzerkonto erstellen, willigen Sie ausdrücklich in die zuvor beschriebene Verarbeitung Ihrer Registrierungsdaten ein. Dies gilt insbesondere für die vollständige oder teilweise Übermittlung Ihrer Registrierungsdaten in Länder, die nach den Maßstäben der Europäischen Union (EU) kein angemessenes Datenschutzniveau gewährleisten. Sie sind sich der Tatsache bewusst, dass Sie nicht dazu verpflichtet sind, Ihre Einwilligung zu erklären und dass Sie eine etwa dennoch erklärte Einwilligung jederzeit unter Nutzung der folgenden Kontaktdaten mit Wirkung für die Zukunft widerrufen können: [Kontaktdaten].
+                                      </div>
+                                </li>    
+                            
+                          
+                                <br/>
+                                <li>
+                                  <span style="text-decoration: underline; font-weight: bold">Informationsaustausch über den Marketplace – Einwilligungserklärung</span>
+
+                                  Nach Erstellung eines Benutzerkontos werden Ihre Registrierungsdaten von uns und unseren Verbundenen Unternehmen ausschließlich dazu Verarbeitet, um Sie in Zusammenhang mit Anfragen zu kontaktieren, die Sie über den Marketplace bezüglich der von KUKA oder unseren Verbundenen Unternehmen verkauften und vertriebenen Produkte und Dienstleistungen stellen. Wir werden Sie nicht ohne vorherige Anfrage kontaktieren oder Ihre Registrierungsdaten zu Zwecken des Direktmarketing verwenden.
+
+                                  Wenn Sie über den Marketplace eine Anfrage in Zusammenhang mit einem Produkt oder einer Dienstleistung stellen, das oder die von einem mit KUKA Verbundenen Unternehmen verkauft oder vertrieben wird, kann das betreffende Verbundene Unternehmen Ihre Anfrage einsehen. In diesem Fall können die leitenden Angestellten oder sonstigen Mitarbeiter des betreffenden Verbundenen Unternehmens Ihre Registrierungsdaten verwenden, um mit Ihnen Kontakt aufzunehmen.
+
+                                  Darüber hinaus können der Benutzername und das Passwort als Bestandteil Ihrer Registrierungsdaten in Zukunft dazu verwendet werden, um Ihnen Zugang zu Internet-basierten Dienstleistungen zu gewähren, an deren Erwerb Sie in Zukunft etwa beteiligt sind. 
+
+                                  Im Laufe Ihrer Nutzung des Marketplace werden wir Ihre unterschiedlichen Anfragen betreffend die Produkte oder Dienstleistungen von KUKA oder unserer Verbundenen Unternehmen einschließlich etwa nachfolgender Korrespondenz sowie etwa daraus resultierender Abschlüsse von Kaufverträgen (zusammen „Transaktionshistorie“) mitverfolgen und speichern. Mit Hilfe Ihrer Transaktionshistorie können wir zeitnah auf Ihre Anfragen reagieren und Ihnen auf einfache Art und Weise zweckmäßige Informationen und Unterstützung zu Produkten oder Dienstleistungen zur Verfügung stellen, an deren Erwerb Sie zuvor beteiligt waren. Ihre Transaktionshistorie wird keinerlei Sensible Personenbezogene Daten enthalten.
+
+                                  Ihre Transaktionshistorie wird mit Ihrem Benutzerkonto sowie Ihren Registrierungsdaten verbunden. Sie wird auf dieselbe Art und Weise Dritten zur Verfügung gestellt wie Ihre Registrierungsdaten (siehe Ziffer 3.1). Dies gilt unter anderem für die Übermittlung Ihrer Transaktionshistorie an Verbundene Unternehmen in Ländern außerhalb des Europäischen Wirtschaftsraums (EWR), denen von der Europäischen Union (EU) kein angemessenes Datenschutzniveau, d.h. ein Schutzniveau der Freiheiten und Grundrechte bescheinigt wurde, das dem in der Europäischen Union (EU) garantierten Niveau der Sache nach gleichwertig ist. Aus diesem Grund kann nicht vollständig ausgeschlossen werden, dass Ihre Transaktionshistorie in entsprechenden Ländern abweichend von grundlegenden Datenschutzprinzipien Verarbeitet werden, wie sie in der Europäischen Union (EU) gelten. Dies gilt etwa für den Zugriff auf Ihre Transaktionshistorie durch Dritte wie beispielsweise Regierungsbehörden, die Nutzung Ihrer Transaktionshistorie für andere als die ihrer Erhebung zugrunde liegenden Zwecke sowie die Offenlegung oder weitere Übermittlung Ihrer Transaktionshistorie an Dritte ohne Zusammenhang mit dem Marketplace. Ihre Transaktionshistorie wird unseren Verbundenen Unternehmen in entsprechenden Ländern auf der Grundlage Ihrer unten abgedruckten Einwilligungserklärung übermittelt, die Sie im Rahmen des Registrierungsprozesses für Ihr Benutzerkonto abgeben haben.
+
+                                  Mit Ausnahme Ihrer Registrierungsdaten (siehe Ziffer 3.1) wird Ihre Transaktionshistorie zu keinem Zeitpunkt mit anderen Personenbezogenen Daten abgeglichen, verknüpft oder anderweitig verbunden. Ihre Transaktionshistorie wird Verarbeitet, bis Sie die unten abgedruckte Einwilligungserklärung widerrufen, die Sie im Rahmen des Registrierungsprozesses für Ihr Benutzerkonto abgegeben haben, oder bis Sie Ihr Benutzerkonto schließen. In diesen Fällen wird Ihre Transaktionshistorie von sämtlichen Datenbanken gelöscht.
+                                    <br/>
+                                    <br/>
+                                <center><h4>EINWILLIGUNGSERKLÄRUNG:</h4></center>                        
+                                        
+                                      <div style="margin-left: 50px">       
+                                            Indem Sie sich registrieren und ein Benutzerkonto erstellen, willigen Sie ausdrücklich in die zuvor beschriebene Verarbeitung Ihrer Registrierungsdaten sowie Ihrer Transaktionshistorie ein. Dies gilt insbesondere für die vollständige oder teilweise Übermittlung Ihrer Registrierungsdaten sowie Ihrer Transaktionshistorie in Länder, die nach den Maßstäben der Europäischen Union (EU) kein angemessenes Datenschutzniveau gewährleisten. Sie sind sich der Tatsache bewusst, dass Sie nicht dazu verpflichtet sind, Ihre Einwilligung zu erklären und dass Sie eine etwa dennoch erklärte Einwilligung jederzeit unter Nutzung der folgenden Kontaktdaten mit Wirkung für die Zukunft widerrufen können: [Kontaktdaten].
+                                      </div>
+                                </li>
+                                <br/>
+                                <li>
+                                  <span style="text-decoration: underline; font-weight: bold"> Cookies</span>
+
+                                  Auf dem Marketplace werden Cookies eingesetzt. Bei Cookies handelt es sich um kleine Textdateien, die von Ihrem Internet-Browser heruntergeladen und auf dem von Ihnen zur Nutzung des Marketplace verwandten Endgerät (wie z.B. Ihr Desktop-Computer, Tablet oder Smartphone) gespeichert werden. Abhängig von Ihrem Verwendungszweck speichern Cookies bestimmte nutzerspezifische Informationen wie etwa Ihre Nutzereinstellungen, Authentifizierungsmerkmale oder Sicherheitsparameter. Soweit dies im Rahmen Ihres Besuchs des Marketplace erforderlich ist, sendet Ihr Internet-Browser die Cookies sowie die darin enthaltenen Informationen an diejenigen Server zurück, von denen sie anfänglich heruntergeladen wurden. Die Auswertung und Verarbeitung der betreffenden Informationen ermöglicht es uns, die Funktionsfähigkeit des Marketplace sicherzustellen und Ihre Nutzererfahrung zu verbessern.
+
+                                  Auf dem Marketplace werden ausschließlich First-Party Session Cookies verwendet. First-Party Cookies sind Cookies, die wir Im Rahmen Ihrer Nutzung des Marketplace in unserer Eigenschaft als für die Verarbeitung Ihrer Personenbezogenen Daten verantwortliche Stelle auf Ihrem Endgerät speichern und von dort abrufen. Session Cookies sind Cookies, die im Rahmen eines einzelnen Besuchs des Marketplace Information über Ihre Nutzungshandlungen sammeln, solange Ihr Internet-Browser geöffnet ist. Bei Kontaktaufnahme mit unseren Servern wird Ihrem Endgerät eine sogenannte Session-ID zugewiesen, mit deren Hilfe unsere Server Ihr Endgerät identifizieren und die Funktionsfähigkeit des Marketplace sicherstellen können, solange Ihr Internet-Browser geöffnet ist. Session Cookies werden nur vorübergehend gespeichert und werden gelöscht, wenn Sie den Marketplace verlassen.
+
+                                  Sämtliche auf dem Marketplace verwandte First-Party Session Cookies dienen ausschließlich dazu, die Übertragung von Nachrichten über das elektronische Kommunikationsnetz durchzuführen oder zu erleichtern, über das auf den Marketplace zugegriffen wird, oder sind unbedingt erforderlich, um die von Ihnen ausdrücklich gewünschten Funktionen des Marketplace zur Verfügung stellen zu können.
+
+                                  Sie können unseren Einsatz von Cookies im Rahmen Ihres Besuchs des Marketplace beeinflussen. Sie können insbesondere die Speicherung von Cookies auf Ihrem Endgerät verhindern, indem Sie die Einstellungen Ihres Internet-Browsers entsprechend konfigurieren. In diesem Fall kann jedoch nicht ausgeschlossen werden, dass bestimmte Funktionen des Marketplace nicht mehr nutzbar sind.
+
+                                </li>
+                              </ol>
+                            </div>
+                          </li>
+                                <br/>
+                                <li>
+                                  <span style="text-decoration: underline; font-weight: bold">Datensicherheit</span>
+
+                                  Der Schutz Ihrer Personenbezogenen Daten ist uns wichtig. Wir verwenden geeignete technische und organisatorische Maßnahmen und Sicherheitsvorkehrungen, die für den Schutz gegen die zufällige oder unrechtmäßige Zerstörung, den zufälligen Verlust, die unberechtigte Änderung, die unberechtigte Weitergabe oder den unberechtigten Zugang und jede andere Form der unrechtmäßigen Verarbeitung Ihrer Personenbezogenen Daten erforderlich sind. Dazu gehört beispielsweise die Verschlüsselung Ihrer Kommunikation über den Marketplace mittels des Secure Socket Layer (SSL) Protokolls.
+                                </li>
+                                <br/>
+                                <li>
+                                  <span style="text-decoration: underline; font-weight: bold">Ihre Rechte</span>
+                                  In addition to any rights mentioned elsewhere in this Policy, You have the following rights with respect to the Processing of your Personal Information:
+                                  <div style="margin-left: 50px">  
+                                    <ul>
+                                      <li>
+                                        das Recht, eine Bestätigung darüber zu verlangen, ob Ihre Personenbezogenen Daten Verarbeitet werden;
+                                      </li>
+                                      <li>
+                                        das Recht, Zugang zu Ihren Personenbezogenen Daten zu erlangen, d.h. eine Kopie Ihrer Personenbezogenen Daten sowie zusätzliche Informationen betreffend die Details der Verarbeitung sowie der zugrunde liegenden Zwecke zu erhalten;
+                                      </li>
+                                      <li>
+                                        das Recht, die Berichtigung unrichtiger Personenbezogener Daten zu verlangen;
+                                      </li>
+                                      <li>
+                                        das Recht, unvollständige Personenbezogene Daten zu vervollständigen;
+                                      </li>
+                                     <li>
+                                        das Recht, aus Gründen, die sich aus ihrer besonderen Situation ergeben, jederzeit Widerspruch gegen die Verarbeitung Ihrer Personenbezogenen Daten einzulegen, soweit die Verarbeitung zur Wahrung berechtigter Interessen von KUKA oder unserer Verbundenen Unternehmen erfolgt;
+                                      </li>
+                                      <li>
+                                        das Recht, die Löschung Ihrer Personenbezogenen Daten zu verlangen, (i) die für die Zwecke, für die sie erhoben oder auf sonstige Weise Verarbeitet wurden, nicht mehr notwendig sind, (ii) wenn Sie die Einwilligungserklärung widerrufen, auf die sich die Verarbeitung stützt, und es an einer anderen Rechtsgrundlage für die Verarbeitung fehlt, (iii) wenn Sie von Ihrem Recht Gebrauch machen, Widerspruch gegen die Verarbeitung einzulegen, und keine vorrangigen berechtigten Gründe für die Verarbeitung vorliegen, die Ihre Interessen oder Grundrechte und Grundfreiheiten überwiegen, oder (iv) wenn die Personenbezogenen Daten unrechtmäßig Verarbeitet wurden;
+                                      </li>
+                                      <li>
+                                        das Recht, die Einschränkung der Verarbeitung Ihrer Personenbezogenen Daten auf ihre Speicherung zu verlangen, (i) wenn Sie die Richtigkeit der Personenbezogenen Daten bestreiten, und zwar für eine Dauer, die es uns ermöglicht, die Richtigkeit der Personenbezogenen Daten zu überprüfen, (ii) wenn die Verarbeitung unrechtmäßig ist und Sie die Löschung der Personenbezogenen Daten ablehnen und stattdessen die Einschränkung der Nutzung der Personenbezogenen Daten verlangen, (iii) wenn wir die Personenbezogenen Daten für die Zwecke der Verarbeitung nicht länger benötigen, Sie sie jedoch zur Geltendmachung, Ausübung oder Verteidigung von Rechtsansprüchen benötigen, oder (iv) wenn Sie Widerspruch gegen die Verarbeitung eingelegt haben, solange noch nicht feststeht, ob unsere berechtigten Gründe Ihre Interessen oder Grundrechte und Grundfreiheiten überwiegen;
+                                      </li>
+                                      <li>
+                                        das Recht, Ihre Personenbezogene Daten in einem strukturierten, gängigen und maschinenlesbaren Format zu erhalten und diese Daten einem anderen Verantwortlichen ohne Behinderung zu übermitteln;
+                                      </li>
+                                      <li>
+                                        das Recht, Beschwerde bei einer Aufsichtsbehörde einzulegen.
+                                      </li>
+                                    </ul>
+                                  </div>
+                                  Bitte nutzen Sie die in Ziffer 7 angegebenen Kontaktdaten, um die genannten Rechte gegenüber KUKA geltend zu machen.
+
+                                </li>
+                                <br/>
+                                <li>
+                                  <span style="text-decoration: underline; font-weight: bold">Änderungen dieser Datenschutzerklärung</span>
+                                  Gelegentlich kann es vorkommen, dass wir unsere Geschäftsprozesse und/oder Richtlinien und Verfahren betreffend die Verarbeitung Personenbezogener Daten in Zusammenhang mit dem Marketplace ändern. Falls erforderlich, werden wir diese Datenschutzerklärung in derartigen Fällen entsprechend den anwendbaren gesetzlichen Vorschriften abändern, ergänzen oder ersetzen. Wenn sich der Inhalt der Datenschutzerklärung ändert, werden wir die neue Fassung unter Anpassung des am Anfang des Dokuments genannten Datums zugänglich machen.
+                                </li>
+                                <br/>
+                                <li>
+                                  <span style="text-decoration: underline; font-weight: bold">7.  Wie Sie Kontakt mit uns aufnehmen können</span>
+                                  Bitte zögern Sie nicht, sich mit Fragen und Kommentaren betreffend diese Datenschutzerklärung und die Verarbeitung Ihrer Personenbezogenen Daten an uns zu wenden. Zu diesem Zweck können Sie die unten genannten Kontaktinformationen verwenden. Wir werden Ihre Anfrage so schnell wie möglich beantworten.
+                                    <a href="mailto:webmaster@kuka.com">webmaster@kuka.com</a>
+                                    <!--KUKA Aktiengesellschaft 
+                                    Zugspitzstrasse 140, 
+                                    86165 Augsburg, Germany
+                                    [Titel des für datenschutzrechtliche Fragen zuständigen Mitarbeiters]
+                                    Tel.: [Telefonnummer]
+                                    E-Mail: [E-Mail-Adresse]-->
+                                  <center>* * * * *</center>
+                                </li>
+                            </ol>
+
+                            <!-- Add an optional button to close the popup -->
+                            <center><button class="datapriv_popup_close a-btn a-btn--primary">{!$Label.CommunitySelfReg_ButtonTandDClose}</button></center>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </apex:outputPanel>
+
+
+
+
+
+
+</div>
+
+
+        </div> 
+ <!-- </div> -->
+</main>
+ </div> 
+
+<footer class="l-footer h-expand-background h-expand-background--white">
+  <div id="contact" class="mod mod-contact container text-center" data-ignore="true">
+    
+    <div class="row mod-contact__img-row h-margin-bottom-20">
+        <div class="mod-contact__img-col col-sm-2 col-sm-offset-5">
+            <figure class="mod-contact__img h-ratio h-ratio1-1 h-rounded">
+
+
+<img alt="" class="h-ratio-content" src="https://static.kuka.com/salesforce/SsoPageResources/-/media/kuka-corporate/images/contact_images/kontakt-kuka-ag.svg"/>  
+         
+            </figure>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <p class="intro h-margin-bottom-20">
+                <strong>{!$Label.CommunitySelfReg_ImprintName}</strong>                
+            </p>
+            <p class="caption">
+                {!$Label.CommunitySelfReg_ImprintAddress}
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-10 col-xs-offset-1 col-sm-12 col-sm-offset-0">
+            <ul class="mod-contact__list h-tbl h-tbl--layout-fixed">
+                
+                <li class="h-tbl__cell">
+                    <a class="mod-contact__action" href="mailto:{!$Label.CommunitySelfReg_ImprintEmail}">
+                        <p class="a-btn a-btn--icon a-btn--tertiary h-margin-bottom-10">
+                            <span class="icon-mail"></span>
+                        </p>
+                        <p class="copy hidden-xs">{!$Label.CommunitySelfReg_ImprintEmailLabel}</p>
+                    </a>
+                </li>
+                
+ <!--               
+                <li class="h-tbl__cell">
+                    <a class="mod-contact__action" href="tel:{!$Label.CommunitySelfReg_ImprintPhone}">
+                        <p class="a-btn a-btn--icon a-btn--tertiary h-margin-bottom-10">
+                            <span class="icon-phone"></span>
+                        </p>
+                        <p class="copy hidden-xs">{!$Label.CommunitySelfReg_ImprintPhoneLabel}</p>
+                    </a>
+                </li>
+ -->               
+                
+            </ul>
+        </div>
+    </div>
+    
+</div>
+<div class="mod mod-footer container h-no-margin-top" data-ignore="true">
+  <div class="mod-footer__bottom-container clearfix h-pos-relative">
+
+    
+    <ul class="mod-footer__list mod-footer__socialmedialist">
+      
+      <li class="mod-footer__list-item mod-footer__socialmedialist-item">
+        <a class="a-btn--img-hover-swap" href="https://www.youtube.com/KukaRobotGroup" target="_blank">
+          <figure>
+            <img class="mod-footer__socialmedialist-img" src="https://static.kuka.com/salesforce/SsoPageResources/-/media/kuka-corporate/images/social-media-icons/youtube.png" alt="" />
+            <img class="mod-footer__socialmedialist-img mod-footer__socialmedialist-img--colored" src="https://static.kuka.com/salesforce/SsoPageResources/-/media/kuka-corporate/images/social-media-icons/youtube2.png" alt="" />
+          </figure>
+        </a>
+      </li>
+      
+      <li class="mod-footer__list-item mod-footer__socialmedialist-item">
+        <a class="a-btn--img-hover-swap" href="https://www.facebook.com/kuka.systems/" target="_blank">
+          <figure>
+            <img class="mod-footer__socialmedialist-img" src="https://static.kuka.com/salesforce/SsoPageResources/-/media/kuka-corporate/images/social-media-icons/facebook1.png" alt="" />
+            <img class="mod-footer__socialmedialist-img mod-footer__socialmedialist-img--colored" src="https://static.kuka.com/salesforce/SsoPageResources/-/media/kuka-corporate/images/social-media-icons/facebook2.png" alt="" />
+          </figure>
+        </a>
+      </li>
+      
+      <li class="mod-footer__list-item mod-footer__socialmedialist-item">
+        <a class="a-btn--img-hover-swap" href="https://twitter.com/KUKA_Presse" target="_blank">
+          <figure>
+            <img class="mod-footer__socialmedialist-img" src="https://static.kuka.com/salesforce/SsoPageResources/-/media/kuka-corporate/images/social-media-icons/twitter.png" alt="" />
+            <img class="mod-footer__socialmedialist-img mod-footer__socialmedialist-img--colored" src="https://static.kuka.com/salesforce/SsoPageResources/-/media/kuka-corporate/images/social-media-icons/twitter2.png" alt="" />
+          </figure>
+        </a>
+      </li>
+      
+    </ul>
+
+    <ul class="mod-footer__list mod-footer__list--imprint">
+      <li class="mod-footer__list-item caption">
+        &copy; {!$Label.CommunitySelfReg_ImprintCompanyName}
+      </li>
+      <li class="mod-footer__list-item caption">
+        <a href="{!$Label.CommunitySelfReg_ImprintLink}" >{!$Label.CommunitySelfReg_ImprintLinkTitle}</a>
+      </li>
+      <li class="mod-footer__list-item caption">
+        <a href="{!$Label.CommunitySelfReg_SecurityLink}" >{!$Label.CommunitySelfReg_SecurityLinkTitle}</a>
+      </li>
+    </ul>
+    <figure class="mod-footer__logo">
+<svg version="1.1" id="Ebene_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+   viewBox="0 0 239.9 242" style="enable-background:new 0 0 239.9 242;" xml:space="preserve">
+<style type="text/css">
+  .st00{fill:#E8E9EA;}
+</style>
+<path class="st00" d="M37.2,72.7c7.6-13.2,17.9-24,29.8-31.9L40.9,30.5C31.3,38.9,23,49,16.3,60.6c-29.3,50.8-17.7,113.9,24.6,151.3
+  l26.3-10.3C25.1,173.4,11.6,117.1,37.2,72.7z"/>
+<path class="st00" d="M169.7,37.2c29,16.7,46.1,46.2,48.3,77.3l22-17.5c-6.7-32.8-26.9-62.7-58.1-80.8c-31.3-18.1-67.2-20.6-99-10
+  l-4.2,27.8C106.6,20.4,140.7,20.5,169.7,37.2z"/>
+<path class="st00" d="M217.9,127.8c-1,14.3-5.1,28.6-12.8,41.8c-25.6,44.4-81.1,60.8-126.5,38.6l4.2,27.9
+  c53.5,17.9,114-3.6,143.3-54.4c6.7-11.6,11.2-23.9,13.8-36.4L217.9,127.8z"/>
+</svg>
+    </figure>
+    
+
+  </div>
+</div>
+
+</footer>
+
+
+  <script>
+  var goodColor = "rgba(92,184,92,0.4)";
+  var badColor = "rgba(217,83,79,0.4)";
+  var passwordCheck = false;
+    jQuery.noConflict();    
+    function initSelect2()
+    {
+     (function ($) {
+        $.fn.select2.amd.require(['select2/compat/matcher'], function (oldMatcher) {
+            $("[id$='state']").select2({
+                dropdownAutoWidth:false,
+                allowClear:true,
+                width:"237px",
+                matcher: oldMatcher(function(term, text) { return text.toUpperCase().indexOf(term.toUpperCase())===0; })
+            });
+        });
+        })(Tc.$);
+    }
+  
+    (function ($) {
+        
+        var application,
+            $document = $(document);
+        $document.ready(function () {        
+            $('body').on('DOMNodeInserted', 'select', function () {
+                //$(this).select2({ allowClear: true });
+                //$(this).select2();
+                $('#select2-communitiesSelfRegPagetheFormcountry-container').prop('tabindex',  0);
+                $('#select2-communitiesSelfRegPagetheFormstate-container').prop('tabindex',  0);           
+            });
+            
+             $.fn.select2.amd.require(['select2/compat/matcher'], function (oldMatcher) {
+            $(".s2element").select2({
+                dropdownAutoWidth:false,
+                allowClear:true,
+                width:"237px",
+                matcher: oldMatcher(function(term, text) { return text.toUpperCase().indexOf(term.toUpperCase())===0; })
+            });
+        });
+            
+            
+            // set tab index for all dropdowns
+            $('#select2-communitiesSelfRegPagetheFormsalutation-container').prop('tabindex', 0);
+            $('#select2-communitiesSelfRegPagetheFormreltokuka-container').prop('tabindex', 0);            
+            
+            $('#tos_popup').popup({
+                transition: 'all 0.3s',
+                horizontal: 'center',
+                vertical: 'center',
+                backgound: true,
+                color: '#000'
+            });
+
+            $('#datapriv_popup').popup({
+                transition: 'all 0.3s',
+                horizontal: 'center',
+                vertical: 'center',
+                backgound: true,
+                color: '#000'
+            });
+
+            Tc.Config = $.extend(Tc.Config, {
+                $page: $('html'),
+                $root: $('body', this.$page),
+                $window: $(window),
+                $document: $document,
+                $header: $('.js-header', this.$root)
+            });
+            application = new Tc.Application(Tc.Config.$root, Tc.Config);
+            application.registerModules();
+            application.start();
+        });
+    })(Tc.$);
+    
+    function checkPass()
+    {
+        //Store the password field objects into variables ...
+        var pass1 = document.getElementById('communitiesSelfRegPage:theForm:password');
+        var pass2 = document.getElementById('communitiesSelfRegPage:theForm:confirmPassword');
+        //Store the Confimation Message Object ...
+        var message = document.getElementById('confirmMessage');
+        
+        //Compare the values in the password field 
+        //and the confirmation field
+        if((pass1.value == pass2.value) && passwordCheck){
+            //The passwords match. 
+            //Set the color to the good color and inform
+            //the user that they have entered the correct password 
+            pass2.style.backgroundColor = goodColor;
+            
+        }else{
+            //The passwords do not match.
+            //Set the color to the bad color and
+            //notify the user.
+            pass2.style.backgroundColor = badColor;    
+        }
+    }  
+    
+    function passwordChanged() {
+        
+        var mediumRegex = new RegExp("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#!$\\-%=<>+_]).{8,}$", "g");
+        
+        var pwd = document.getElementById("communitiesSelfRegPage:theForm:password");
+        
+        if (false == mediumRegex.test(pwd.value)) {
+            pwd.style.backgroundColor = badColor;
+            passwordCheck = false;
+        } else {
+            pwd.style.backgroundColor = goodColor;
+            passwordCheck = true;
+        }
+    }
+    
+    function checkPhone(sID)
+    {
+        
+        //Store the password field objects into variables ...
+        var phone = document.getElementById(sID);
+        // andreas.meyer@salesforce.com 13.12.2016: change RegEx expressions
+        var phoneRegex = new RegExp("^(([+][1-9][0-9]{0,2})([\\s]?[1-9][0-9]+)(([\\s|\\-]?){1}[0-9]+)+)$", "g");
+        var phoneRegex2 = new RegExp("^(([+][1-9][0-9]{0,2})([\\s]?[0-9][0-9]+)(([\\s|\\-]?){1}[0-9]+)+)$", "g");   
+        
+        if(phone.value == ""){
+            phone.style.backgroundColor = 'inherit';
+        }else if (false == phoneRegex.test(phone.value) && false == phoneRegex2.test(phone.value)) {
+            phone.style.backgroundColor = badColor;
+        } else {
+            phone.style.backgroundColor = goodColor;
+        }
+    }
+    // Function to make the submit button dependent on if the Privacy Policy check box is checked Jade Fischer 03/20/2017.
+     ToSChecked = function(checkVal){
+        var submitButton = document.getElementById("{!$Component.theForm.submit}");
+        if(checkVal.checked==true){
+                submitButton.disabled = false;
+                }else{
+                    submitButton.disabled = true;
+                    }
+    }
+    
+ 
+    
+  </script>    
+    
+
+  </body>
+  </html>
+</apex:page>

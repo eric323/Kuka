@@ -1,0 +1,7 @@
+<apex:page sidebar="false" controller="APTSMD_GreenTechMaintenance" action="{!updateCustomSettings}" showheader="false">
+  <div>
+      GreenTech eCommerce Maintenance Sucessful! Please verify Presales eCommerce Settings.
+    </div>
+    
+    
+</apex:page>

@@ -1,0 +1,287 @@
+<apex:page sidebar="false" showHeader="false" standardStylesheets="false" docType="html-5.0" >
+<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<head>
+    <title>Salesforce Logout Page | KUKA AG</title>
+    <meta name="description" content=""/>
+    <meta name="keywords" content=""/>
+    <meta name="robots" content="index, nofollow"/>
+    <meta charset="utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    
+    <meta name="viewport" id="viewport-meta" content="width=device-width, initial-scale=1.0"/>
+    <meta name="application-name" content="Terrific Net Sample"/>
+    <meta name="language" content="en-DE"/>
+    
+    <link rel="icon" href="https://static.kuka.com/salesforce/SsoPageResources/-/media/kuka-corporate/images/home/logos/kuka-favicon-16.ico"/>
+    
+    <link rel="apple-touch-icon-precomposed" href="https://static.kuka.com/salesforce/SsoPageResources/-/media/kuka-corporate/images/home/logos/kuka_touchicon-152.png"/>
+    
+    <meta name="msapplication-TileColor" content="#FFFFFF"/>
+    <meta name="msapplication-TileImage" content="https://static.kuka.com/salesforce/SsoPageResources/-/media/kuka-corporate/images/home/logos/kuka_touchicon-152.png"/>
+    
+
+    <style>:lang(en-DE) {
+        
+            font-family: 'kuka-bulo', Calibri, Segoe UI, Helvetica, Arial, Sans-Serif;
+        
+        }
+    </style>
+
+    <link rel="stylesheet" href="https://static.kuka.com/salesforce/SsoPageResources/bundle_app.css" type="text/css" />
+    <script>
+        // Picuter element HTML5 shiv
+        document.createElement('picture');
+    </script>
+    <script src="https://static.kuka.com/salesforce/SsoPageResources/assets/js/app/picturefill.min.js" async="async"></script>
+    <!--[if lte IE 9]>
+        <script src="https://static.kuka.com/salesforce/SsoPageResources/assets/js/app/media.match.min.js"></script>
+    <![endif]-->
+</head>
+
+
+<body class="mod mod-layout" data-connectors="responsive, toggle">
+
+
+
+
+
+
+<header class="o-header js-header">
+<nav class="mod mod-nav" data-connectors="responsive, toggle">
+    <script type="text/template" id="scroll-overlay">
+        <div class="mod-nav__scroll-overlay mod-nav__scroll-overlay--top text-center hide-xs hide-sm js-scroll-overlay" data-direction="top">
+            <span class="mod-nav__scroll-btn icon-arrow-up"></span>
+        </div>
+        <div class="mod-nav__scroll-overlay mod-nav__scroll-overlay--bot text-center hide-xs hide-sm js-scroll-overlay state-visible" data-direction="bottom">
+            <span class="mod-nav__scroll-btn icon-arrow-down"></span>
+        </div>
+    </script>
+</nav>
+
+<div class="o-header__wrapper container h-expand-background h-expand-background--white">
+    <div class="o-header__bar">
+        <nav class="mod mod-nav-meta" data-connectors="nav, toggle">
+            <ul class="mod-nav-meta"></ul>
+        </nav>
+        
+                    
+        <a class="mod mod-logo" href="https://www.kuka.com/" target="" data-ignore="true">
+            <figure class="mod-logo__wrapper pull-right">
+            <!--
+            <img src="https://static.kuka.com/salesforce/SsoPageResources/-/media/kuka-corporate/images/home/logos/kuka_logo.svg?h=37&amp;la=en-DE&amp;w=200&amp;hash=972AEC58E0277525F9C06683AD76EB6B285D189D" alt="KUKA" width="200" height="37" />
+            -->
+
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+     viewBox="-429 303 558 240" style="enable-background:new -429 303 558 240;" xml:space="preserve">
+<style type="text/css">
+    .st0{fill:none;}
+    .st1{fill:#FF6C2C;}
+</style>
+<rect x="-429" y="303" class="st0" width="558" height="240"/>
+<g>
+    <polygon class="st1" points="-321.5,421.6 -321.5,382.2 -347,382.2 -347,462.3 -321.5,462.3   "/>
+    <polygon class="st1" points="-238.7,462.3 -288.1,421.6 -238.7,382.2 -274.9,382.2 -321.5,421.6 -274.9,462.3  "/>
+    <path class="st1" d="M-122.4,434.3v-52.1H-148v47.5c0,10.2-3.8,13.2-14.3,13.2h-25.3c-10.5,0-14.3-3-14.3-13.2v-47.5h-25.6v52.1
+        c0,19.9,10.7,29.4,34.2,29.4h36.6C-133.1,463.8-122.4,454.3-122.4,434.3"/>
+    <polygon class="st1" points="-76.8,421.6 -76.8,382.2 -102.3,382.2 -102.3,462.3 -76.8,462.3  "/>
+    <polygon class="st1" points="5.9,462.3 -43.5,421.6 5.9,382.2 -30.2,382.2 -76.8,421.6 -30.2,462.3    "/>
+    <path class="st1" d="M78.8,382.2H56.2L6,462.2h29.4l8.5-13.9h47.4l8.5,13.9h29.4L78.8,382.2z M52.6,432.4l14.9-25.5l14.9,25.5H52.6
+        z"/>
+</g>
+</svg>
+
+
+            </figure>
+        </a>
+    </div>
+</div>
+<div class="a-site-overlay js-site-overlay"></div>
+</header>
+
+
+
+
+<main class="container js-anchorbar-trigger">
+    <div class="row">
+        <div class="col-sm-10 col-sm-offset-1">
+            
+            <section class="mod mod-page-intro h-no-margin-top text-center">
+    
+        
+        <div class="row h-pull-row-right-1 h-pull-row-left-1 mod-page-intro__bd state-moved">
+        
+            <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+                <h1 class="mod-page-intro__headline">{!$Label.SSO_Errorpage_Title}</h1>
+                
+                <apex:outputPanel rendered="{!len($CurrentPage.parameters.ErrorCode)>0 || $CurrentPage.parameters.ErrorCode !=null}">
+                <p class="intro">{!$CurrentPage.parameters.ErrorDescription}  ({!$Label.SSO_Errorpage_ErrorCodeLabel}: {!$CurrentPage.parameters.ErrorCode})</p>
+                <p class="intro">{!$Label.SSO_Errorpage_ErrorDetailLabel}: {!$CurrentPage.parameters.ErrorDetails}</p>
+
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!$CurrentPage.parameters.ErrorCode ==null}">
+                <p class="intro">Undefined Error</p>
+                </apex:outputPanel>             
+                <p class="intro">
+                <br /><br />
+                <!--
+                <a class="mod-contact__action" href="javascript:history.go(-1)" title="Return to login page">&laquo; Go back to login page</a>
+                -->
+                <a class="mod-contact__action" href="https://kuka.my.salesforce.com?so=00D58000000OybT" title="{!$Label.SSO_Errorpage_ReturnLabel}">&laquo; {!$Label.SSO_Errorpage_ReturnLabel}</a>
+                
+                </p>                
+            </div>
+        </div>  
+</section>
+
+            
+    </div>
+    </div>
+</main>
+
+
+
+<footer class="l-footer h-expand-background h-expand-background--white">
+    <div id="contact" class="mod mod-contact container text-center" data-ignore="true">
+    
+    <div class="row mod-contact__img-row h-margin-bottom-20">
+        <div class="mod-contact__img-col col-sm-2 col-sm-offset-5">
+            <figure class="mod-contact__img h-ratio h-ratio1-1 h-rounded">
+
+
+<img alt="" class="h-ratio-content" src="https://static.kuka.com/salesforce/SsoPageResources/-/media/kuka-corporate/images/contact_images/kontakt-kuka-ag.svg"/>  
+         
+            </figure>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <p class="intro h-margin-bottom-20">
+                <strong>KUKA Aktiengesellschaft Germany</strong><br/>
+                
+            </p>
+            <p class="caption">
+                KUKA AG, Zugspitzstr. 140, 86165 Augsburg, Germany
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-10 col-xs-offset-1 col-sm-12 col-sm-offset-0">
+            <ul class="mod-contact__list h-tbl h-tbl--layout-fixed">
+                
+                <li class="h-tbl__cell">
+                    <a class="mod-contact__action" href="mailto:itsupport@kuka.com">
+                        <p class="a-btn a-btn--icon a-btn--tertiary h-margin-bottom-10">
+                            <span class="icon-mail"></span>
+                        </p>
+                        <p class="copy hidden-xs">itsupport@kuka.com</p>
+                    </a>
+                </li>
+                
+                
+                <li class="h-tbl__cell">
+                    <a class="mod-contact__action" href="tel:+498217973999">
+                        <p class="a-btn a-btn--icon a-btn--tertiary h-margin-bottom-10">
+                            <span class="icon-phone"></span>
+                        </p>
+                        <p class="copy hidden-xs">+49 821 797- 3999</p>
+                    </a>
+                </li>
+                
+                
+            </ul>
+        </div>
+    </div>
+    
+</div>
+<div class="mod mod-footer container h-no-margin-top" data-ignore="true">
+    <div class="mod-footer__bottom-container clearfix h-pos-relative">
+
+        
+        <ul class="mod-footer__list mod-footer__socialmedialist">
+            
+            <li class="mod-footer__list-item mod-footer__socialmedialist-item">
+                <a class="a-btn--img-hover-swap" href="https://www.youtube.com/KukaRobotGroup" target="_blank">
+                    <figure>
+                        <img class="mod-footer__socialmedialist-img" src="https://static.kuka.com/salesforce/SsoPageResources/-/media/kuka-corporate/images/social-media-icons/youtube.png" alt="" />
+                        <img class="mod-footer__socialmedialist-img mod-footer__socialmedialist-img--colored" src="https://static.kuka.com/salesforce/SsoPageResources/-/media/kuka-corporate/images/social-media-icons/youtube2.png" alt="" />
+                    </figure>
+                </a>
+            </li>
+            
+            <li class="mod-footer__list-item mod-footer__socialmedialist-item">
+                <a class="a-btn--img-hover-swap" href="https://www.facebook.com/kuka.systems/" target="_blank">
+                    <figure>
+                        <img class="mod-footer__socialmedialist-img" src="https://static.kuka.com/salesforce/SsoPageResources/-/media/kuka-corporate/images/social-media-icons/facebook1.png" alt="" />
+                        <img class="mod-footer__socialmedialist-img mod-footer__socialmedialist-img--colored" src="https://static.kuka.com/salesforce/SsoPageResources/-/media/kuka-corporate/images/social-media-icons/facebook2.png" alt="" />
+                    </figure>
+                </a>
+            </li>
+            
+            <li class="mod-footer__list-item mod-footer__socialmedialist-item">
+                <a class="a-btn--img-hover-swap" href="https://twitter.com/KUKA_Presse" target="_blank">
+                    <figure>
+                        <img class="mod-footer__socialmedialist-img" src="https://static.kuka.com/salesforce/SsoPageResources/-/media/kuka-corporate/images/social-media-icons/twitter.png" alt="" />
+                        <img class="mod-footer__socialmedialist-img mod-footer__socialmedialist-img--colored" src="https://static.kuka.com/salesforce/SsoPageResources/-/media/kuka-corporate/images/social-media-icons/twitter2.png" alt="" />
+                    </figure>
+                </a>
+            </li>
+            
+        </ul>
+
+        <ul class="mod-footer__list mod-footer__list--imprint">
+            <li class="mod-footer__list-item caption">
+                &copy; KUKA AG
+            </li>
+            <li class="mod-footer__list-item caption">
+                <a href="" target=""></a>
+            </li>
+            <li class="mod-footer__list-item caption">
+                <a href="" target=""></a>
+            </li>
+        </ul>
+        <figure class="mod-footer__logo">
+<svg version="1.1" id="Ebene_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+     viewBox="0 0 239.9 242" style="enable-background:new 0 0 239.9 242;" xml:space="preserve">
+<style type="text/css">
+    .st00{fill:#E8E9EA;}
+</style>
+<path class="st00" d="M37.2,72.7c7.6-13.2,17.9-24,29.8-31.9L40.9,30.5C31.3,38.9,23,49,16.3,60.6c-29.3,50.8-17.7,113.9,24.6,151.3
+    l26.3-10.3C25.1,173.4,11.6,117.1,37.2,72.7z"/>
+<path class="st00" d="M169.7,37.2c29,16.7,46.1,46.2,48.3,77.3l22-17.5c-6.7-32.8-26.9-62.7-58.1-80.8c-31.3-18.1-67.2-20.6-99-10
+    l-4.2,27.8C106.6,20.4,140.7,20.5,169.7,37.2z"/>
+<path class="st00" d="M217.9,127.8c-1,14.3-5.1,28.6-12.8,41.8c-25.6,44.4-81.1,60.8-126.5,38.6l4.2,27.9
+    c53.5,17.9,114-3.6,143.3-54.4c6.7-11.6,11.2-23.9,13.8-36.4L217.9,127.8z"/>
+</svg>
+        </figure>
+        
+
+    </div>
+</div>
+
+</footer>
+
+
+    <script type="text/javascript" src="https://static.kuka.com/salesforce/SsoPageResources/bundle_app.js"></script>
+    <script>
+        jQuery.noConflict();
+        (function ($) {
+            var application,
+                $document = $(document);
+            $document.ready(function () {
+                Tc.Config = $.extend(Tc.Config, {
+                    $page: $('html'),
+                    $root: $('body', this.$page),
+                    $window: $(window),
+                    $document: $document,
+                    $header: $('.js-header', this.$root)
+                });
+                application = new Tc.Application(Tc.Config.$root, Tc.Config);
+                application.registerModules();
+                application.start();
+            });
+        })(Tc.$);
+    </script>
+    </body>
+  </html>
+</apex:page>

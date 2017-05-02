@@ -1,0 +1,210 @@
+<apex:page standardStylesheets="false" sidebar="false" showHeader="false" controller="APTSMD_ApttusLabAngularJS" applyBodyTag="false" cache="false" applyHtmlTag="false" docType="html-5.0" language="{!UserLanguage}" >
+  <head>
+    <meta charset="UTF-8" />
+    <title>{!title}</title>
+    <meta name="description" content=""/>
+    <meta name="keywords" content=""/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <link rel="icon shortcut" href="{!URLFOR($Resource.APTSDMP_FavIcon)}" />
+    <link href="{!URLFOR($Resource.APTSMD_Kuka, 'css/kuka.css')}" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <div ng-app="apttuslab">
+      <ui-view></ui-view>
+
+      <c:APTSDMP_eComm_Templates />
+    </div>
+    <apex:form >
+      <apex:actionFunction action="{!login}" name="loginJS"/>
+      <apex:inputHidden value="{!loginUser}" html-class="loginUsername"/>
+      <apex:inputHidden value="{!loginPassword}" html-class="loginPassword"/>
+    </apex:form>
+
+    <script src="{!URLFOR($Resource.APTSMD_Kuka, 'js/kuka.min.js')}"></script>
+    <style>
+      /*This has to be in the page because the css file doesn't do well with utf-8 characters*/
+      .cart-icon:before
+      {
+        content: "&#xE992;" !important;
+      }
+    </style>
+    <script>
+      var kuka = angular.module("apttuslab", ['ui.router', 'ui.bootstrap', 'ngSanitize', 'angular-loading-bar', 'ngAnimate', 'angular-ladda', 'cfp.loadingBar']);
+      kuka.model = {
+        exchangeRate : '{!dExchangeRate}',
+        store : {!store},
+        refinesearchque : {!refinesearchque},
+        isValidUser : '{!isValidUser}',
+        currency : '{!currencySym}',
+        userLogoUrl : '{!userLogoUrl}',
+        promoImages : {!promoImagesJSON},
+        topCategory : '{!TopCategoryName}',
+        topDealProdIds : '{!topDealProdIds}',
+        userLanguage : '{!UserLanguage}',
+        supportedRegion : '{!userSupportedRegion}',
+        localAccountId : '{!localAccountId}',
+        accountId : '{!accountId}'
+      }
+
+      kuka.config(function($stateProvider, $urlRouterProvider, cfpLoadingBarProvider){
+
+        cfpLoadingBarProvider.includeSpinner = false;
+
+        $urlRouterProvider.otherwise('/');
+
+        $stateProvider
+          .state("index", {
+            url : "/",
+            abstract : true,
+            templateUrl : "base.html",
+            controller: "BaseController",
+            resolve : {
+              $user : function($q){
+                var deferred = $q.defer();
+                APTSMD_ApttusLabAngularJS.userDetails(function(r){deferred.resolve(r);}, {buffer : true});
+                return deferred.promise;
+              },
+              $cart : function(cartCache){
+                return cartCache.getCart();
+              },
+              $model : function(){return kuka.model}
+            }
+          })
+          .state("index.products", {
+            url : ":categoryId",
+            views : {
+              "content@index" : {
+                templateUrl : "products.html",
+                controller : "ProductListController",
+                resolve : {
+                  $model : function(){return kuka.model},
+                  $categories : function($q){
+                    var deferred = $q.defer();
+                    APTSMD_ApttusLabAngularJS.getCategoriesList(kuka.model.store.APTSMD_Price_List__c, function(r){deferred.resolve(r);}, {buffer: false});
+                    return deferred.promise;
+                  },
+                  $featuredProducts : function($q, $stateParams, cfpLoadingBar){
+                    cfpLoadingBar.start();
+                    var deferred = $q.defer();
+                    APTSMD_ApttusLabAngularJS.getTopDealProducts(kuka.model.topDealProdIds, kuka.model.store.APTSMD_Price_List__c, (kuka.model.store.APTSMD_Contract_Price_List__c) ? kuka.model.store.APTSMD_Contract_Price_List__c : '', function(r){
+                      cfpLoadingBar.complete();
+                      deferred.resolve(r);
+                    }, {escape : false});
+                    return deferred.promise;
+                  }
+                }
+              },
+              "banner@index" : {
+                templateUrl : "banner.html",
+                controller : "BannerController",
+                resolve : {
+                  $model : function(){return kuka.model}
+                }
+              },
+              "sub-footer@index" : {
+                templateUrl : "subscribe.html",
+                resolve : {$model : function(){return kuka.model;}}
+              }
+            }
+          })
+          .state("index.product", {
+            url : "product/:productId",
+            views : {
+              "content@index" : {
+                templateUrl : "product-details.html",
+                controller : "ProductDetailsController",
+                resolve : {
+                  $product : function(productCache, $stateParams){
+                    return productCache.getProduct(kuka.model.store.APTSMD_Price_List__c, $stateParams.productId);
+                  },
+                  $model : function(){return kuka.model}
+                }
+              }
+            }
+          })
+          .state("index.history", {
+            url : "orderhistory/",
+            views : {
+              "content@index" : {
+                templateUrl : "order-history.html",
+                controller: "OrderHistoryController",
+                resolve : {
+                  $model : function(){return kuka.model},
+                  $orderHistory : function($q, cfpLoadingBar){
+                    var deferred = $q.defer();
+                    cfpLoadingBar.start();
+                    APTSMD_ApttusLabAngularJS.getOrderHstory(function(r){deferred.resolve(r); cfpLoadingBar.complete();});
+                    return deferred.promise;
+                  }
+                }
+              },
+              "sub-footer@index" : {
+                templateUrl : "subscribe.html",
+                resolve : {$model : function(){return kuka.model;}}
+              }
+            }
+          })
+          .state("index.summary", {
+            url : "order/:orderId",
+            views : {
+              "content@index" : {
+                templateUrl : "order-summary.html",
+                controller : "OrderController",
+                resolve : {
+                  $order : function($q, $stateParams, cartCache){
+                    var deferred = $q.defer();
+                    cartCache.getCart().then(function(cart){
+                      APTSMD_ApttusLabAngularJS.getOrderHistory($stateParams.orderId, cart.cartWrapper.CartId, function(r){
+                        deferred.resolve(r);
+                      });
+                    })
+                    return deferred.promise;
+                  }
+                }
+              },
+              "sub-footer@index" : {
+                templateUrl : "subscribe.html",
+                resolve : {$model : function(){return kuka.model;}}
+              }
+            }
+          })
+          .state("index.cart", {
+            url : "cart/",
+            views : {
+              "content@index" : {
+                templateUrl : "cart-details.html",
+                controller : "CartDetailController"
+              }
+            }
+          })
+          .state("index.checkout", {
+            url : "checkout/",
+            views : {
+              "content@index" : {
+                templateUrl : "checkout.html",
+                controller : "CheckoutController",
+                resolve : {
+                  $addressInfo : function($q, cfpLoadingBar){
+                    cfpLoadingBar.start();
+                    var deferred = $q.defer();
+                    APTSMD_ApttusLabAngularJS.getAddressInfo(function(r){deferred.resolve(r); cfpLoadingBar.complete();});
+                    return deferred.promise;
+                  },
+                  $model : function(){return kuka.model;}
+                }
+              }
+            }
+          })
+          .state("index.legal", {
+            url : "legal/",
+            views : {
+              "content@index" : {
+                templateUrl : "legal.html"
+              }
+            }
+          })
+      });
+    </script>
+    <c:APTSDMP_eComm_Controller />
+  </body>
+</apex:page>

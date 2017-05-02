@@ -1,0 +1,123 @@
+<!-- **********************************************************************
+Name:  KAPSWOTView.page
+======================================================
+Purpose:
+
+This page displays an SWOT object
+======================================================
+History
+-------
+Date        AUTHOR                  DETAIL
+29/09/2016  Andreas Meyer           INITIAL
+********************************************************************** -->
+<apex:page sidebar="false" showHeader="true" standardController="AccountPlanSWOT__c">
+<style>
+.boldRow {
+    font-weight: bold;
+    background-color: #f9f9f9;
+}
+
+.wrappertable{
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.wrappertable tr td{
+    border: none!important;
+}
+
+.rightalign{
+    text-align: right;
+}
+
+.downalign{
+    vertical-align: bottom;
+}
+
+.wrappertext{
+    font-weight: bold;
+    font-size: 14px;
+}
+.wrappertitle{
+    font-weight: bold;
+    font-size: 18px;    
+}
+.cell{
+    width: 33%;
+    vertical-align: top;
+}
+
+.bgdark1{
+    background-color: #e0e3e5;
+}
+
+.bgdark2{
+    background-color: #f2f3f3;
+}
+
+.bgdark3{
+    background-color: #FFFFFF;
+}
+
+.wrapperparagraph{
+    font-weight: bold;
+    font-size: 14px;
+    margin-top: 0;
+    margin-bottom: 0px;
+    padding: 7px;
+}
+
+</style>
+    <apex:sectionheader title=" {!$ObjectType.AccountPlanSWOT__c.Label}" subtitle="{!if(AccountPlanSWOT__c.Id==null,'New SWOT',AccountPlanSWOT__c.Name)}"></apex:sectionheader>
+    <apex:form >
+    <apex:pageBlock >
+    <apex:pageblockbuttons >
+     <apex:commandbutton action="{!edit}" value="{!$Label.KAPSWOTView_ButtonEdit} "></apex:commandbutton>
+     <apex:commandbutton action="{!delete}" value="{!$Label.KAPSWOTView_ButtonDelete} "></apex:commandbutton>
+     <apex:commandbutton action="{!URLFOR($Action.AccountPlanSWOT__c.edit, AccountPlanSWOT__c.id, [clone='1'])}" value="{!$Label.KAPSWOTView_ButtonClone} "></apex:commandbutton>
+     </apex:pageblockbuttons>
+    <apex:pageBlock >
+        <apex:pageBlockSection columns="2">
+            <apex:outputField value="{!AccountPlanSWOT__c.Name}" />
+            <apex:outputField value="{!AccountPlanSWOT__c.KeyAccountPlanID__c}" />
+            <apex:outputField value="{!AccountPlanSWOT__c.CreatedById}" />
+            <apex:outputField value="{!AccountPlanSWOT__c.LastModifiedById}" />
+        </apex:pageBlockSection>
+    </apex:pageBlock>
+    <apex:outputPanel id="mainpanel" >  
+
+        <table class="list">
+            <tr>
+                <td class="cell bgdark1">
+                    <table class="wrappertable">               
+                        <tr >
+                        <td class="wrappertitle">{!$Label.KAPSWOTView_TitleMain} </td>
+                        <td class="wrappertext rightalign">{!$Label.KAPSWOTView_TitleExternal} </td>
+                        </tr>
+                        <tr >
+                        <td class="wrappertext downalign">{!$Label.KAPSWOTView_TitleInternal} </td>
+                        <td class="wrappertext"></td>
+                        </tr>                       
+                    </table>
+                </td>
+                <td class="cell bgdark2"><p class="wrapperparagraph">{!$Label.KAPSWOTView_Opportunities} </p><apex:outputField value="{!AccountPlanSWOT__c.Opportunites__c}" /></td>
+                <td class="cell bgdark2"><p class="wrapperparagraph">{!$Label.KAPSWOTView_Threats} </p><apex:outputField value="{!AccountPlanSWOT__c.Threats__c}" /></td>
+            </tr>
+            <tr>
+                <td class="cell bgdark2"><p class="wrapperparagraph">{!$Label.KAPSWOTView_Strengths} </p><apex:outputField value="{!AccountPlanSWOT__c.Strengths__c}" /></td>
+                <td class="cell bgdark3"><p class="wrapperparagraph">{!$Label.KAPSWOTView_OppStren} </p><apex:outputField value="{!AccountPlanSWOT__c.Strategy_OppToStren__c}" /></td>
+                <td class="cell bgdark3"><p class="wrapperparagraph">{!$Label.KAPSWOTView_ThreatStren} </p><apex:outputField value="{!AccountPlanSWOT__c.Strengths_ThreatToStren__c}" /></td>           
+            </tr>
+            <tr>
+                <td class="cell bgdark2"><p class="wrapperparagraph">{!$Label.KAPSWOTView_Weaknesses} </p><apex:outputField value="{!AccountPlanSWOT__c.Weaknesses__c}" /></td>
+                <td class="cell bgdark3"><p class="wrapperparagraph">{!$Label.KAPSWOTView_OppWeak} </p><apex:outputField value="{!AccountPlanSWOT__c.Strategy_OppToWeak__c}" /></td>
+                <td class="cell bgdark3"><p class="wrapperparagraph">{!$Label.KAPSWOTView_ThreatWeak} </p><apex:outputField value="{!AccountPlanSWOT__c.Strategy_ThreatToWeak__c}" /></td>          
+            </tr>           
+        </table>
+        
+    </apex:outputPanel> 
+
+     </apex:pageBlock>
+     </apex:form>    
+</apex:page>

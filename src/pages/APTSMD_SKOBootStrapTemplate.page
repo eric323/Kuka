@@ -1,0 +1,790 @@
+<apex:page showheader="false" standardStylesheets="false" sidebar="false" doctype="html-5.0" id="iApttusLabTemplate" 
+    controller="APTSMD_SKOBootStrapTemplateController" extensions="APTSMD_SKOContactUs,APTSMD_SKORegistration" action="{!init}" language="{!languageName}">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+    <meta http-equiv="expires" content="-1" />
+    <meta http-equiv="pragma" content="no-cache" />
+    
+    <link rel="icon" href="{!$Resource.APTSMD_GreenTechIcon}" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"  />
+    <link rel="stylesheet" href="{!URLFOR($Resource.APTSMD_SalesforceLightningDesign, 'assets/styles/salesforce-lightning-design-system-vf.css')}" type="text/css" /> 
+    <style>
+        h1.logo {
+            background: url('{!logoUrl}') scroll no-repeat 7px 0;
+        }
+        .slds .slds-modal-backdrop--open{
+            opacity: 0.3;
+        }
+        .slds .slds-tabs--default__nav .slds-tabs__item a{
+            text-overflow: inherit!important;
+        }
+        .slds .slds-tabs--default__nav{
+            border:0px!important;
+        }
+        .slds-form-element__label {
+            color : black !important;
+        }
+        span.ico-login {
+    
+            top: -5px !important;
+    
+        }
+        .top_bar .ico-register {
+          
+            top: -5px !important;
+          
+        }
+        
+        
+    </style>
+    <script>
+        if (window.location.protocol != "https:"){
+            window.location.href = "https:" + window.location.href.substring(window.location.protocol.length);
+        }
+        
+        // these are global variabls for a good reason! leave it like that!
+        var isFormSubmitted = {!isFormSubmitted}==='true';
+        var portalSessionTimeoutMs = '{!SESSION_TIMEOUT_MINUTES}'*60*1000;
+        var googleAnalyticsID = '{!GOOGLE_ANALYTICS_ID}';
+        var isLoggedIn = '{!isLoggedIn}'==='true';
+        var countryAndLangURL = "/{!countryCode}/{!languageName}/";
+
+        $(document).ready( function() {
+
+            try {    
+                $('#apttuslab_contactUs').closest('form').attr('action','');
+                if ({!isFormSubmitted}) {
+                    $('#apttuslab_contactUs').modal();
+                }
+            } catch (e) {
+                //Do nothing                
+            };
+
+            //Remove error popup when a field gets focus
+            $(".requiredField").focus(function() {
+                var div = $(this).closest("div.form-group");
+                div.removeClass("error_msg");
+            });
+
+            try {
+                $(".ico-login").css("left","20px");
+            } catch (e) {
+                //Do nothing                
+            };
+
+            try {
+                $.support.cors = true;  //Turn on the CORS engine to allow cross domain JSON calls
+            } catch (e) {
+                //Do nothing                
+            };
+
+            // Sets the correct label on the country select list in the page header
+            $('.selctedCountryLabel').text(
+                function () {
+                    var currentCountryCode = "{!countryCode}"; 
+                    var currentCountryLabel = 'Global';
+                    $("a[id^='countrySelectLi']").each(function (index, elem) {
+                        if ($(elem).data('countryCode') === currentCountryCode) {
+                            currentCountryLabel = $(elem).text();
+                            return false;
+                        }
+                    });
+                    return currentCountryLabel;
+                }()
+            );
+
+            // Sets the correct label on the Language select list in the page header
+            $('.selctedLanguageLabel').text(
+                function () {
+                    var currentLanguageCode = "{!languageName}";
+                    var currentLanguageLabel = 'Global';
+                    $("a[id^='languageSelectLi']").each(function (index, elem) {
+                        if ($(elem).data("languageCode") === currentLanguageCode) {
+                            currentLanguageLabel = $(elem).text();
+                            return false;
+                        }
+                    });
+                   return currentLanguageLabel;
+              }()
+            );
+
+        });    
+
+        function formatPhone (obj)
+        {
+            $(obj).val( ($(obj).val()).replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3") );
+        }
+
+        function getCountryAndLangParamsWithTarget(target){
+            var currentParams = window.location.pathname.split('/');
+            countryAndLangURL = "/{!countryCode}/{!languageName}/";
+            return ("/{!countryCode}/{!languageName}/" + target);
+            //return ('/' + currentParams[1] + '/'+currentParams[2] + '/' + target);
+        }
+
+    </script>
+    <title>TIER1</title> <!-- GREENTECH-->
+        <!-- Minified CSS AND JS -->
+<!--     <apex:stylesheet value="https://dl.dropboxusercontent.com/u/82342093/apttuslab/minified_280414/css/fullStyle.css" /> -->
+<!--     <apex:includeScript value="{!URLFOR($Resource.APTSMD_IApttusLabDesign, '/js/jquery1.10.1.min.js')}" /> -->
+<!--     <script src="{!URLFOR($Resource.APTSMD_IApttusLabDesign, '/js/bootstrap.min.js')}"> </script> -->
+<!--     <script src="https://dl.dropboxusercontent.com/u/82342093/apttuslab/minified_280414/js/fullJs.js"/> -->
+    
+    
+    
+    
+    <!-- GENERAL CSS -->
+    <!-- <apex:stylesheet value="https://dl.dropboxusercontent.com/u/82342093/apttuslab/html2603/css/style.css" />-->
+    <apex:stylesheet value="{!URLFOR($Resource.APTSMD_IApttusLabDesign, '/css/style.css')}" /> 
+    <link rel="stylesheet" href="{!URLFOR($Resource.APTSMD_IApttusLabDesign, '/css/subscribe.css')}" type="text/css" />
+    <!--     <apex:stylesheet value="https://dl.dropboxusercontent.com/u/82342093/apttuslab/html2603/css/subscribe.css" /> -->
+
+    <apex:stylesheet value="{!URLFOR($Resource.APTSMD_IApttusLabDesign, '/css/table-price.css')}" />
+    
+    <!-- JS -->
+    <script src="{!URLFOR($Resource.APTSMD_IApttusLabDesign, '/js/table-price.js')}"> </script> 
+    
+    <!--<script src="https://dl.dropboxusercontent.com/u/82342093/apttuslab/html2603/js/table-price.js"> </script>-->
+    <!-- FONTFACE -->
+    <link rel="stylesheet" href="{!URLFOR($Resource.APTSMD_IApttusLabDesign, '/fontface/fontface.css')}" type="text/css" />
+    
+    <!-- BOOTSTRAP CSS -->
+    <link rel="stylesheet" href="{!URLFOR($Resource.APTSMD_IApttusLabDesign, '/css/bootstrap.css')}" type="text/css" />
+    <link rel="stylesheet" href="{!URLFOR($Resource.APTSMD_IApttusLabDesign, '/css/main-carousel.css')}" type="text/css" />
+    <link rel="stylesheet" href="{!URLFOR($Resource.APTSMD_IApttusLabDesign, '/css/secondary-carousel.css')}" type="text/css" />
+    
+    <link rel="stylesheet" href="{!URLFOR($Resource.APTSMD_SalesforceLightningDesign, 'assets/styles/salesforce-lightning-design-system-vf.css')}" type="text/css" />
+    
+    <!-- BOOTSTRAP JS -->
+    <script src="{!URLFOR($Resource.APTSMD_IApttusLabDesign, '/js/bootstrap.min.js')}"> </script>
+    <script src="{!URLFOR($Resource.APTSMD_IApttusLabDesign, '/js/modal.js')}"> </script>
+    <script src="{!URLFOR($Resource.APTSMD_IApttusLabDesign, '/js/collapse.js')}"> </script>
+    <script src="{!URLFOR($Resource.APTSMD_IApttusLabDesign, '/js/html5shiv.js')}"> </script>
+    <script src="{!URLFOR($Resource.APTSMD_IApttusLabDesign, '/js/respond.min.js')}"> </script>
+    
+    <!--  END OF TEMPORARY DROPBOX FILES -->
+    
+    <!-- JS -->
+    <apex:includeScript value="{!URLFOR($Resource.APTSMD_IApttusLabDesign, '/js/jquery1.10.1.min.js')}" />
+     <apex:includeScript value="{!URLFOR($Resource.APTSMD_IApttusLabDesign, '/js/browserDetection.js')}" /> 
+    <!--<script src="https://dl.dropboxusercontent.com/u/82342093/apttuslab/html2603/js/browserDetection.js"/>-->
+    
+    <!-- BootStrap-Select plugin  http://silviomoreto.github.io/bootstrap-select/-->
+    <apex:includeScript value="{!URLFOR($Resource.APTSMD_IApttusLabDesign, '/js/bootstrap-select.min.js')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.APTSMD_IApttusLabDesign, '/css/bootstrap-select.min.css')}" />
+    
+     <!-- Angular: -->
+     <apex:includeScript value="{!URLFOR($Resource.APTSMD_IApttusLabDesign, '/js/angular.js')}" />
+<!--      <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular.min.js"></script> -->
+     
+     <!-- TemplateScript -->
+      <apex:includeScript value="{!URLFOR($Resource.APTSMD_IApttusLabDesign, '/js/template.js')}" /> 
+    <!--<script src="https://dl.dropboxusercontent.com/u/82342093/apttuslab/html2603/js/template.js"/>-->
+    
+    <style>
+        #apttuslab_contactUs.modal textarea {
+          min-height: 305px;
+        }   
+
+        .changeMouseHoverToHand1 {
+                    cursor: pointer;
+                    cursor: hand;
+                }     
+
+    </style>
+
+    <!--<apex:includeScript value="https://dl.dropboxusercontent.com/u/4515613/vwo.js" />-->
+    <apex:includeScript value="{!URLFOR($Resource.APTSMD_IApttusLabDesign, '/js/vwo.js')}" />
+
+        <html lang="en" ng-app="mainTemplateApp">
+<!--head>
+ <script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', '{!GOOGLE_ANALYTICS_ID}']);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+</head-->
+            <body id="templateBody" ng-controller="URLMappingController"  style="overflow-x:hidden;">
+                <!-- Timeout logout modal --> 
+                <div class="modal modal_apttuslab fade" id="timeoutLogoutModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            
+                            <div class="modal-header">
+                                <button type="button" class="ico-close" data-dismiss="modal" aria-hidden="true"> </button>
+                                <h4 class="modal-title" > Session time-out
+                                </h4>
+                            </div>
+                            <div class="modal-body">
+                                <p> 
+                                    For security reasons, your session timed after {!SESSION_TIMEOUT_MINUTES} minutes of inactivity.
+                                    <br/>
+                                    You will be redirected to apps.mygore.com
+                                </p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary modal_btn_login" id="oktimeoutLogoutModalBtn" data-dismiss="modal">Ok</button>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+                <!-- END Timeout logout modal -->
+                    
+                <!-- Case creation after terms Refusal --> 
+                <div class="modal modal_apttuslab modal_contactUs fade" id="apttuslab_refused_TnC_Case_Modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+    
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="ico-close" data-dismiss="modal" aria-hidden="true"> </button>
+                                <h4 class="modal-title" id="myModalLabel">Any Question on our Terms &amp; Conditions?
+                                    <small>A consultant from WL Gore will contact you.</small>
+                                </h4>
+                            </div>
+                                
+    <!--                                 Submitted message -->
+                            <div class="messages caseModelMessages modal-body clearfix" style="display:none">
+                                <p>    Your request has been registered, thank you.</p>
+                            </div>
+
+                            <!-- Logged in Body -->
+                            <div class="modal-body clearfix">
+    
+                                <div role="form" class="form_subscribe">
+                                    <div class="col-lg-12 col-md-12 col-sm-12">
+                                        <h5>Question details</h5>
+                                        
+                                        <div class="form-group ">
+                                            <span class="ico-error textarea-error"> </span>
+                                             <apex:outputLabel value="Question on our Terms & Conditions? *"/>
+                                             <textarea rows="5" cols="50" id="refused_Terms_Modal_Description_input"/>
+                                             <span class="alert_error_popover"> Please fill out this field.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="modal-footer" id="caseModelFooter">
+                                <div class=" ">
+                                    
+                                    <div class="clearfix">
+                                        <div id="contactusbutton"> 
+                                            <input type="button" class="btn btn-primary modal_btn_login sendCaseToCloudTnC" value="SEND" />
+                                            <input type="button" class="btn btn-primary modal_btn_login acceptBTN" value="ACCEPT TERMS & CONDITIONS" /> 
+                                        </div>
+                                    </div>
+                                    <div class=" ">
+                                        <div class="required_field"> 
+                                               <apex:outputLabel value="*Required Field"/>
+                                           </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Case creation after terms Refusal --> 
+
+                <!-- TermsAndAgreement modal 
+                <div class="modal modal_apttuslab fade" id="acceptTermsAndAgreementsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+                    <div class="modal-dialog" style="width:720px;">
+                        <div class="modal-content">
+                            
+                            <div class="modal-header">
+                                <button type="button" class="ico-close" data-dismiss="modal" aria-hidden="true"> </button>
+                                <h4 class="modal-title" > Template_Terms_And_Agreements_Title}
+                                </h4>
+                            </div>
+                            <div class="modal-body acceptTerms">
+                                <p> 
+                                    Template_Terms_And_Agreements_Loading_Message}
+                                </p>
+                            </div>
+                            <div class="modal-body rejectedTerms" style="display:none">
+                                
+                            </div>
+                            
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary modal_btn_login declineBTN">Template_Terms_And_Agreements_Decline_Button}</button>
+                                <button type="button" class="btn btn-primary modal_btn_login acceptBTN" >Template_Terms_And_Agreements_Accept_Button}</button>
+                            </div>
+                            
+                        </div>
+                    </div>
+               </div>--> 
+               <!-- END TermsAndAgreement modal --> 
+                        
+                <apex:form forceSsl="true">
+                
+                    <!-- Action Functions: -->
+                        
+                        <apex:actionFunction action="{!putCookieCountry}" name="putCookieCountry" oncomplete="reloadePageWithTimeout(100);">
+                            <apex:param name="countryCode" value="" assignTo="{!countryCode}"/>
+                        </apex:actionFunction>
+                        
+                    <!-- END OF:  Action Functions -->
+                    
+                    <!--<c:loadingbox />  Use startLoading() /endLoading() -->
+                    
+                    <!-- Error for old browsers: -->
+                    <!--<div class="upgrade_browser dn">
+                        <div class="container" style="position:relative">
+                        <span class="warning"> </span>
+                        <span class="ico-close"> </span>
+                            <h4>Oops your browser is too old!</h4>
+                            <p>Please Update your browser to the latest version or install <a href="https://www.google.com/intl/en/chrome/browser/">Chrome </a></p>
+                        </div>
+                    </div>-->
+                    
+                    
+                    
+                    <!-- START HEADER TOP -->
+                    <div class="header slds" style="background-color: #0070D2;">
+                        <div class="container slds-form-element" style="background-color: #0070D2;">
+                            <div class="row" style="margin-right: -10%;">
+                                <!-- Login, register, user details, country selection. -->
+                                <div class="top_bar" style="font-color:white;">
+
+                                    <div class="col-lg-3 col-md-3 col-sm-3"></div>
+
+                                    <!-- country menu -->
+                                  <div class="col-lg-2 col-md-2 col-sm-2 headerDropdownToggle">
+                                        <div class="dropdown_btn location ">
+                                            <div class="cap_btn clearfix">
+                                                <div class="lbl_box">
+                                                    <h4 class="lbl_slct">Country</h4>
+                                                    <span class="selctedCountryLabel slds-form-element__label">Loading...</span>
+                                                </div>
+                                                <span class="arrow_dropdown">
+                                                    <span class="ico-arrow_dropdown"> </span>
+                                                </span>
+                                            </div>
+                                            <div class="list_btn" style="display:none">
+                                                <ul class="result_list" style="background-color:#0070D2;">
+                                                    <!--<apex:repeat value="{!countryList}" var="country">
+                                                         <li><a href="#" id="countrySelectLi__{!country.value}" data-country-code="{!country.value}">{!country.label} </a> <div class="separate_bottom"> </div></li>  
+                                                     </apex:repeat>-->
+                                                     <!--<li><a href="../US/en_US" id="countrySelectLi__US" data-country-code="US">United States</a> <div class="separate_bottom"> </div></li>-->
+                                                     <li><span  class="slds-form-element__label" style="cursor:pointer;" id="countrySelectLi__US" data-country-code="US">United States</span> <div class="separate_bottom"> </div></li>
+                                                     <!--<li><a href="../FR/en_US?countryCode=FR&langCode=en_FR" id="countrySelectLi__FR" data-country-code="FR">France</a> <div class="separate_bottom"></div></li>-->
+                                                     <li><span class="slds-form-element__label" style="cursor:pointer;" id="countrySelectLi__FR" data-country-code="FR">France</span> <div class="separate_bottom"> </div></li>
+                                                     <!--This Li is used for testing only. --> 
+<!--                                                     <li><a href="#" id="countrySelectLi__IL" data-country-code="IL" >Israel</a> <div class="separate_bottom"> </div></li> -->
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                  <!-- End of country menu -->
+                                    
+                                    <!-- language Dropdown menu --> 
+                                    <div class="col-lg-2 col-md-2 col-sm-2 headerDropdownToggle">
+                                        <div class="dropdown_btn languages">
+                                            <div class="cap_btn clearfix">
+                                                <div class="lbl_box">
+                                                    <h4 class="lbl_slct">Language</h4>
+                                                    <span class="selctedLanguageLabel slds-form-element__label">Loading...</span>
+                                                </div>
+                                                 <span class="arrow_dropdown">
+                                                     <span class="ico-arrow_dropdown"> </span>
+                                               </span>
+                                            </div>
+                                            <div class="list_btn" style="display:none">
+                                                <ul class="result_list" style="background-color:#0070D2;">
+                                                     <apex:repeat value="{!LanguageList}" var="lang">
+                                                         <li><a href="#" id="languageSelectLi__{!lang.value}" data-language-code="{!lang.value}">{!lang.label} </a> <div class="separate_bottom"> </div></li>
+                                                    </apex:repeat>
+                                                     <!--This Li is used for testing only. --> 
+<!--                                                    <li><a href="#" id="languageSelectLi__Heb" data-language-code="Heb">Hebrew </a> <div class="separate_bottom"> </div></li> -->
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- language Dropdown menu -->
+
+                                    <!-- Notification menue dropdown -->
+                                    <div class="col-lg-1 col-md-1 col-sm-1 ">
+                                      <div class="dropdown_btn notifications dn">
+                                            <div class="cap_btn clearfix">
+                                                <div class="lbl_box">
+                                                    <div class="ico-notification"> </div>
+                                                    <div class="alert-notification"><span class="nbr-notif big disable">0</span>  </div>
+                                                    
+                                                </div>
+                                                <span class="arrow_dropdown">
+
+                                                <button type="button">Click Me!</button>
+
+                                                    <span class="ico-arrow_dropdown"> </span>
+                                                </span>
+                                            </div>
+                                            <div class="list_btn ">
+                                                <ul class="result_list">
+                                                    <li><a href="#"><span class="nbr-notif small">3 </span><span class="lbl-n">NeoPreference</span> </a> <div class="separate_bottom"> </div></li>
+                                                    <li><a href="#"><span class="nbr-notif small">3 </span><span class="lbl-n">NeoStats</span> </a> <div class="separate_bottom"> </div></li>
+                                                    <li><a href="#"><span class="nbr-notif small">3 </span><span class="lbl-n">NeoClean</span> </a> <div class="separate_bottom"> </div></li>
+                                                    <li class="see_all"><a href="#">See all </a> </li>
+                                                    
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- END Notification menue dropdown -->
+
+                                    <!-- User menu dropdown -->
+                                    <!-- Column bootstrap class is added dynamically based on usernamelength. -->
+                                    <div class=" headerDropdownToggle slds-form-element__label userMenu" data-userName="{!displayUserName}">
+                                        <apex:outputPanel styleClass="dropdown_btn logged_in pull-right" layout="block" rendered="{!isLoggedIn}">
+                                            <script type="text/javascript">
+                                                $(document).ready( function() {
+                                                     $(".ico-register").css("left", "0px");
+                                                     $(".ico-register").css("top", "0px");
+                                                     $(".ico-register").css("width", "16px");
+                                                     $(".ico-register").css("padding-right","");
+                                                });
+                                            </script>
+                                            <div class="cap_btn clearfix">
+                                                <div class="lbl_box"><!-- {!URLFOR(userPhotoUrl)} -->
+                                                    <!--<h4 class="lbl_slct">-->
+                                                        <span class="ico-profile"> <img src=""/> </span><span>{!displayUserName}</span>
+                                                    <!--</h4>-->
+                                                    <span class="lbl_topbar">{!prettyUserProfileName}</span>                                                     
+                                                </div>
+                                                <span class="arrow_dropdown">
+                                                    <span class="ico-arrow_dropdown open"> </span>
+                                                </span>
+                                            </div>
+                                            <div class="list_btn" style="display:none">
+                                                <ul class="result_list">
+                                                    <li>
+                                                        <a href="#">
+                                                            <span class="ico-info changeMouseHoverToHand1">  </span>Manage Profile
+                                                        </a> 
+                                                        <div class="separate_bottom"> </div>
+                                                    </li>
+                                                    <!-- Display Information about users dealer -->
+                                                   <!-- <c:NUSA_iNeo_myDealer />-->
+                                                    <!--
+                                                    <li class="regEqu">
+                                                        <a data-target="#apttuslab_reg" data-toggle="modal">
+                                                            <span class="ico-register">  </span>Register Equipment
+                                                        </a>
+                                                        <div class="separate_bottom"> </div>
+                                                    </li>
+                                                    -->
+                                                    <li>
+                                                        <a href="../ecomm/secur/logout.jsp?retUrl=https://www.kuka.com/" class="changeMouseHoverToHand1">
+                                                            <span class="ico-logout changeMouseHoverToHand1">  </span>Logout
+                                                        </a> 
+                                                        <div class="separate_bottom"> </div>
+                                                    </li>                                                      
+                                                </ul>
+                                            </div>
+                                          </apex:outputPanel>
+                                          <apex:outputPanel styleClass="dropdown login" layout="block" rendered="{!NOT(isLoggedIn)}">
+                                                <div class="col-sm-4" >
+                                                    <button class="btn dropdown-toggle " type="button" data-target="#apttuslab_login" data-toggle="modal">
+                                                        <span class="ico-login"> </span> Login 
+                                                    </button>
+                                                </div>
+                                                <div class="col-sm-4" >
+                                                    <button class="btn dropdown-toggle " type="button" data-target="#apttuslab_reg" data-toggle="modal" style="width: 100px;">
+                                                        <span class="ico-register"> </span> Register 
+                                                    </button>
+                                                </div>
+                                                
+                                                <div class="col-lg-4 col-md-12 col-sm-4" style="margin-top: -1%;">
+                                                    <div class="social_network">
+                                                        <ul class="social_network_links list-inline">
+                                                            <!--<a href="https://plus.google.com/117633052231742404299/posts" target="_blank"> <i class="fa fa-google-plus-square fa-2x" ></i></a>
+                                                            <i class="fa fa-facebook-square fa-2x"></i>
+                                                            <i class="fa fa-youtube-square fa-2x"></i>
+                                                            <i class="fa fa-twitter-square fa-2x"></i>
+                                                            -->
+                                                            
+                                                            <li ><a  target="_blank" href="https://www.facebook.com/ApttusCorporation" tabindex="0"><i class="ubermenu-icon fa fa-facebook fa-2x" style="color:white;"></i></a></li>
+                                                            &nbsp;
+                                                            <li ><a  target="_blank" href="https://twitter.com/apttus" tabindex="0"><i class="ubermenu-icon fa fa-twitter fa-2x" style="color:white;"></i></a></li>
+                                                            &nbsp;
+                                                            <li ><a  target="_blank" href="http://www.linkedin.com/company/1181097" tabindex="0"><i class="ubermenu-icon fa fa-linkedin fa-2x" style="color:white;"></i></a></li>
+                                                       <!-- <li><span class="slds-text-body--regular" style="font: 100%/1.5 Salesforce Sans, Arial, sans-serif;">Join us on : </span> </li>  
+                                                            <li><span class="ico-google"><a href="https://plus.google.com/117633052231742404299/posts" target="_blank"> </a> </span> </li>
+                                                            <li><span class="ico-facebook"><a href="https://www.facebook.com/pages/W-L-Gore-and-Associates/108180095869691" target="_blank"> </a> </span> </li>
+                                                            <li><span class="ico-youtube"><a href="https://www.youtube.com/user/wlgoreassociates" target="_blank"> </a> </span> </li>
+                                                            <li><span class="ico-linkedin"><a href="https://www.linkedin.com/company/gore" target="_blank"> </a> </span> </li>
+                                                            <li><span class="ico-twitter"><a href="https://twitter.com/" target="_blank"> </a> </span> </li> -->
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                              </apex:outputPanel>
+                                         <div class="clearer"> </div>
+                                         
+                                     </div>
+
+                                    <!-- END User menu dropdown -->
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END HEADER TOP --> 
+                    
+                    <!-- START NAV AREA -->
+                    <div class="container-fluid" style="clear: both;margin-left:0 !important;">
+                        <div class="row">
+                            <div class="col-md-3" style="margin-left:4%">
+                                
+                                <a href="/ecomm/APTSMD_SKOECommHome?storeId={!store.Id}"> <img src="{!$Site.Prefix+'/'+logoUrl}" style="height:60px;"/></a>
+                            </div>
+                            <div class="col-md-8" style="margin-top:0.6%">
+                               <!-- <div class="form-group" style="display:inline;">
+                                  <div class="input-group" style="display:table;">
+                                    
+                                    <!--<input class="form-control" name="search" placeholder="Search Here" autocomplete="off" autofocus="autofocus" type="text" style="font-family:Arial, sans-serif;"/>-->
+                                    <!--<img  class="input-group-addon" style="width:1%;cursor:pointer" src="{!$Resource.Search}" /> </span>
+                                    <span class="input-group-addon" style="width:1%;"><span class="glyphicon glyphicon-search"></span></span>
+                                  </div>
+                                </div> -->
+                                      <!--                  <div class="slds-tabs--default">
+                                    <ul class="slds-tabs--default__nav" role="tablist" style="list-style-type: none;">
+                                        <li class="slds-tabs__item slds-text-heading--label slds-form--inline" style="margin-left: 6%;width:100%">
+                                            <div class="slds-form-element slds-form--inline" style="width:100%">
+                                                <div class="slds-form-element__control" style="width:100%">
+                                                    <span>
+                                                        <input id="name" class="slds-input" type="text" placeholder="Search" style="width: 53%;" />
+                                                        <img style="cursor:pointer" src="{!$Resource.Search}" />
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>-->
+                                <div class="slds">
+                                    <div class="slds-grid slds-wrap">
+                                        <div class="slds-col slds-size--8-of-12 slds-medium-size--8-of-12 slds-large-size--7-of-12" >
+                                            <div class="slds-tabs--default">
+                                                <ul class="slds-tabs--default__nav" role="tablist">
+                                                    <li class="slds-tabs__item slds-text-heading--label slds-active" role="presentation" style="margin-left: 14%;"><a href="#" role="tab" tabindex="0" aria-selected="true">Home</a></li>
+                                                    <li class="slds-tabs__item slds-text-heading--label" role="presentation"><a href="/ecomm/APTSMD_SKOECommCatalog?storeId={!$CurrentPage.parameters.storeId}" role="tab"  tabindex="-1" aria-selected="false">My Store</a></li>
+                                                    <li class="slds-tabs__item slds-text-heading--label" role="presentation"><a href="#" role="tab" tabindex="-1" aria-selected="false">Resources</a></li>
+                                                    <li class="slds-tabs__item slds-text-heading--label" role="presentation"><a href="#" role="tab" tabindex="-1" aria-selected="false">Contact Us</a></li>
+                                                    <!--<li class="slds-tabs__item slds-text-heading--label" role="presentation"><a href="" role="tab" onclick="" target="_blank" tabindex="-1" aria-selected="false">Partner Portal</a></li>-->
+                                                    
+                                                    <li class="slds-tabs__item slds-text-heading--label" role="presentation"><a href="/ecomm/APTSMD_SKOECommCatalog?storeId={!$CurrentPage.parameters.storeId}" role="tab" ng-if="{!isValidUser}"  tabindex="-1" aria-selected="false">Partners</a></li>
+                                                    <li class="slds-tabs__item slds-text-heading--label" role="presentation"><a href="#" role="tab"  ng-if="!{!isValidUser}" data-target="#apttuslab_login" data-toggle="modal" tabindex="-1" aria-selected="false">Partners</a></li>
+
+                                                    
+                                                    <li class="slds-tabs__item slds-text-heading--label" role="presentation"><a href="#" role="tab" tabindex="-1" aria-selected="false" data-toggle="modal" data-target="#guidedSelling" style="color: #0070D2;font-weight:bold;border-radius: 4px;">Find A Solution</a></li>
+                                                    
+                                                </ul>
+                                            </div>
+                                            
+                                        </div>
+                                        
+                                        
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            
+                        </div>
+                    </div>
+                    
+                    
+                    
+                    
+                </apex:form>
+                <apex:form >
+                    <!-- MODAL LOGIN -->
+                    <apex:actionFunction action="{!login}" name="loginJS" rerender="loginErrorMessageSection,loginErrorMessageSection2"/>
+                        
+                    <!--<div class="modal modal_apttuslab modal_login fade" id="apttuslab_login" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="ico-close" data-dismiss="modal" aria-hidden="true" id="loginCancelButton"> </button>
+                                    <h4 class="modal-title" id="loginModlaTitleID">Welcome
+                                        <small>Please log in below.</small>
+                                    </h4>
+                                </div>
+                                <div class="modal-body">
+                                    <h5>Login </h5>
+                                    <div role="form">
+                                        <div class="form-group headerLoginInputFormG" >
+                                            <span class="ico-error textarea-error"> </span>
+                                            <label for="loginEmailInput">Email:</label>
+                                            <input type="email" class="form-control" id="loginEmailInput" />
+                                             <apex:outputpanel layout="none"  id="loginErrorMessageSection2">
+                                                 <apex:outputpanel rendered="{!loginMessage != ''}"  styleClass="form-group error_msg alert_error_popover loginHeaderErrorID">
+                                                 <script>
+    //                                                  $(function(){
+    //                                                      $('.loginHeaderErrorID').show();
+    //                                                      $('.headerLoginInputFormG').addClass('error_msg');
+    //                                                  });
+                                                  </script> 
+                                                 {!loginMessage}
+                                             </apex:outputpanel>
+                                        </apex:outputpanel>
+                                        </div>
+                                        <div class="form-group headerLoginInputFormG">
+                                            <span class="ico-error textarea-error"> </span>
+                                            <label for="loginPasswordInput">Password:</label>
+                                            <input type="password" class="form-control" id="loginPasswordInput"/>
+                                         <apex:outputpanel layout="none"  id="loginErrorMessageSection">
+                                         <apex:outputpanel rendered="{!loginMessage != ''}"  styleClass="form-group error_msg alert_error_popover loginHeaderErrorID">
+                                             <script>
+                                                 $(function(){
+                                                     $('.loginHeaderErrorID').show();
+                                                     $('.                                                 $( "#loginPasswordInput" ).focus(function() {
+                                                        $('.loginHeaderErrorID').hide();
+                                                        $('.headerLoginInputFormG').removeClass('error_msg');
+                                                 });
+                                                 $( "#loginEmailInput" ).focus(function() {
+                                                        $('.loginHeaderErrorID').hide();
+                                                        $('.headerLoginInputFormG').removeClass('error_msg');
+                                                 });
+                                                 $( "#loginCancelButton" ).click(function() {
+                                                        $("#loginEmailInput").val("");
+                                                        $("#loginPasswordInput").val("");
+                                                        $('.loginHeaderErrorID').hide();
+                                                        $('.headerLoginInputFormG').removeClass('error_msg');
+                                                 }); 
+
+                                                
+                                                
+                                                $("#apttuslab_login").on("change", function(event) { 
+                                                    aria-hidden(this);
+                                                    $("#loginEmailInput").val("");
+                                                    $("#loginPasswordInput").val("");
+                                                    $('.loginHeaderErrorID').hide();
+                                                    $('.headerLoginInputFormG').removeClass('error_msg');
+                                                } );
+                                                
+                                             </script>
+                                             {!loginMessage}
+                                         </apex:outputpanel>
+                                        </apex:outputpanel>
+                                        </div>
+                                        <span id="loginUser">
+                                            <apex:inputHidden value="{!loginUser}" />   
+                                        </span>
+                                        <span id="loginPassword">
+                                            <apex:inputHidden value="{!loginPassword}" />   
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <div class="col-lg-6 col-md-6 col-sm-6 "> <span class="forgot_btn"><a href="/secur/forgotpassword.jsp">Forgot your password?</a> </span> </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-6 ">
+                                        <button type="button" class="btn btn-primary modal_btn_login" id="userLoginBTN" onClick="fillLoginDataAndLogin();">Log in</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>-->
+                    
+                    
+                    <div class="modal modal_apttuslab modal_login fade" id="apttuslab_login" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="slds">
+                          <div aria-hidden="false" role="dialog" class="slds-modal slds-fade-in-open">
+                            <div class="slds-modal__container">
+                              <div class="slds-modal__header">
+                                <span class="slds-text-heading--medium">Welcome</span>
+                              </div>
+                              <div class="slds-modal__content">
+                                <div>
+                                    <span class="slds-text-heading--medium">Login</span>
+                                    <br/><br/>
+                                    <div role="form slds-form-element">
+                                        <div class="form-group headerLoginInputFormG" >
+                                            <span class="ico-error textarea-error"> </span>
+                                            <apex:outputpanel layout="none"  id="loginErrorMessageSection2">
+                                                 <apex:outputpanel rendered="{!loginMessage != ''}">
+                                                 <div style="background-color: #f2dede;color: #a94442;padding: 5px;">
+                                                 <apex:outputpanel rendered="{!loginMessage != ''}"  styleClass="form-group loginHeaderErrorID">
+                                                 <script>
+    //                                                  $(function(){
+    //                                                      $('.loginHeaderErrorID').show();
+    //                                                      $('.headerLoginInputFormG').addClass('error_msg');
+    //                                                  });
+                                                  </script> 
+                                                 {!loginMessage}
+                                             </apex:outputpanel>
+                                             </div></apex:outputpanel>
+                                        </apex:outputpanel>
+                                        <div class-="clearfix"></div>
+                                        <div class-="clearfix"></div>
+                                            <label for="loginEmailInput" class="slds-form-element__label">Email:</label>
+                                            <input type="email" class="slds-input" id="loginEmailInput" />
+                                             
+                                        </div>
+                                        <div class="form-group headerLoginInputFormG">
+                                            <span class="ico-error textarea-error"> </span>
+                                            <label for="loginPasswordInput" class="slds-form-element__label">Password:</label>
+                                            <input type="password" class="slds-input" id="loginPasswordInput"/>
+                                         
+                                        </div>
+                                        <span id="loginUser">
+                                            <apex:inputHidden value="{!loginUser}" />   
+                                        </span>
+                                        <span id="loginPassword">
+                                            <apex:inputHidden value="{!loginPassword}" />   
+                                        </span>
+                                    </div>
+                                </div>
+                              </div>
+                              <div class="slds-modal__footer">
+                                <span class="slds-text-body--regular slds-float--left"><a href="#" style="cursor:pointer;text-decoration:none;">Forgot your password?</a></span>
+                                <button class="slds-button slds-button--neutral" aria-hidden="true" data-dismiss="modal" id="loginCancelButton" type="button">Cancel</button>
+                                <button type="button" class="slds-button slds-button--neutral slds-button--brand modal_btn_login" id="userLoginBTN" onClick="fillLoginDataAndLogin();">Log in</button>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="slds-modal-backdrop slds-modal-backdrop--open"></div>
+                        </div>
+                    </div>
+                    <!-- END MODAL LOGIN --> 
+                </apex:form>
+                
+                <apex:outputPanel rendered="{!NOT(isLoggedIn)}">
+                    <c:APTSMD_MyRegistration /> 
+                </apex:outputPanel>
+
+               <!--<c:iNeoCore_ContactUs_Component />--> 
+            
+                <!-- Bread Crumb -->
+                <div class="container">
+                    <ul id="breadcrumb" class="list-inline breadcrumb"  style="display:none;">
+                    </ul>
+                </div>
+            
+                <!-- Composition BODY -->
+                <apex:insert name="body" />
+                
+                
+                <!-- Footer -->
+                <apex:form >    
+                    <footer>
+                        <div class="container">
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                <ul class="footer_links list-inline">
+                                    <!--<li>&nbsp; &nbsp;<a href="/{!countryCode}/{!languageName}/Cookies" > Cookies policy</a></li>-->
+                                    <li><a href="/{!countryCode}/{!languageName}/OnlinePolicy" target="_blank"><span class="slds-text-heading--small">Privacy Statement</span></a></li>
+                                    <li><a href="/{!countryCode}/{!languageName}/TermsConditions" target="_blank"> <span class="slds-text-heading--small">Terms of Use</span></a> </li>
+                                    <li><span class="slds-text-heading--small"> &copy; 2016 Tier1 &amp; Associates, Inc.</span></li>
+                                </ul>
+                            </div>
+                            
+                        </div>
+                    </footer>
+                </apex:form>
+                
+            </body>
+        </html>
+    
+</apex:page>

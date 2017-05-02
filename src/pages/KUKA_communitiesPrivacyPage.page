@@ -1,0 +1,413 @@
+<!-- **********************************************************************
+Name:  KUKA_communitiesPrivacyPage.page
+======================================================
+Purpose:
+
+This page displays the KUKA community privacy
+======================================================
+History
+-------
+Date        AUTHOR                  DETAIL
+16/12/2016  Andreas Meyer           INITIAL
+********************************************************************** -->
+<apex:page id="communitiesImprintPage" showHeader="false" standardStylesheets="false" title="{!$Label.site.user_registration}" applyHtmlTag="false" applyBodyTag="false">
+
+<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<head>
+  <title>{!$Label.CommunityPrivacy_PageTitle}</title>
+  <meta name="description" content=""/>
+  <meta name="keywords" content=""/>
+  <meta name="robots" content="index, nofollow"/>
+  <meta charset="utf-8"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  
+  <meta name="viewport" id="viewport-meta" content="width=device-width, initial-scale=1.0"/>
+  <meta name="application-name" content="Terrific Net Sample"/>
+  <meta name="language" content="en-DE"/>
+  
+  <link rel="icon" href="https://static.kuka.com/salesforce/SsoPageResources/-/media/kuka-corporate/images/home/logos/kuka-favicon-16.ico"/>
+  
+  <link rel="apple-touch-icon-precomposed" href="https://static.kuka.com/salesforce/SsoPageResources/-/media/kuka-corporate/images/home/logos/kuka_touchicon-152.png"/>
+  
+  <meta name="msapplication-TileColor" content="#FFFFFF"/>
+  <meta name="msapplication-TileImage" content="https://static.kuka.com/salesforce/SsoPageResources/-/media/kuka-corporate/images/home/logos/kuka_touchicon-152.png"/>
+  
+
+  <style>:lang(en-DE) {
+    
+      font-family: 'kuka-bulo', Calibri, Segoe UI, Helvetica, Arial, Sans-Serif;
+    
+    }
+  </style>
+
+  <link rel="stylesheet" href="https://static.kuka.com/salesforce/SsoPageResources/bundle_app.css" type="text/css" />
+  <script>
+    // Picuter element HTML5 shiv
+    document.createElement('picture');
+  </script>
+  <script src="https://static.kuka.com/salesforce/SsoPageResources/assets/js/app/picturefill.min.js" async="async"></script>
+  <!--[if lte IE 9]>
+    <script src="https://static.kuka.com/salesforce/SsoPageResources/assets/js/app/media.match.min.js"></script>
+  <![endif]-->
+  <style>
+  </style>
+
+<script type="text/javascript" src="https://static.kuka.com/salesforce/SsoPageResources/bundle_app.js"></script>
+</head>
+
+
+<body class="mod mod-layout" data-connectors="responsive, toggle">
+
+<header class="o-header js-header">
+<nav class="mod mod-nav" data-connectors="responsive, toggle">
+  <script type="text/template" id="scroll-overlay">
+    <div class="mod-nav__scroll-overlay mod-nav__scroll-overlay--top text-center hide-xs hide-sm js-scroll-overlay" data-direction="top">
+      <span class="mod-nav__scroll-btn icon-arrow-up"></span>
+    </div>
+    <div class="mod-nav__scroll-overlay mod-nav__scroll-overlay--bot text-center hide-xs hide-sm js-scroll-overlay state-visible" data-direction="bottom">
+      <span class="mod-nav__scroll-btn icon-arrow-down"></span>
+    </div>
+  </script>
+</nav>
+
+<div class="o-header__wrapper container h-expand-background h-expand-background--white">
+  <div class="o-header__bar">
+    <nav class="mod mod-nav-meta" data-connectors="nav, toggle">
+      <ul class="mod-nav-meta"></ul>
+    </nav>
+    
+          
+    <a class="mod mod-logo" href="https://www.kuka.com/" target="" data-ignore="true">
+        <figure class="mod-logo__wrapper pull-right">
+        <!--
+        <img src="https://static.kuka.com/salesforce/SsoPageResources/-/media/kuka-corporate/images/home/logos/kuka_logo.svg?h=37&amp;la=en-DE&amp;w=200&amp;hash=972AEC58E0277525F9C06683AD76EB6B285D189D" alt="KUKA" width="200" height="37" />
+        -->
+
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+   viewBox="-429 303 558 240" style="enable-background:new -429 303 558 240;" xml:space="preserve">
+<style type="text/css">
+  .st0{fill:none;}
+  .st1{fill:#FF6C2C;}
+</style>
+<rect x="-429" y="303" class="st0" width="558" height="240"/>
+<g>
+  <polygon class="st1" points="-321.5,421.6 -321.5,382.2 -347,382.2 -347,462.3 -321.5,462.3   "/>
+  <polygon class="st1" points="-238.7,462.3 -288.1,421.6 -238.7,382.2 -274.9,382.2 -321.5,421.6 -274.9,462.3  "/>
+  <path class="st1" d="M-122.4,434.3v-52.1H-148v47.5c0,10.2-3.8,13.2-14.3,13.2h-25.3c-10.5,0-14.3-3-14.3-13.2v-47.5h-25.6v52.1
+    c0,19.9,10.7,29.4,34.2,29.4h36.6C-133.1,463.8-122.4,454.3-122.4,434.3"/>
+  <polygon class="st1" points="-76.8,421.6 -76.8,382.2 -102.3,382.2 -102.3,462.3 -76.8,462.3  "/>
+  <polygon class="st1" points="5.9,462.3 -43.5,421.6 5.9,382.2 -30.2,382.2 -76.8,421.6 -30.2,462.3  "/>
+  <path class="st1" d="M78.8,382.2H56.2L6,462.2h29.4l8.5-13.9h47.4l8.5,13.9h29.4L78.8,382.2z M52.6,432.4l14.9-25.5l14.9,25.5H52.6
+    z"/>
+</g>
+</svg>
+
+
+        </figure>
+    </a>
+  </div>
+</div>
+<div class="a-site-overlay js-site-overlay"></div>
+</header>
+
+<main class="container js-anchorbar-trigger">
+  <div class="row">
+    <div class="col-sm-10 col-sm-offset-1">     
+      <section class="mod mod-page-intro h-no-margin-top text-left" style="margin-top: 0px!important;">  
+          <div class="row h-pull-row-right-1 h-pull-row-left-1 mod-page-intro__bd state-moved">
+            <div class="col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1">
+            <apex:outputPanel rendered="{!$CurrentPage.parameters.language == 'de'}">
+				<div class="col-sm-12">
+							
+							<section class="mod mod-page-intro h-margin-top-0 text-center" style="margin-top: 0px!important;">
+					
+						
+						<div class="row h-pull-row-right-1 h-pull-row-left-1 mod-page-intro__bd l-page-intro">
+  <p>
+                     <a class="mod-page-intro__functions-actions a-btn a-btn--icon a-btn--tertiary" onclick="javascript:window.history.back();">
+                      <span class="mod-page-intro__functions-icons a-btn a-btn--icon a-btn--secondary icon-backward"></span>
+                    </a>
+</p>   						
+							<div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+								<h1 class="mod-page-intro__headline">Datenschutzerklärung</h1>
+								
+								<p class="intro">KUKA Aktiengesellschaft</p>
+								
+								
+								<div class="mod-page-intro__functions hidden-print">
+					<hr />
+					<ul class="mod-page-intro__functions-list">
+					<!--
+	                  <li class="mod-page-intro__functions-list-item js-page-functions">
+	                    <a class="mod-page-intro__functions-actions a-btn a-btn--icon a-btn--tertiary" onclick="javascript:window.history.back();">
+	                      <span class="mod-page-intro__functions-icons icon-reset"></span>
+	                    </a>
+	                  </li> 	
+	                -->				
+						<li class="mod-page-intro__functions-list-item js-page-functions">
+							<a class="mod-page-intro__functions-actions a-btn a-btn--icon a-btn--tertiary js-print">
+								<span class="mod-page-intro__functions-icons icon-printer"></span>
+							</a>
+						</li>
+						<li class="mod-page-intro__functions-list-item js-page-functions">
+							<a class="mod-page-intro__functions-actions a-btn a-btn--icon a-btn--tertiary js-jumpmark" href="#contact" data-scroll-to-bottom="true">
+								<span class="mod-page-intro__functions-icons icon-head"></span>
+							</a>
+						</li>
+					</ul>
+				</div>
+
+							</div>
+						</div>
+					
+				</section>
+				<div class="mod mod-text" data-ignore="true">
+				    
+				    
+					<div class="copy"><p>Für die Bearbeitung von Anfragen oder Mitteilungen bitten wir Sie um die Angabe persönlicher Daten. <br />
+				Der Schutz Ihrer persönlichen Daten ist uns ein hohes Anliegen. Der Umgang und die Verwendung der übermittelten Daten erfolgen demnach mit der gebotenen Sorgfalt und nur zur Bearbeitung Ihres Ersuchens. Wir erfassen Daten ausschließlich in notwendigen Umfang und in Übereinstimmung mit den deutschen Gesetzen zu Datenschutz und Datensicherheit nur zu dem Zweck, zu welchem Sie uns die Daten überlassen haben.</p>
+				<h4>Sicherheit</h4>
+				<p>Die Website der KUKA AG wird durch technische und organisatorische Sicherheitsmaßnahmen geschützt, um den Verlust, die Manipulation, die Zerstörung oder den Zugriff durch unbefugte Personen auf Ihre persönlichen Daten zu vermeiden. Trotz der Verwendung des Industriestandard SSL (Secure Sockets Layer) zur Website Verschlüsselung, ist ein vollständiger Schutz gegen alle Vorkommnisse nicht möglich.</p>
+				<h4>&nbsp;Weitergabe von personenbezogenen Daten</h4>
+				<p>Ohne Ihr ausdrückliches Einverständnis werden keine personenbezogenen Daten an Dritte übermittelt. Eine Übertragung an öffentliche Stellen, Strafverfolgungsbehörden und Gerichte erfolgt nur im Rahmen einer gesetzlichen Verpflichtung. Unsere Mitarbeiter sind zudem zur Verschwiegenheit und dem vertraulichen Umgang Ihrer überlassenen personenbezogenen Daten verpflichtet.<br />
+				Nicht als Dritte gelten in diesem Zusammenhang die in der KUKA Gruppe mit der KUKA AG verbundenen Unternehmen, sowie vertraglich an uns gebundene Dienstleister zur Auftragsdatenverarbeitung.</p>
+				<h4>Erhebung, Verarbeitung und Nutzung personenbezogener Daten</h4>
+				<p>Sobald Sie unsere Website besuchen, erhebt, speichert oder übermittelt die Website personenbezogene Daten. Hierzu zählen:</p>
+				<ul>
+				    <li>Datum und Besuch der URL, auf der sich der Besucher befindet</li>
+				    <li>URL, die der Besucher unmittelbar zuvor besucht hat</li>
+				    <li>IP-Adresse und Domain von der aus der Zugriff erfolgt</li>
+				    <li>Verwendeter Browser</li>
+				    <li>Verwendetes Betriebssystem</li>
+				    <li>Technische Informationen zum Besuch (http-Methode, http-Version, http-Statuscode, Länge der übertragenen Daten)</li>
+				</ul>
+				<h4>Verwendung von Cookies</h4>
+				<p>Die KUKA AG verwendet Cookies um das Web Angebot attraktiv und nutzerfreundlich zu gestalten. Cookies sind kleine Textdateien, welche auf Ihrem Rechner abgelegt werden, jedoch keinerlei Viren enthalten oder Schaden anrichten. Unsere Website verwendet zum einen „Session Cookies“. Diese Cookies verfolgen den Nutzer während seiner Sitzung. Beim Schließen und erneuten öffnen des Browsers startet eine neue Nutzer-Sitzung mit neuer Cookie ID. Zum anderen werden sogenannte „Global Cookies“, welche den Traffic der Website messen und die Besucher und die Sitzung hinweg identifizieren, genutzt. Der Cookie wird also mit der Sitzung nicht gelöscht, sondern wird erst nach einem Jahr ersetzt. <br />
+				Sie können durch entsprechende Browser-Einstellungen das Speichern von Cookies unterbinden. Aus Gründen der Funktionsbeeinträchtigung unserer Website empfehlen wir dies allerdings nicht.</p>
+				<h4>Social Media</h4>
+				<p>Neben unserer Website ist die KUKA AG in unterschiedlichen sozialen Medien präsent. Bitte entnehmen Sie Zweck und Umfang der Datenerhebung sowie die Bestimmungen zur Nutzung Ihrer Daten durch die jeweilige Plattform den Datenschutzbestimmungen des jeweiligen Betreibers.</p>
+				<p><strong>Eingebundene Inhalte</strong></p>
+				<p>Auf unserer Website nutzen wir Videos des Unternehmens YouTube, LLC 901 Cherry Ave., 94066 San Bruno, CA, USA, einem Unternehmen der Google Inc., Amphitheatre Parkway, Mountain View, CA 94043, USA.</p>
+				<p>Wenn Sie eine Webseite mit einem YouTube Inhalt aufrufen, wird eine Verbindung zu den YouTube-Servern hergestellt und dabei der Inhalt durch Mitteilung an Ihren Browser auf der Internetseite dargestellt. Hierdurch wird an den YouTube-Server übermittelt, welche unserer Internetseiten Sie besucht haben.</p>
+				<p>Sollten Sie unser Webangebot in anderen Sprachen als Deutsch oder Englisch nutzen, kann es sein, dass auch Videos von anderen Diensten eingebunden werden. Im chinesischen Sprachraum nutzen wir Videos des Unternehmens Youku. Wir bemühen uns, stets das gleiche Datenschutzniveau wie für unser deutsch- bzw. englischsprachiges Angebot zu erreichen. Nähere Informationen zur Erhebung und Nutzung von Daten in spezifischen Sprachversionen stellen wir Ihnen auf Anfrage gerne zur Verfügung.</p>
+				<p><strong>Internetwerbung</strong></p>
+				<p>Sowohl auf unserer eigenen Website als auch auf nicht angegliederten Websites präsentieren wir Ihnen Werbung. Dies geschieht mithilfe der Informationen, die Sie uns beim Besuch auf unseren Websites und bei der Nutzung unserer Inhalte oder Leistungen zur Verfügung stellen. Diese Informationen werden über Cookies erfasst. So wird Ihnen nach dem Besuch der KUKA Website möglicherweise auf anderen Websiten KUKA Werbung etwa in Form von Bannern angezeigt. <br />
+				Ihre Aktivitäten auf nicht angegliederten Websites werden beim Anzeigen von Werbung nicht mit Ihrer Identität in Verbindung gebracht. Werbetreibende oder sonstige Dritte, die unsere Anzeigen präsentieren, erhalten von uns keine personenbezogenen Daten. Werbetreibende und sonstige Dritte (darunter Werbenetzwerke, Ad-Serving-Unternehmen und sonstige von ihnen beauftragte Dienstleister) können jedoch davon ausgehen, dass Nutzer, die Anzeigen oder Inhalt anklicken oder damit interagieren, zu der Personengruppe gehören, auf die die betreffenden Anzeigen oder der betreffende Inhalt abzielen.</p>
+				<h4>Kontaktaufnahme</h4>
+				<p><strong>Newsletter</strong></p>
+				<p>Sie können sich auf unserer Website zum Empfangen eines Newsletters registrieren. In diesem Fall muss auf jeden Fall die E-Mailadresse angegeben werden. Ihre E-Mailadresse wird lediglich zur Versendung des Newsletter verwendet. Sie können sich zu jeder Zeit wieder vom Newsletter abmelden. Weitere Angaben können freiwillig vorgenommen werden.</p>
+				<p><strong>E-Mail und Formulare</strong></p>
+				<p>Sobald Sie auf unserer Website ein Formular ausfüllen oder uns per Mail kontaktieren, werden die von Ihnen übertragenen Daten lediglich für die Verarbeitung Ihrer Anfrage genutzt und stets vertraulich behandelt.</p>
+				<h4>Links zu Websites anderer Anbieter</h4>
+				<p>Unsere Website kann Links zu externen Websites enthalten. Die KUKA AG hat sich zum Zeitpunkt der Linksetzung davon überzeugt, dass die verknüpften Seiten keinerlei illegalen Inhalt darstellen. Eine fortlaufende Kontrolle kann die KUKA AG jedoch nicht gewährleisten und hat keinerlei Einfluss auf die Inhalte der verknüpften Seiten. Es wird somit keine Haftung für die Inhalte nach der Linksetzung übernommen.</p>
+				<h4>Auskunfts- und Widerrufsrecht</h4>
+				<p>Auf Anfrage ist die KUKA AG dazu verpflichtet dem jeweiligen Nutzer eine unentgeltliche Auskunft über die personenbezogenen, gespeicherten Daten zu erteilen. Sollten falsche Daten vorliegen bzw. die Sperrung oder Löschung der Daten gefordert werden, wird die KUKA AG dies nach entsprechendem schriftlichem Hinweis berichtigen. Die Löschung Ihrer personenbezogenen Daten erfolgt, wenn Sie ihre Einwilligung in die Speicherung der Daten widerrufen. Dies können Sie jederzeit mit Wirkung für die Zukunft tun.</p>
+				<h4>Ansprechpartner</h4>
+				<p>Bei Fragen zu Ausgestaltung und Funktionsweise der Website wenden Sie sich bitte wenden Sie sich bitte an:</p>
+				<p><a href="mailto:webmaster@kuka.com">webmaster@kuka.com</a></p>
+				<h4>Vorbehalt</h4>
+				<p>Die KUKA AG Datenschutzerklärung kann jederzeit gespeichert oder ausgedruckt werden. Die KUKA AG behält sich jedoch vor die Datenschutzerklärung jederzeit unter Beachtung der datenschutzrechtlichen Vorgaben anzupassen, um der stetigen Weiterentwicklung der Website gerecht zu werden.</p></div>
+				</div>
+
+							
+						</div>
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!$CurrentPage.parameters.language != 'de'}">
+				<div class="col-sm-12">
+							
+							<section class="mod mod-page-intro h-margin-top-0 text-center" style="margin-top: 0px!important;">
+					
+						
+						<div class="row h-pull-row-right-1 h-pull-row-left-1 mod-page-intro__bd l-page-intro">
+  <p>
+                     <a class="mod-page-intro__functions-actions a-btn a-btn--icon a-btn--tertiary" onclick="javascript:window.history.back();">
+                      <span class="mod-page-intro__functions-icons a-btn a-btn--icon a-btn--secondary icon-backward"></span>
+                    </a>
+</p>   						
+							<div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+								<h1 class="mod-page-intro__headline">Data Protection Policy</h1>
+								
+								<p class="intro">KUKA Aktiengesellschaft</p>
+								
+								
+								<div class="mod-page-intro__functions hidden-print">
+					<hr />
+					<ul class="mod-page-intro__functions-list">
+					<!--
+	                  <li class="mod-page-intro__functions-list-item js-page-functions">
+	                    <a class="mod-page-intro__functions-actions a-btn a-btn--icon a-btn--tertiary" onclick="javascript:window.history.back();">
+	                      <span class="mod-page-intro__functions-icons icon-reset"></span>
+	                    </a>
+	                  </li> 			
+	                -->		
+						<li class="mod-page-intro__functions-list-item js-page-functions">
+							<a class="mod-page-intro__functions-actions a-btn a-btn--icon a-btn--tertiary js-print">
+								<span class="mod-page-intro__functions-icons icon-printer"></span>
+							</a>
+						</li>
+						<li class="mod-page-intro__functions-list-item js-page-functions">
+							<a class="mod-page-intro__functions-actions a-btn a-btn--icon a-btn--tertiary js-jumpmark" href="#contact" data-scroll-to-bottom="true">
+								<span class="mod-page-intro__functions-icons icon-head"></span>
+							</a>
+						</li>
+					</ul>
+				</div>
+
+							</div>
+						</div>
+					
+				</section>
+				<div class="mod mod-text" data-ignore="true">
+				    
+				    
+					<div class="copy"><p>In order for us to respond to your inquiries and other communications we ask that you provide certain personal information. <br /> The protection of your personal information is very important to us. As a result, any data you provide will be handled with due care and diligence, and will be used only for the purpose of processing your inquiry. We collect only those data which are actually required and exclusively use these for the purpose for which you have provided them to us in compliance with the German laws regarding data privacy and data protection.</p> <h4>Security</h4> <p>The KUKA AG website is protected by technical and organizational security measures in order to prevent the loss, manipulation or destruction of your personal data and to avoid access to these data by unauthorized persons. Despite using industry standard Secure Sockets Layer (SSL) for website encryption, complete protection against all eventualities is not possible.</p> <h4>&nbsp;Disclosure of personal data</h4> <p>No personal data will be disclosed to third parties without your express permission. Handover to public bodies, law enforcement authorities and courts shall only occur under a legal requirement to do so. Our employees are also obliged to secrecy and to treat the personal data you provide confidentially.<br /> The third-party designation shall not apply to companies in the KUKA Group affiliated with KUKA AG, nor shall it apply to service providers contractually bound to us for contracted data processing.</p> <h4>Collection, processing and use of personal data</h4> <p>As soon as you access our website, the website collects, saves or transmits personal data. This includes:</p> <ul> <li>Date and URL relating to the visitor’s use of the website</li> <li>URL immediately prior to the visitor’s access to the website</li> <li>IP address and domain from which the site was accessed</li> <li>The browser used</li> <li>The operating system used</li> <li>Technical information about the visit (http method, http version, http status code, length of the transmitted data)</li> </ul> <h4>Use of cookies</h4> <p>KUKA AG uses cookies in order to make the website more attractive and user-friendly. Cookies are small text files which are stored on your computer but do not contain a virus of any kind or cause any damage. Our website uses “session cookies”. These cookies track users during their session. Closing and reopening the browser starts a new user session with a new cookie ID. “Global cookies” are also used. These measure the traffic of the website and identify the visitors during and beyond their session. The cookie is thus not deleted at the end of the session, but is replaced only after a year. <br /> You can prevent the saving of cookies using the appropriate browser settings. Due to the effects on our website functionality, however, we do not recommend this.</p> <h4>Social media</h4> <p>Besides our website, KUKA AG is present on various social media. Please refer to the data protection provisions of the relevant operator for the purpose and extent of the related data collection as well as the provisions for use of your data by the relevant platform.</p> <p><strong>Embedded content</strong></p> <p>On our website, we use videos from YouTube, LLC, 901 Cherry Ave., San Bruno, CA 94066, USA, a subsidiary of Google Inc., Amphitheatre Parkway, Mountain View, CA 94043, USA.</p> <p>If you call up a web page with YouTube content, a connection to the YouTube servers is established and the content is shown on the Internet page by means of a message to your browser. This communicates to the YouTube server which of our Internet pages you have visited.</p> <p>If you use our website in languages other than German or English, it is possible that videos from other services will be included. In Chinese-speaking countries, we use videos from the company Youku. We constantly endeavor to achieve the same level of data protection as for our German and English videos. We will be happy to provide further information regarding the collection and use of data in specific language versions upon request.</p> <p><strong>Internet advertising</strong></p> <p>We advertise on both our own website and non-affiliated websites. We do so using the information made available to us when you visit our website and make use of our content or services. This information is collected by means of cookies. After visiting the KUKA website, you may therefore see advertisements for KUKA on other websites in the form of banners. <br /> The display of advertisements as a result of your activities on non-affiliated websites is not associated with your identity. We do not share any personal data with advertisers or other third parties that display our advertisements. Advertisers or other third parties (including advertising networks, ad serving companies and any other service providers contracted by such) may nevertheless assume that users who click on or interact with advertisements or content belong to the target group for the advertisements or content in question.</p> <h4>Initiating contact</h4> <p><strong>Newsletter</strong></p> <p>You can register to receive our newsletter on our website. To do so, an e-mail address must always be provided. Your e-mail address will only be used for sending the newsletter. If you no longer wish to receive the newsletter, you may unsubscribe at any time. Further information may be voluntarily provided.</p> <p><strong>e-mail and forms</strong></p> <p>Upon filling out a form on our website or contacting us by e-mail, the data you have provided will only be used to process your request and will be treated confidentially at all times.</p> <h4>Links to third-party websites</h4> <p>Our website may contain links to external websites. At the time of setting the link, KUKA AG satisfied itself that the linked pages do not contain illegal content of any kind. However, KUKA AG cannot ensure continuous monitoring and has no influence whatsoever on the content of the linked websites. No liability will therefore be accepted for the content after the link has been set.</p> <h4>Right to disclosure and revocation</h4> <p>Upon request, KUKA AG is obliged to disclose the stored personal data to the corresponding user free of charge. If incorrect data exist or if a user requests the data to be blocked or deleted, KUKA AG will take the required action after appropriate written notification. Your personal data will be deleted if you revoke your consent to the storage of data. You may do so at any time for future effect.</p> <h4>Contact person</h4> <p>If you have any questions regarding the design or functions of the website, please contact:</p> <p><a href="mailto:webmaster@kuka.com">webmaster@kuka.com</a></p> <h4>Proviso</h4> <p>The KUKA AG Data Protection Policy can be saved or printed at any time. KUKA AG, however, reserves the right to adapt the Data Protection Policy at any time, subject to data protection regulations, in order to cater for the ongoing further development of the website.</p></div>
+				</div>
+
+							
+						</div>
+            </apex:outputPanel>         
+            </div>
+          </div>  
+      </section>      
+    </div>
+  </div>
+</main>
+
+
+<footer class="l-footer h-expand-background h-expand-background--white">
+  <div id="contact" class="mod mod-contact container text-center" data-ignore="true">
+    
+    <div class="row mod-contact__img-row h-margin-bottom-20">
+        <div class="mod-contact__img-col col-sm-2 col-sm-offset-5">
+            <figure class="mod-contact__img h-ratio h-ratio1-1 h-rounded">
+
+
+<img alt="" class="h-ratio-content" src="https://static.kuka.com/salesforce/SsoPageResources/-/media/kuka-corporate/images/contact_images/kontakt-kuka-ag.svg"/>  
+         
+            </figure>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <p class="intro h-margin-bottom-20">
+                <strong>{!$Label.CommunitySelfReg_ImprintName}</strong><br/>
+                
+            </p>
+            <p class="caption">
+                {!$Label.CommunitySelfReg_ImprintAddress}
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-10 col-xs-offset-1 col-sm-12 col-sm-offset-0">
+            <ul class="mod-contact__list h-tbl h-tbl--layout-fixed">
+                
+                <li class="h-tbl__cell">
+                    <a class="mod-contact__action" href="mailto:{!$Label.CommunitySelfReg_ImprintEmail}">
+                        <p class="a-btn a-btn--icon a-btn--tertiary h-margin-bottom-10">
+                            <span class="icon-mail"></span>
+                        </p>
+                        <p class="copy hidden-xs">{!$Label.CommunitySelfReg_ImprintEmailLabel}</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    
+</div>
+<div class="mod mod-footer container h-no-margin-top" data-ignore="true">
+  <div class="mod-footer__bottom-container clearfix h-pos-relative">
+
+    
+    <ul class="mod-footer__list mod-footer__socialmedialist">
+      
+      <li class="mod-footer__list-item mod-footer__socialmedialist-item">
+        <a class="a-btn--img-hover-swap" href="https://www.youtube.com/KukaRobotGroup" target="_blank">
+          <figure>
+            <img class="mod-footer__socialmedialist-img" src="https://static.kuka.com/salesforce/SsoPageResources/-/media/kuka-corporate/images/social-media-icons/youtube.png" alt="" />
+            <img class="mod-footer__socialmedialist-img mod-footer__socialmedialist-img--colored" src="https://static.kuka.com/salesforce/SsoPageResources/-/media/kuka-corporate/images/social-media-icons/youtube2.png" alt="" />
+          </figure>
+        </a>
+      </li>
+      
+      <li class="mod-footer__list-item mod-footer__socialmedialist-item">
+        <a class="a-btn--img-hover-swap" href="https://www.facebook.com/kuka.systems/" target="_blank">
+          <figure>
+            <img class="mod-footer__socialmedialist-img" src="https://static.kuka.com/salesforce/SsoPageResources/-/media/kuka-corporate/images/social-media-icons/facebook1.png" alt="" />
+            <img class="mod-footer__socialmedialist-img mod-footer__socialmedialist-img--colored" src="https://static.kuka.com/salesforce/SsoPageResources/-/media/kuka-corporate/images/social-media-icons/facebook2.png" alt="" />
+          </figure>
+        </a>
+      </li>
+      
+      <li class="mod-footer__list-item mod-footer__socialmedialist-item">
+        <a class="a-btn--img-hover-swap" href="https://twitter.com/KUKA_Presse" target="_blank">
+          <figure>
+            <img class="mod-footer__socialmedialist-img" src="https://static.kuka.com/salesforce/SsoPageResources/-/media/kuka-corporate/images/social-media-icons/twitter.png" alt="" />
+            <img class="mod-footer__socialmedialist-img mod-footer__socialmedialist-img--colored" src="https://static.kuka.com/salesforce/SsoPageResources/-/media/kuka-corporate/images/social-media-icons/twitter2.png" alt="" />
+          </figure>
+        </a>
+      </li>
+      
+    </ul>
+
+    <ul class="mod-footer__list mod-footer__list--imprint">
+      <li class="mod-footer__list-item caption">
+        &copy; {!$Label.CommunitySelfReg_ImprintCompanyName}
+      </li>
+      <li class="mod-footer__list-item caption">
+        <a href="{!$Label.CommunitySelfReg_ImprintLink}" >{!$Label.CommunitySelfReg_ImprintLinkTitle}</a>
+      </li>
+      <li class="mod-footer__list-item caption">
+        <a href="{!$Label.CommunitySelfReg_SecurityLink}" >{!$Label.CommunitySelfReg_SecurityLinkTitle}</a>
+      </li>
+    </ul>
+    <figure class="mod-footer__logo">
+<svg version="1.1" id="Ebene_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+   viewBox="0 0 239.9 242" style="enable-background:new 0 0 239.9 242;" xml:space="preserve">
+<style type="text/css">
+  .st00{fill:#E8E9EA;}
+</style>
+<path class="st00" d="M37.2,72.7c7.6-13.2,17.9-24,29.8-31.9L40.9,30.5C31.3,38.9,23,49,16.3,60.6c-29.3,50.8-17.7,113.9,24.6,151.3
+  l26.3-10.3C25.1,173.4,11.6,117.1,37.2,72.7z"/>
+<path class="st00" d="M169.7,37.2c29,16.7,46.1,46.2,48.3,77.3l22-17.5c-6.7-32.8-26.9-62.7-58.1-80.8c-31.3-18.1-67.2-20.6-99-10
+  l-4.2,27.8C106.6,20.4,140.7,20.5,169.7,37.2z"/>
+<path class="st00" d="M217.9,127.8c-1,14.3-5.1,28.6-12.8,41.8c-25.6,44.4-81.1,60.8-126.5,38.6l4.2,27.9
+  c53.5,17.9,114-3.6,143.3-54.4c6.7-11.6,11.2-23.9,13.8-36.4L217.9,127.8z"/>
+</svg>
+    </figure>
+    
+
+  </div>
+</div>
+
+</footer>
+
+
+  <script>
+
+      jQuery.noConflict();
+    (function ($) {
+      var application,
+      $document = $(document);
+      $document.ready(function () {        
+        Tc.Config = $.extend(Tc.Config, {
+          $page: $('html'),
+          $root: $('body', this.$page),
+          $window: $(window),
+          $document: $document,
+          $header: $('.js-header', this.$root)
+        });
+        application = new Tc.Application(Tc.Config.$root, Tc.Config);
+        application.registerModules();
+        application.start();
+      });
+    })(Tc.$);
+    
+
+  </script>
+
+
+  </body>
+  </html>
+</apex:page>

@@ -1,0 +1,33 @@
+<apex:component >
+    <div class="modal modal_apttuslab modal_language fade" id="APTSDMPLangSelect" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+                <div class="slds" style="color: #706f6f !important;">
+                    <div aria-hidden="false" role="dialog" class="slds-modal slds-fade-in-open">
+                        <div class="slds-modal__container" style="width: 25% !important;">
+                            <div class="slds-modal__header" style="background-color: #F7F7F7;">
+                                <button class="slds-button slds-button--neutral modal-cancel" aria-hidden="true" data-dismiss="modal" id="languageCancelButton" style="" type="button">X</button>
+                                <span class="slds-text-heading--medium">{!$Label.APTSDMP_Language}</span>
+                            </div>
+                            <div class="slds-modal__content">
+                                <div ng-if="isValidUser == 'false'">
+                                    <ul >
+                                        <li><a style="color: #989ea3;" href="../ecomm/APTSMD_SKOECommCatalogOld?storeId=a624E0000008Q4L">{!$Label.APTSDMP_English}</a></li>
+                                        <li><a style="color: #989ea3;" href="../germanecomm/APTSMD_SKOECommCatalogOld?storeId=a624E0000008Q4L">{!$Label.APTSDMP_German}</a></li>
+                                    </ul>
+                                </div>
+                                <div ng-if="isValidUser == 'true'">
+                                    <ul>
+                                        <li><a onclick="APTSMD_ApttusLabService.updateUserLanguage('en_US', function(err, data) { window.location.reload();
+                                                            })">
+                                            {!$Label.APTSDMP_English}</a></li>
+                                        <li><a onclick="APTSMD_ApttusLabService.updateUserLanguage('de', function(err, data) { window.location.reload();
+                                                            })">{!$Label.APTSDMP_German}</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="slds-modal-backdrop slds-modal-backdrop--open"></div>
+                </div>
+            </div>
+</apex:component>

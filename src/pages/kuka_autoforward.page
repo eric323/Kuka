@@ -1,0 +1,12 @@
+<!-- Page: -->
+<apex:page sidebar="false" showHeader="false">
+<html>
+<head>
+<meta http-equiv="refresh" content="0;url=https://shop.kuka.com" />
+<title>Page Moved</title>
+</head>
+<body>
+<a href="https://shop.kuka.com">U will be forwarded</a>
+</body>
+</html>  
+</apex:page>

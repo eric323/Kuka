@@ -1,0 +1,16 @@
+<apex:component >
+    <div class="cart">
+		<!-- SITE MAIN CONTENT -->
+		<main id="main-content" role="main">
+			<section class="section">
+				<div class="container">
+				<h2>Thanks. </h2>
+				<a ng-click="goHome()" href="">Continue shopping</a>
+				</div>
+			</section>
+				
+	</main>
+	<!-- // SITE MAIN CONTENT -->
+</div>
+			
+</apex:component>

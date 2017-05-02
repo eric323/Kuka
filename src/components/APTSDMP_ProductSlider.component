@@ -1,0 +1,112 @@
+<apex:component >
+	<style>
+        div.bg-holder img {
+            height: 80%;
+            width: 100%;
+            vertical-align: top;
+            margin-bottom: 30px;
+        }
+        .owl-theme .owl-item
+        {
+            padding: 0px 0px 5px 0px;
+        }
+        .owl-wrapper-outer
+        {
+           
+            
+        }
+        #owl-slider .owl-item {
+            
+            
+            
+            
+        }
+        #owl-slider .owl-item > div img {
+            
+            height:auto;
+            max-height: 207px; 
+        }
+        #owl-slider .owl-item > div
+        {
+           
+            height: 207px;
+            display: flex;
+              flex-direction: column;
+              justify-content: center;
+        }
+        .owl-wrapper
+        {
+            
+            
+        }
+        #owl-slider
+        {
+            
+            min-height:207px;
+            
+        }
+        .screen-wrapper
+        {
+            
+            
+            width: 280px;
+            //margin-left: 17.8px;
+            padding-top: 20px;
+        }
+        .owl-theme .owl-controls
+        {
+            margin-top: 30px;
+        }       
+        
+        @media only screen and (min-width:960px){
+            .slider-containder-responsive {
+           		margin-right:23%;
+          	}
+        }
+        @media only screen and (min-width:1440px){
+            .slider-containder-responsive {
+           		margin-right:-32%;
+          	}
+        }
+        @media only screen and (min-width:2000px){
+            .slider-containder-responsive {
+           		margin-right:13.4%;
+          	}
+        }
+        
+        @media only screen and (min-width:3000px){
+            .slider-containder-responsive {
+           		margin-right:13.5%;
+          	}
+        }
+        
+    </style>
+    <div class="slider-containder-responsive" style="position: relative; width: 350px; height: 250px; margin-bottom: 40px;">
+        <div class="bg-holder" style="width: 100%; position: absolute;">
+            <img src="{!URLFOR($Resource.APTSDMP_SelectedProductSlideBG,'bg-video-large-2x-v2.png')}"/>
+        </div>
+        <div class="screen-wrapper">
+            <div class="owl-wrapper" >
+                <div id="owl-slider" class="owl-carousel owl-theme">
+                    <div>
+                         <img ng-if="currentProduct.productDetails.APTSDMP_Slider_Pic_1__c" ng-src="{{sitePrefix+'/servlet/servlet.FileDownload?file='+currentProduct.productDetails.APTSDMP_Slider_Pic_1__c}}"/>
+                         <img ng-if="!currentProduct.productDetails.APTSDMP_Slider_Pic_1__c" alt="" ng-src="{{envPath}}/img/noimage.png" style="height:207px;"/>
+                    </div>
+                    <div  ng-if="currentProduct.productDetails.APTSDMP_Slider_Pic_2__c">
+                         <img ng-src="{{sitePrefix+'/servlet/servlet.FileDownload?file='+currentProduct.productDetails.APTSDMP_Slider_Pic_2__c}}"/>
+                        
+                    </div>
+                    <div ng-if="currentProduct.productDetails.APTSDMP_Slider_Pic_2__c">
+                         <img ng-src="{{sitePrefix+'/servlet/servlet.FileDownload?file='+currentProduct.productDetails.APTSDMP_Slider_Pic_3__c}}"/>
+                         
+                    </div>
+                    <div ng-if="currentProduct.productDetails.APTSDMP_Slider_Pic_2__c">
+                         <img ng-src="{{sitePrefix+'/servlet/servlet.FileDownload?file='+currentProduct.productDetails.APTSDMP_Slider_Pic_4__c}}"/>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>    
+    
+</apex:component>

@@ -1,0 +1,449 @@
+<apex:page showHeader="false" applyHtmlTag="false" standardStylesheets="false" sidebar="false">
+            <!-- SITE MAIN CONTENT -->
+        <style>
+            .pseudo-col
+            {
+                width: 50%;
+                float: left;
+                position: relative;
+                min-height: 1px;
+                padding-right: 15px;
+                padding-left: 15px;
+            }
+            .catalog-cats
+                {
+            margin-top: -10%;
+            }
+            .responsive-body
+            {
+            width: 1200px;
+            }
+            @media (max-width: 991px)
+            {
+                .catalog-cats
+                {
+            float: none !important;
+            margin-top: -20%;
+                }
+            .responsive-body
+            {
+            width: 800px;
+            }
+            }
+    </style>
+        <main id="main-content" role="main">
+            <div>
+            <div class="container slds" style="width: 100%;">
+            
+            <div class="row">                                   
+                                    
+
+                <div class="row" >
+                    <div class="m-t-b clearfix responsive-body" style="margin-left: auto; margin-right: auto;"> 
+                    <!-- SIDEBAR -->
+                    <div>
+                        <div >
+                            <aside class="col-xs-12 col-sm-4 col-md-3 slds-col-rule--right catalog-cats" style="margin-left:2% ; border-right: 0px solid #ffffff;padding-bottom: 20px; width: 300px;">
+                                <section class="sidebar push-up" style = "margin-top: -8%">
+                                    
+                                    <!-- CATEGORIES -->
+                                    <section class="side-section bg-white" style="margin-top: 40%;">
+                                        <span>
+                                        <!--<div class="inner-addon right-addon">
+                                          <i class="fa fa-search search-icon"></i>
+                                          <input class="slds-input" id="globalSearch" placeholder="Search" style="width: 100%;" type="text" ng-model="searchedVal" ng-change="showsearch(searchedVal)" typeahead="pName for pName in prodNames | filter:searchedVal | limitTo:10" typeahead-on-select="showsearch(searchedVal)" />
+                                        </div>-->
+                                            <c:APTSMD_eComm_ProductSearch /><br/>
+                                        
+                                        <!-- <i class="fa fa-search" style="font-size: 16pt;position: fixed;margin-top: -30px;margin-left: -25px;"></i> -->
+                                        <!--<img src="/resource/Search" style="cursor:pointer" ng-click="showsearch(searchedVal)" ng-model="searchedVal">-->
+                                    </span>
+                                    <div style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.09);">
+                                        <c:APTSMD_ECommerce_CategoryList /></div>
+                                        <!--<div ng-if="store.APTSMD_ShowSpecialProductFilter__c==true">
+                                            <c:APTSMD_ECommerce_RecommendedProducts />
+                                        </div>-->
+                                        <!--<c:APTSMD_ECommerce_PriceFilter /> -->                                  
+                                        <!--<c:APTSMD_ECommerce_RefineSearch />-->
+                                        
+                                    </section>
+                                    <!-- // CATEGORIES -->
+                                </section>
+                            </aside>
+                                    <!-- // SIDEBAR -->
+                        </div>
+                
+                        <section class="col-md-9" style="width: 720px; padding-left: 35px;">
+
+                            <section class="products-wrapper" style="">
+                                <!--<nav class="stickynav" style="z-index:100">
+                                  <a ng-show="showCompare" ng-click="goCompare()"  href="#" data-target="#compareModal" class="btn btn-primary" style="color:#fff;background: #0070D2;text-decoration:none;margin-top: -1%;background-color:{{store.APTSMD_Action_Color__c}} !important; border-color:{{store.APTSMD_Action_Color__c}} !important;" data-toggle="modal" >Compare Products</a>
+                                </nav>-->
+                                <br />
+                                <!-- // DISPLAY MODE - NUMBER OF ITEMS TO BE DISPLAY - PAGINATION -->
+                                <!-- CODE BY MAYUR FOR RECOMMENDED PRODUCTS FROM GUIDE ME-->
+                                <!--<div ng-if="showRecom">
+                                    <div class="panel panel-default" ng-if="guidedProducts.length>0">
+                                      <div class="panel-heading panel-heading-custom" style="background: #12312 !important;background-color:{{store.APTSMD_Header_Color__c}} !important;color: #fff;">
+                                        <h3 class="panel-title"><a data-toggle="collapse" href="#guidedPanel">{!$label.RecommendedProducts}</a></h3>
+                                      </div>
+                                      <div class="panel-body" id="guidedPanel" style="margin-top:0px!important ; margin-bottom:-15px !important;padding-top:0px!important" >
+                                        <div ng-repeat="prod in guidedProducts track by $index" ng-if="guidedProducts">
+                                            <div class="col-sm-4">
+                                            <div new-scope=""  ng-init="prodItem = prod">
+                                                <c:APTSMD_ecomm_RecommendedProduct productGroupType="Recom_" />
+                                            </div>
+                                            </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> -->
+
+                                <!-- TOP DEALS OF THE DAY -->
+                                <div ng-if="showTopDeal">
+                                    <div class="panel-default" ng-if="topDealProducts.length>0" style="border:none;">
+                                      <div class="panel-heading panel-heading-custom" style="background: #FFF !important; color: #989EA3; padding-left:0px">
+                                        <h3 class="panel-title" ><a class="panel-title-a" data-toggle="collapse" style="color: #989EA3 !important; font-size: 1em;" href="#topDealPanel">{!$label.APTSDMP_FeaturedProducts}</a></h3>
+                                      </div>
+                                      <div class="panel-collapse collapse in" id="topDealPanel"> 
+                                      <div class="panel-body"  style="margin-top:0px ; margin-bottom:-15px !important;background-color:#ffffff !important; padding-left: 0px !important; padding-right: 0px !important;">
+                                            <div class="TopDeal">
+                                            <div ng-repeat="prod in topDealProducts track by $index" ng-if="topDealProducts">
+                                                <div ng-class="{'pseudo-col':store.APTSMD_ShowTopDealWithCarousel__c==false}" style="padding-left: 0px !important; padding-right: 0px !important;">
+                                                <div new-scope=""  ng-init="prodItem = prod" >
+                                                    <!-- c:APTSMD_ECommerce_top_deal / -->
+                                                    <c:APTSMD_ecomm_RecommendedProduct productGroupType="TopDeal" />
+                                                </div>
+                                                </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                
+
+                                <!--Show Picked Up products when user is logged in -->  
+                                <!--<div ng-if="showPickedUp">
+                                    <div class="panel panel-default" ng-if="pickedUpProducts.length>0">
+                                      <div class="panel-heading panel-heading-custom" style="background: #12312 !important; color: #fff; background-color:{{store.APTSMD_Header_Color__c}} !important;">
+                                            <h3 class="panel-title"><a class="panel-title-a" data-toggle="collapse" href="#pickedUpPanel">{!$Label.ecomm_Special_Pick}</a></h3>
+                                       </div>
+                                      <div id="pickedUpPanel" class="panel-collapse collapse in">
+                                      <div  class="panel-body" style="margin-top:0px ; margin-bottom:-15px !important;">
+                                        <div class="PickedUp">  
+                                        <div ng-repeat="prod in pickedUpProducts track by $index" ng-if="pickedUpProducts">
+                                            <div ng-class="{'col-sm-{{colValue}}':store.APTSMD_ShowPickedUpwithcarousel__c==false}">
+                                                <div new-scope=""  ng-init="prodItem = prod">
+                                                <!-- c:APTSMD_ECommerce_recom_prod / 
+                                                <c:APTSMD_ecomm_RecommendedProduct productGroupType="PickedUp" />
+                                            </div>
+                                           </div>
+                                          </div>
+                                          </div>
+                                        </div>
+                                        </div>
+                                    </div>
+                                </div>-->
+
+                                <!--Show products from Pst Orders when user is logged in -->    
+                                <!--<div ng-if="showPast">
+                                    <div class="panel panel-default" ng-if="pastOrderProducts.length>0">
+                                      <div class="panel-heading panel-heading-custom" style="background: #0f6cb2 !important; color: #fff; background-color:{{store.APTSMD_Header_Color__c}} !important;">
+                                        <h3 class="panel-title"><a class="panel-title-a" data-toggle="collapse" href="#pastOrderPanel">{!$Label.ecomm_Based_On_Past_Order}</a></h3>
+                                      </div>
+                                      <div  class="panel-collapse collapse in" id="pastOrderPanel">
+                                      <div class="panel-body"  style="margin-top:0px ; margin-bottom:-15px !important;">
+                                        <div class="PastOrder">  
+                                        <div ng-repeat="prod in pastOrderProducts track by $index" ng-if="pastOrderProducts">
+                                            <div ng-class="{'col-sm-{{colValue}}':store.APTSMD_ShowPastOrderwithcarousel__c==false}">
+                                            <div new-scope=""  ng-init="prodItem = prod" >
+                                                <!-- c:APTSMD_ECommerce_recom_prod / 
+                                                <c:APTSMD_ecomm_RecommendedProduct productGroupType="PastOrder" />
+                                            </div>
+                                            </div>
+                                            </div>
+                                            </div>
+                                        </div>
+                                        </div>
+                                    </div>
+                                </div>-->
+                                
+                                <!-- PRODUCT LAYOUT -->
+                                <div class="row" ng-if="store.APTSMD_ShowPagination__c==true">
+                                        <div class="col-xs-12 col-sm-12 col-md-6 center-xs pull-right">
+                                            <!-- PAGINATION -->
+                                            <!-- NUMBER OF ITEMS TO BE DISPLAY -->
+                                            
+
+                                                 <select class="pull-right" style="width:auto;" ng-model="itemsPerPage" ng-change="groupToPages(itemsPerPage)"
+                                                            ng-options="p.value for p in PageSize">
+                                                </select>
+                                        
+                                        
+                                            <ul class="paginator li-m-r-l pull-right">
+                                            <!-- Previous -->
+                                                <li ng-if="currentPage==0">
+                                                <span class="round-icon"  data-toggle="tooltip" data-title="Previous Page" ><i class="iconfont-angle-left"></i></span>
+                                                </li>
+                                                <li ng-if="currentPage>0">
+                                                <a class="round-icon" href="#" data-toggle="tooltip" data-title="Previous Page"  ng-click="PrevPage(currentPage)"><i class="iconfont-angle-left"></i></a>
+                                                </li>
+                                            <!-- End Previous -->
+
+                                            <!-- <li ng-repeat="n in range(products.length)" ng-class="{active: n == currentPage}"
+                                                ng-click="setPage()"><a href ng-bind="n + 1">1</a>
+                                                </li> -->
+
+                                               <li ng-repeat="n in range(products.length)" ng-class="{'active': n == currentPage}"
+                                                ng-click="setPage()">
+                                                <a href="#" ng-bind="n + 1">1</a>
+                                                </li>
+
+                                                <!-- Next -->
+                                                <li ng-if="currentPage==products.length-1">
+                                                <span class="round-icon"  data-toggle="tooltip" data-title="Next Page" ><i class="iconfont-angle-right"></i></span>
+                                                </li>
+                                                <li ng-if="currentPage<products.length-1">
+                                                <a class="round-icon" href="#" data-toggle="tooltip" data-title="Next Page"  ng-click="NextPage(currentPage)"><i class="iconfont-angle-right"></i></a>
+                                                </li>
+                                            <!-- End Next-->
+                                            </ul>
+
+                                        <!-- <div class="space30 visible-xs"></div> -->
+                                        
+                                        </div>
+                                </div>  <!-- PAGINATION -->
+                                <div>
+                                    <div class="page-header" style="margin: 0 0 20px 0; ">
+                                        <h1 class="uppercase">{!$Label.APTSDMP_AllProducts}</h1>
+                                    </div>
+                                    <div id="spin"></div>
+                                    <div ng-if="gridMode == 'grid'">                                
+                                        <div class="row">
+                                        <div style="padding-bottom:2%;" class="pseudo-col" ng-repeat="prod in products[currentPage] | filter:searchedVal" ng-show="prod.showProduct">
+                                            <div class="product-item">
+                                            <div  new-scope=""  ng-init="prodItem = prod">
+                                                <c:APTSMD_eComm_ProductItem />
+                                            </div>
+                                            </div>
+                                                
+                                            <!--</div>ng-include="envPath + '/partials/productItem.html'"></div>-->
+                                        
+                                        </div>
+                                        </div>
+                                    </div>
+                                    <div ng-if="gridMode != 'grid'">
+                                            <div ng-repeat="prod in products[currentPage]" ng-show="prod.showProduct">
+                                            <div class="container-fluid">
+                                            <div class="row">
+                                                <div class="col-sm-12">
+                                                    <div ng-init="prodItem = prod" ng-include="envPath + '/partials/productItem.html'"></div>
+                                                </div>
+                                            </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- // PRODUCT LAYOUT -->
+                                    <!-- GURBIR  -->
+                            </section>
+
+                        </section>
+                        <img src="{{bannerImage}}" alt="Image" style="margin-right:-1% ; margin-top: -6.5%;height: 100%;width: 8%;" ng-if="store.APTSMD_ShowSideBanner__c==true"></img>
+                    </div>
+
+                </div>
+            </div>
+            </div>
+            </div>
+            </div>
+        </main>
+        <!--Comapre Prod- START MODAL-->            
+<!--<div class="modal fade" id="compareModal">
+    <div class="modal-dialog" style="width: 90% !important;">
+       <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" style="background-color:{{store.APTSMD_Action_Color__c}} !important; border-color:{{store.APTSMD_Action_Color__c}} !important;" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 class="modal-title">Compare Products</h3>
+        </div>
+
+        <div class="modal-body" style="width:100%"> 
+        <table class="features-table">
+  
+  <thead>
+    <tr>
+    <td></td>
+      <td ng-repeat="(key, value) in productDetails">
+        <table style="font-size:0.8vw;border-bottom: 1px solid #cdcdcd;">
+            <tr>
+                <td style="text-align: center;">
+                <div class="row">
+                    <div class="col-md-12">
+                        <img src="{{sitePrefix+'/'+value.ImageUrl}}" alt="{{value.ProductName}}" height="120" width="150" style="width:150px;height:120px;"></img>      
+                    </div>  
+                </div>
+                <div class="row">   
+                    <div class="col-md-12">
+                        <a href=""  ng-click="$('#compareModal').modal('hide');GetProduct(value.ProductId);"><span style="font-weight:bold;color: #0070d2;">{{value.ProductName}} </span></a>
+                    </div>
+                </div>  
+                <div class="row">
+                    <div class="col-md-6 cart-pad-right">
+                        <span class="pull-right" >Price:</span>
+                    </div>
+                    <div class="col-md-6 cart-pad-left">
+                    
+                        <span ng-if="value.isContracted==true" class="pull-left" ng-class="{'strike-label':value.isContracted==true}">&nbsp;{{currency}}{{formatAmount(value.PriceItem2.Apttus_Config2__ListPrice__c * conversion)}}</span>
+                        <span  class="pull-left" ng-if="value.isContracted!=true">&nbsp;{{currency}}{{formatAmount(value.PriceItem.Apttus_Config2__ListPrice__c * conversion)}}</span>
+                    </div>
+                </div>
+                <div class="row" ng-if="value.isContracted==true">
+                    <div class="col-md-6 cart-pad-right">
+                        <span class="pull-right">Contracted Price :</span>
+                    </div>
+                    <div class="col-md-6 cart-pad-left">            
+                        <span class="pull-left" style="color: #b12704!important;"> &nbsp;{{currency}}{{formatAmount(value.PriceItem.Apttus_Config2__ListPrice__c * conversion)}}</span>
+                    </div>
+                </div>  
+                <div class="row">
+                    <!--<div class="col-md-6 cart-pad-right">
+                        <span class="pull-right">Rating :</span>
+                    </div>
+                    <div class="col-md-6 cart-pad-left" style="width: auto;">            
+                        <img src="{{sitePrefix ? sitePrefix+value.ratingURL : value.ratingURL}}" alt="Rating" title="{{value.rating}}" height="20" width="100" border="0"/>
+                    </div>
+                </div>
+                </td>
+            </tr>
+            </table>
+  </td>
+    </tr>
+  </thead>         
+  <tbody>
+  <tr ng-repeat="(key, value) in comparedData">
+  
+  <td> {{key}} </td>
+  
+  <td ng-repeat="prod in productDetails track by $index">
+  {{value[prod.ProductId]}} 
+  </td>
+</tr>
+  </tbody>
+</table>
+<style>
+.compare-prod-td{
+    text-align:center !important;
+    border: none !important;
+    padding: 10px !important;
+    height: auto !important;
+}
+.modal-dialog{
+width:70% !important;
+}
+#modal-content{
+top:5%;
+right:10%;
+outline: none;
+}
+.features-table {
+  width: 100%;
+  margin: 0 auto;
+  border-collapse: separate;
+  border-spacing: 0;
+  text-shadow: 0 1px 0 #fff;
+  color: #2a2a2a;
+  background: #fafafa;  
+  background-image: linear-gradient(top, #fff, #eaeaea, #fff);
+}
+
+.features-table td {
+  height: 30px;
+  line-height: 50px;
+  padding: 0 14px;
+  border-bottom: 1px solid #cdcdcd;
+  box-shadow: 0 1px 0 white;
+  white-space: nowrap;
+  text-align: center;
+}
+
+/*Body*/
+.features-table tbody td {
+  text-align: center;
+  font: normal 12px Verdana, Arial, Helvetica;
+  width: 150px;
+}
+
+.features-table tbody td:first-child {
+  width: auto;
+  text-align: left;
+  width: 25%;
+}
+
+.features-table td:nth-child(2), 
+.features-table td:nth-child(3),
+.features-table td:nth-child(4),
+.features-table td:nth-child(5),
+.features-table td:nth-child(6),
+.features-table td:nth-child(7), {
+  background: #efefef;
+  background: rgba(144,144,144,0.15);
+  border-right: 1px solid white;
+}
+
+
+/*Header*/
+.features-table thead td {
+  font: bold 1.3em 'trebuchet MS', 'Lucida Sans', Arial;  
+  border-radius-topright: 10px;
+  border-radius-topleft: 10px; 
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+  border-top: 1px solid #eaeaea; 
+}
+
+.features-table thead td:first-child {
+  border-top: none;
+}
+
+/*Footer*/
+.features-table tfoot td {
+  font: bold 1.4em Georgia;  
+  border-radius-bottomright: 10px;
+  border-radius-bottomleft: 10px; 
+  border-bottom-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+  border-bottom: 1px solid #dadada;
+}
+
+.features-table tfoot td:first-child {
+  border-bottom: none;
+}
+.percent-style{
+    position: absolute;
+    margin-left: -14%;
+    margin-top: 0%;
+    width: 5vw;
+    background-color: #5cb85c;
+    border-radius: 10px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    vertical-align: middle;
+    color: #FFF;
+    font-size: 0.6vw;
+}
+</style>
+    </div>  <!--/.modal-content 
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success " data-dismiss="modal">Close</button>
+        </div>
+                
+      </div>
+    </div><!-- /.modal-dialog 
+</div><!-- /.modal --> <!--Comapre Prod END-->
+        
+        <!-- // SITE MAIN CONTENT -->
+
+
+</apex:page>

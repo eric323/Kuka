@@ -1,0 +1,21 @@
+<!-- **********************************************************************
+Name:  AccountCompChart.page
+======================================================
+Purpose:
+
+This page displays an spiderchart concerning AccountCompetitors
+======================================================
+History
+-------
+Date        AUTHOR                  DETAIL
+30/08/2016  Andreas Meyer           INITIAL
+04/10/2016  Andreas Meyer           DC-496 add legend for labels
+********************************************************************** -->
+<apex:page sidebar="false" showHeader="false" standardController="Account" extensions="AccountCompChartController">
+    <apex:outputPanel id="hasnovalues" rendered="{!novalues}">
+        {!$Label.KAPCompetitorView_NoData} 
+    </apex:outputPanel> 
+    <apex:outputPanel id="hasvalues" rendered="{!NOT(novalues)}">  
+        <c:SpiderChartComponent strCompetitors="{!strCompetitors}" strDimensionsData="{!strDimensionsData}" strLengendData="{!SWOTData}" />    
+    </apex:outputPanel> 
+</apex:page>

@@ -1,0 +1,116 @@
+<apex:page standardController="Opportunity_Review__c" title="Edit Risk Assessment" extensions="RiskAssessmentExtension">  
+    <style>
+        textarea {width: 95%;}
+    </style>
+
+    <apex:form >
+        
+        <apex:pageBlock title="Opportunity: {!Opportunity_Review__c.Opportunity__r.Name}" id="pageBlock">
+            <apex:pageMessages id="messages"></apex:pageMessages>
+            <apex:pageBlockButtons >
+                <apex:commandButton value="Save" action="{!save}" />
+                <apex:commandButton value="Cancel" action="{!cancel}" />
+            </apex:pageBlockButtons>
+
+            <!--<apex:outputField value="{!currentUser.Id}" title="Current User"/><br/>
+            <apex:outputField value="{!approverLevelB.Id}" title="Approver Level B"/><br/>
+            <apex:outputField value="{!deligatedApprover.Id}" title="Deligated Approver"/><br/>-->
+
+            <!-- Pre Risk Assessment -->
+            <apex:outputPanel rendered="{!isPreAssessment}">
+                <apex:pageBlockSection columns="1" collapsible="false" title="Pre-Assessment Questions">
+                    <apex:pageBlockTable value="{!allRAQs}" var="raq" rendered="{!hasQuestions}" >
+                        <apex:column headerValue="Question" width="25%" style="{!if(raq.Entry_Type__c == 'Header','color:orange;font-weight: bold;font-size:120%;text-decoration: underline', 'color:black')}" 
+                            rendered="{!NOT(contains(currentUser.LanguageLocaleKey,'CN')) && 
+                            NOT(contains(currentUser.LanguageLocaleKey,'de'))}">
+                            <apex:outputField value="{!raq.Question__c}"/> 
+                        </apex:column>
+                        <apex:column headerValue="Question" width="25%" style="{!if(raq.Entry_Type__c == 'Header','color:orange;font-weight: bold;font-size:120%;text-decoration: underline', 'color:black')}" rendered="{!contains(currentUser.LanguageLocaleKey,'CN')}">
+                            <apex:outputField value="{!raq.QuestionCN__c}"/> 
+                        </apex:column>
+                        <apex:column headerValue="Question" width="25%" style="{!if(raq.Entry_Type__c == 'Header','color:orange;font-weight: bold;font-size:120%;text-decoration: underline', 'color:black')}" rendered="{!contains(currentUser.LanguageLocaleKey,'de')}">
+                            <apex:outputField value="{!raq.QuestionDE__c}"/> 
+                        </apex:column>
+                        <apex:column headerValue="Answer" width="10%">
+                            <apex:inputField value="{!raq.AnswerYesNo__c}" rendered="{!raq.Entry_Type__c=="Yes/No Question"}" />
+                            <apex:inputField value="{!raq.AnswerYesNoUnknown__c}" rendered="{!raq.Entry_Type__c=="Yes/No/Unknown Question"}" />
+                            <apex:inputField value="{!raq.AnswerLowMediumHigh__c}" rendered="{!raq.Entry_Type__c=="Low/Medium/High Question"}" />
+                        </apex:column>
+                        <apex:column headerValue="Remarks / Actions" width="50%" >
+                            <apex:inputTextarea value="{!raq.Remark__c}" rows="2" rendered="{!NOT(raq.Entry_Type__c=="Header")}" />
+                        </apex:column>
+                    </apex:pageBlockTable>
+                </apex:pageBlockSection>
+            </apex:outputPanel>
+
+            <!-- Basic Risk Assessment -->
+            <apex:outputPanel rendered="{!isBasicAssessment}">
+                <apex:pageBlockSection columns="1" collapsible="false" title="Basic Assessment Questions">
+                    <apex:pageBlockTable value="{!allRAQs}" var="raq" rendered="{!hasQuestions}" >
+                        <apex:column headerValue="Question" width="25%" style="{!if(raq.Entry_Type__c == 'Header','color:orange;font-size:120%;text-decoration: underline', 'color:black')}" 
+                            rendered="{!NOT(contains(currentUser.LanguageLocaleKey,'CN')) && 
+                            NOT(contains(currentUser.LanguageLocaleKey,'de'))}">
+                            <apex:outputField value="{!raq.Question__c}"/> 
+                        </apex:column>
+                        <apex:column headerValue="Question" width="25%" style="{!if(raq.Entry_Type__c == 'Header','color:orange;font-size:120%;text-decoration: underline', 'color:black')}" rendered="{!contains(currentUser.LanguageLocaleKey,'CN')}">
+                            <apex:outputField value="{!raq.QuestionCN__c}"/> 
+                        </apex:column>
+                        <apex:column headerValue="Question" width="25%" style="{!if(raq.Entry_Type__c == 'Header','color:orange;font-size:120%;text-decoration: underline', 'color:black')}" rendered="{!contains(currentUser.LanguageLocaleKey,'de')}">
+                            <apex:outputField value="{!raq.QuestionDE__c}"/> 
+                        </apex:column>
+                        <apex:column headerValue="Answer" width="10%">
+                            <apex:inputField value="{!raq.AnswerYesNo__c}" rendered="{!raq.Entry_Type__c=="Yes/No Question"}" />
+                            <apex:inputField value="{!raq.AnswerLowMediumHigh__c}" rendered="{!raq.Entry_Type__c=="Low/Medium/High Question"}" />
+                        </apex:column>
+                        <apex:column headerValue="Remarks" width="50%">
+                            <apex:inputTextarea value="{!raq.Remark__c}" rows="2" rendered="{!NOT(raq.Entry_Type__c=="Header")}" />
+                        </apex:column>
+                    </apex:pageBlockTable>
+                </apex:pageBlockSection>
+            </apex:outputPanel>
+            
+            <!-- Extended Risk Assessment -->
+            <apex:outputPanel rendered="{!isExtendedAssessment}">
+                
+                <apex:pageBlockSection columns="1" collapsible="false" title="Extended Assessment Questions">
+                    <apex:pageBlockTable value="{!allRAQs}" var="raq" rendered="{!hasQuestions}" >
+                        <apex:column headerValue="Question" width="10%" style="{!if(raq.Entry_Type__c == 'Header','color:orange;font-weight: bold;font-size:120%;text-decoration: underline', if(raq.isRFQController__c == true,'color:orange','color:black'))}" 
+                            rendered="{!NOT(contains(currentUser.LanguageLocaleKey,'CN')) && 
+                            NOT(contains(currentUser.LanguageLocaleKey,'de'))}">
+                            <apex:outputField value="{!raq.Question__c}"/> 
+                        </apex:column>
+                        <apex:column headerValue="Question" width="10%" style="{!if(raq.Entry_Type__c == 'Header','color:orange;font-weight: bold;font-size:120%;text-decoration: underline', if(raq.isRFQController__c == true,'color:orange','color:black'))}" rendered="{!contains(currentUser.LanguageLocaleKey,'CN')}">
+                            <apex:outputField value="{!raq.QuestionCN__c}"/> 
+                        </apex:column>
+                        <apex:column headerValue="Question" width="10%" style="{!if(raq.Entry_Type__c == 'Header','color:orange;font-weight: bold;font-size:120%;text-decoration: underline', if(raq.isRFQController__c == true,'color:orange','color:black'))}" rendered="{!contains(currentUser.LanguageLocaleKey,'de')}">
+                            <apex:outputField value="{!raq.QuestionDE__c}"/> 
+                        </apex:column>
+                        <apex:column headerValue="Answer" width="10%">
+                            <apex:inputField value="{!raq.AnswerYesNo__c}" rendered="{!raq.Entry_Type__c=="Yes/No Question"}"/>
+                            <apex:inputField value="{!raq.AnswerLowMediumHigh__c}" rendered="{!raq.Entry_Type__c=="Low/Medium/High Question"}" />
+                        </apex:column>
+                        <apex:column headerValue="Financial Risk" width="10%" rendered="{!currentOpportunityReviewRecord.KUKA_subgroup__c == 'KUKA Systems'}">
+                            <apex:inputField value="{!raq.Financial_Risk__c}" rendered="{!raq.isFinancialRisk__c && NOT(raq.Entry_Type__c="Header")}" />
+                        </apex:column>
+                        <apex:column headerValue="Project Controller" width="10%">
+                            <apex:outputField value="{!raq.isRFQController__c}" rendered="{!raq.Entry_Type__c!="Header"}" />
+                        </apex:column>
+                        <apex:column headerValue="Remarks" width="10%">
+                            <apex:inputTextarea value="{!raq.Remark__c}" rows="2" rendered="{!NOT(raq.Entry_Type__c=="Header")}" />
+                       </apex:column>
+                       <apex:column headerValue="Help Text" width="60%" rendered="{!NOT(contains(currentUser.LanguageLocaleKey,'CN')) && 
+                            NOT(contains(currentUser.LanguageLocaleKey,'de'))}">
+                            <apex:inputTextarea value="{!raq.HelpText__c}" rows="4" rendered="{!NOT(raq.Entry_Type__c=="Header")}" readonly="true" style="{!if(raq.isRFQController__c == true,'color:grey','color:black')}"/>
+                       </apex:column>
+                       <apex:column headerValue="Help Text" width="60%" rendered="{!contains(currentUser.LanguageLocaleKey,'CN')}" >
+                            <apex:inputTextarea value="{!raq.HelpTextCN__c}" rows="4" rendered="{!NOT(raq.Entry_Type__c=="Header")}" readonly="true" style="{!if(raq.isRFQController__c == true,'color:grey','color:black')}"/>
+                       </apex:column>
+                       <apex:column headerValue="Help Text" width="60%" rendered="{!contains(currentUser.LanguageLocaleKey,'de')}" >
+                            <apex:inputTextarea value="{!raq.HelpTextDE__c}" rows="4" rendered="{!NOT(raq.Entry_Type__c=="Header")}" readonly="true" style="{!if(raq.isRFQController__c == true,'color:grey','color:black')}"/>
+                       </apex:column>
+                    </apex:pageBlockTable>
+                </apex:pageBlockSection>
+            </apex:outputPanel>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>
