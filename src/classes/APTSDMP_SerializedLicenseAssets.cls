@@ -123,6 +123,8 @@ global class APTSDMP_SerializedLicenseAssets
     public static void insertSerializedLicenseAssets(Set<Id> setAssetIds)
     {
     	List<APTSDMP_Serialized_License_Asset__c> lstSerializedAssets = new List<APTSDMP_Serialized_License_Asset__c>();
+        //for(Apttus_Config2__AssetLineItem__c objAssets: [SELECT Id,Apttus_Config2__ProductId__c,Apttus_Config2__ProductId__r.Family,
+        //Apttus_Config2__AccountId__c,Apttus_Config2__Quantity__c, Apttus_Config2__AttributeValueId__c FROM Apttus_Config2__AssetLineItem__c, OwnerId Where Id IN: setAssetIds])
     	for(Apttus_Config2__AssetLineItem__c objAssets: [SELECT Id,Apttus_Config2__ProductId__c,Apttus_Config2__ProductId__r.Family,Apttus_Config2__AccountId__c,Apttus_Config2__Quantity__c FROM Apttus_Config2__AssetLineItem__c Where Id IN: setAssetIds])
     	{
     		if(objAssets.Apttus_Config2__ProductId__r.Family=='Serialized License' && (objAssets.Apttus_Config2__Quantity__c >= 1 && objAssets.Apttus_Config2__Quantity__c <= 5000))
@@ -137,6 +139,11 @@ global class APTSDMP_SerializedLicenseAssets
                     Date datum = system.today();                    
                     obj.APTSDMP_Expiration_Date__c = datum.addYears(1);
     				obj.APTSDMP_License_Product__c = objAssets.Apttus_Config2__ProductId__c;
+                    //Jade Fischer added 5/3/2017
+                    /*if (objAssets.Apttus_Config2__AttributeValueId__r.OnBehalf__c == 'myself'){
+                    	obj.Contact__c = objAssets.OwnerId;
+               		 }
+                    */
     				lstSerializedAssets.add(obj);
     			}
     		}

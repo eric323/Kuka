@@ -394,6 +394,16 @@
           }
           return deferred.promise;
         },
+        getNewProduct : function(productId){
+          var deferred = $q.defer();
+          APTSMD_eCommController.getProductWithPrice(productId, function(r){
+            deferred.resolve(r);
+          }
+          ,deferred.reject
+          ,{escape : false});
+
+          return deferred.promise;
+        },
         setProduct : function(product){
           productList[product.ProductId] = product;
         }

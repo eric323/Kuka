@@ -48,9 +48,7 @@
           <ul class="linkholder">
             <li>&copy; <a href="{!$Label.APTSDMP_KUKALink}">{!$Label.APTSDMP_KUKAAG}</a></li>
             <li><a href="{!$Label.APTSDMP_KUKAImprintURL}">{!$Label.APTSDMP_Imprint}</a></li>
-<!--<li><a href="https://training.kuka.com/sites/5/en-US/all/all/action?nextPage=jsp/Impressum.jsp&SessionContextID=DEFAULT_ID">{!$Label.APTSDMP_Imprint}</a></li>-->           
-<!--<li><a href="{!$Label.APTSDMP_PrivacyURL}">{!$Label.APTSDMP_Privacy}</a></li>-->
-            <li><a href="#!/legal/">{!$Label.CommunitySelfReg_HeaderTandD}</a></li> 
+            <li><a href="#!/legal/">{!$Label.CommunitySelfReg_HeaderTandD}</a></li>
           </ul>
       </div>
     </footer>
@@ -145,13 +143,16 @@
       <div class="container m-t-sm">
         <ol class="breadcrumb">
             <li><a href="javascript:void(0)" ui-sref="index.products">{!$Label.APTSDMP_Catalog}</a></li>
-            <li class="active">{{product.ProductName}}</li>
+            <li class="active">{{product.Apttus_Config2__ProductId__r.Name}}</li>
         </ol>
       </div>
       <div class="container m-t-md">
         <div class="row product-info">
           <div class="col-sm-12 col-md-6">
-            <div class="tablet">
+            <div class="tablet" ng-if="product.productDetails.APTSDMP_Slider_Pic_1__c
+                                      || product.productDetails.APTSDMP_Slider_Pic_2__c
+                                      || product.productDetails.APTSDMP_Slider_Pic_3__c
+                                      || product.productDetails.APTSDMP_Slider_Pic_4__c">
               <div id="product-image-carousel" class="carousel slide" data-ride="carousel">
                 <ol class="carousel-indicators">
                   <li data-target="#product-image-carousel" data-slide-to="0" class="active" ng-if="product.productDetails.APTSDMP_Slider_Pic_1__c"></li>
@@ -218,16 +219,16 @@
                     <span style="font-size:32px">{!$Label.kuka_ecom_lms1}</span>
                 </div>
                 <div>
-                    {!$Label.kuka_ecom_lms2} 
+                    {!$Label.kuka_ecom_lms2}
                 </div>
                 <div style="margin-top:30px;">
                     <span style="font-size:32px">{!$Label.kuka_ecom_lms3} </span>
                 </div>
                 <div>
-                    {!$Label.kuka_ecom_lms4} 
+                    {!$Label.kuka_ecom_lms4}
                 </div>
                 <div style="margin-top:30px;">
-                    <ul> 
+                    <ul>
                         <li>{!$Label.kuka_ecom_lms7}</li>
                         <li>{!$Label.kuka_ecom_lms8}</li>
                         <li>{!$Label.kuka_ecom_lms9}</li>
@@ -238,8 +239,8 @@
                 </div>
                 <div style="margin-top:70px;">
                     <center>
-                      <!--  <img src="https://kuka--ecommdev--c.cs82.visual.force.com/resource/1481849092000/mueller_gh">  -->
-                    </center>    
+
+                    </center>
                 </div>
                 <div style="width:60%; margin-left:auto; margin-right:auto; margin-top:30px;">
                     <center>
@@ -261,138 +262,135 @@
         </div>
 
         <section class="product-holder plus" ng-if="product.productDetails.Name == 'KUKA Connect Plus'">
-          <div class="container" style="margin-left: auto; margin-right: auto;">
-  <div class="section-title">
-    <picture> <img src="{!URLFOR($Resource.APTSDMP_ConnectPlusZip, 'kuka_connect_plus_header.png')}" alt="image description" width="320" height="31" /> </picture>
-  </div>
-  <div class="content-holder">
-    <p>{!$Label.APTSDMP_ConnectPlusDesc}</p>
-  </div>
-  <form action="#" class="form-1">
-    <div class="input-holder">
-      <label class="jcf-label-active"> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectPlusZip, 'PlusIcons/real-time_robot_state_notifications.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectPlusRobot} </span> <span class="jcf-checkbox"><span></span>
-        <input type="checkbox" checked="checked" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;" />
-        </span> </label>
-    </div>
-    <div class="input-holder">
-      <label class="jcf-label-active"> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectPlusZip, 'PlusIcons/real-time_fault_notifications.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectPlusRealtime} </span> <span class="jcf-checkbox"><span></span>
-        <input type="checkbox" checked="checked" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;" />
-        </span> </label>
-    </div>
-    <div class="input-holder">
-      <label class="jcf-label-active"> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectPlusZip, 'PlusIcons/exportable_data_reports_plus.png')}"/></span><span class="input-title"> {!$Label.APTSDMP_ConnectPlusExport} </span> <span class="jcf-checkbox"><span></span>
-        <input type="checkbox" checked="checked" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;" />
-        </span> </label>
-    </div>
-    <div class="input-holder">
-      <label for="check-13" class="jcf-label-active"> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectPlusZip, 'PlusIcons/enhanced_timeline_with_real-time_faults.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectPlusEnhance} </span> <span class="jcf-checkbox"><span></span>
-        <input type="checkbox" id="check-13" checked="checked" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;" />
-        </span> </label>
-    </div>
-    <div class="input-holder">
-      <label class="jcf-label-active"> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectPlusZip, 'PlusIcons/comprehensive_event_log.png')}"/></span> <span class="input-title"> Comprehensive event log </span> <span class="jcf-checkbox"><span></span>
-        <input type="checkbox" checked="checked" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;" />
-        </span> </label>
-    </div>
-    <div class="input-holder">
-      <label class="jcf-label-active"> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectPlusZip, 'PlusIcons/4-d_visualization_of_robot.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_Connect4D} </span> <span class="jcf-checkbox"><span></span>
-        <input type="checkbox" checked="checked" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;" />
-        </span> </label>
-    </div>
-    <div class="input-holder">
-      <label><span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/codition_monitoring.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectCondition} </span> <span class="jcf-checkbox jcf-checked"><span></span>
-        <input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;" />
-        </span> </label>
-    </div>
-    <div class="input-holder">
-      <label><span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/robot_identification_data_icon.png')}"/></span><span class="input-title"> {!$Label.APTSDMP_ConnectRobot} </span> <span class="jcf-checkbox jcf-checked"><span></span>
-        <input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;" />
-        </span> </label>
-    </div>
-    <div class="input-holder">
-      <label> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/controller_identification_data.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectController} </span> <span class="jcf-checkbox jcf-checked"><span></span>
-        <input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;" />
-        </span> </label>
-    </div>
-    <div class="input-holder">
-      <label> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/specifications.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectSpecs} </span> <span class="jcf-checkbox jcf-checked"><span></span>
-        <input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;" />
-        </span> </label>
-    </div>
-
-    <div class="input-holder">
-      <label> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/administrative_console.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectAdmin} </span> <span class="jcf-checkbox jcf-checked"><span></span>
-        <input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;" />
-        </span> </label>
-    </div>
-    <div class="input-holder">
-      <label> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/searchable_and_sortable_robot_list.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectSearch} </span> <span class="jcf-checkbox jcf-checked"><span></span>
-        <input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;" />
-        </span> </label>
-    </div>
-    <div class="input-holder">
-      <label> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/language_support.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectLang} </span> <span class="jcf-checkbox jcf-checked"><span></span>
-        <input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;" />
-        </span> </label>
-    </div>
-  </form>
-</div>
-<div class="bg-stretch" id="bg-stretch1477591930808282"> </div>
-
+           <div class="container" style="margin-left: auto; margin-right: auto;">
+              <div class="section-title">
+                 <picture> <img src="{!URLFOR($Resource.APTSDMP_ConnectPlusZip, 'kuka_connect_plus_header.png')}" alt="image description" width="320" height="31" /> </picture>
+              </div>
+              <div class="content-holder">
+                 <p>{!$Label.APTSDMP_ConnectPlusDesc}</p>
+              </div>
+              <form action="#" class="form-1">
+                 <div class="input-holder">
+                    <label class="jcf-label-active"> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectPlusZip, 'PlusIcons/real-time_robot_state_notifications.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectPlusRobot} </span> <span class="jcf-checkbox"><span></span>
+                    <input type="checkbox" checked="checked" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;" />
+                    </span> </label>
+                 </div>
+                 <div class="input-holder">
+                    <label class="jcf-label-active"> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectPlusZip, 'PlusIcons/real-time_fault_notifications.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectPlusRealtime} </span> <span class="jcf-checkbox"><span></span>
+                    <input type="checkbox" checked="checked" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;" />
+                    </span> </label>
+                 </div>
+                 <div class="input-holder">
+                    <label class="jcf-label-active"> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectPlusZip, 'PlusIcons/exportable_data_reports_plus.png')}"/></span><span class="input-title"> {!$Label.APTSDMP_ConnectPlusExport} </span> <span class="jcf-checkbox"><span></span>
+                    <input type="checkbox" checked="checked" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;" />
+                    </span> </label>
+                 </div>
+                 <div class="input-holder">
+                    <label for="check-13" class="jcf-label-active"> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectPlusZip, 'PlusIcons/enhanced_timeline_with_real-time_faults.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectPlusEnhance} </span> <span class="jcf-checkbox"><span></span>
+                    <input type="checkbox" id="check-13" checked="checked" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;" />
+                    </span> </label>
+                 </div>
+                 <div class="input-holder">
+                    <label class="jcf-label-active"> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectPlusZip, 'PlusIcons/comprehensive_event_log.png')}"/></span> <span class="input-title"> Comprehensive event log </span> <span class="jcf-checkbox"><span></span>
+                    <input type="checkbox" checked="checked" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;" />
+                    </span> </label>
+                 </div>
+                 <div class="input-holder">
+                    <label class="jcf-label-active"> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectPlusZip, 'PlusIcons/4-d_visualization_of_robot.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_Connect4D} </span> <span class="jcf-checkbox"><span></span>
+                    <input type="checkbox" checked="checked" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;" />
+                    </span> </label>
+                 </div>
+                 <div class="input-holder">
+                    <label><span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/codition_monitoring.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectCondition} </span> <span class="jcf-checkbox jcf-checked"><span></span>
+                    <input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;" />
+                    </span> </label>
+                 </div>
+                 <div class="input-holder">
+                    <label><span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/robot_identification_data_icon.png')}"/></span><span class="input-title"> {!$Label.APTSDMP_ConnectRobot} </span> <span class="jcf-checkbox jcf-checked"><span></span>
+                    <input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;" />
+                    </span> </label>
+                 </div>
+                 <div class="input-holder">
+                    <label> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/controller_identification_data.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectController} </span> <span class="jcf-checkbox jcf-checked"><span></span>
+                    <input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;" />
+                    </span> </label>
+                 </div>
+                 <div class="input-holder">
+                    <label> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/specifications.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectSpecs} </span> <span class="jcf-checkbox jcf-checked"><span></span>
+                    <input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;" />
+                    </span> </label>
+                 </div>
+                 <div class="input-holder">
+                    <label> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/administrative_console.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectAdmin} </span> <span class="jcf-checkbox jcf-checked"><span></span>
+                    <input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;" />
+                    </span> </label>
+                 </div>
+                 <div class="input-holder">
+                    <label> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/searchable_and_sortable_robot_list.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectSearch} </span> <span class="jcf-checkbox jcf-checked"><span></span>
+                    <input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;" />
+                    </span> </label>
+                 </div>
+                 <div class="input-holder">
+                    <label> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/language_support.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectLang} </span> <span class="jcf-checkbox jcf-checked"><span></span>
+                    <input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;" />
+                    </span> </label>
+                 </div>
+              </form>
+           </div>
+           <div class="bg-stretch" id="bg-stretch1477591930808282"> </div>
         </section>
         <section class="product-holder" ng-if="product.productDetails.Name == 'KUKA Connect Lite'">
-          <div class="container" style="margin-left: auto; margin-right: auto;">
-  <div class="section-title">
-    <picture> <img src="{!URLFOR($Resource.APTSDMP_ConnectLiteLogo)}" alt="image description" width="320" height="31"/> </picture>
-  </div>
-  <div class="content-holder" style="max-width: 580px;">
-    <p>{!$Label.APTSDMP_ConnectLiteDesc}</p>
-  </div>
-  <form action="#" class="form-1">
-    <div class="input-holder">
-      <label> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/codition_monitoring.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectCondition} </span> <span class="jcf-checkbox jcf-checked"><span></span>
-        <input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;"/>
-        </span> </label>
-    </div>
-    <div class="input-holder">
-      <label> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/timeline_with_routine_maintenance_milestones.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectTimeline} </span> <span class="jcf-checkbox jcf-checked"><span></span>
-        <input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;"/>
-        </span> </label>
-    </div>
-    <div class="input-holder">
-      <label> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/robot_identification_data_icon.png')}"/></span><span class="input-title"> {!$Label.APTSDMP_ConnectRobot} </span> <span class="jcf-checkbox jcf-checked"><span></span>
-        <input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;"/>
-        </span> </label>
-    </div>
-    <div class="input-holder">
-      <label> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/controller_identification_data.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectController} </span> <span class="jcf-checkbox jcf-checked"><span></span>
-        <input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;"/>
-        </span> </label>
-    </div>
-    <div class="input-holder">
-      <label> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/specifications.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectSpecs} </span> <span class="jcf-checkbox jcf-checked"><span></span>
-        <input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;"/>
-        </span> </label>
-    </div>
-    <div class="input-holder">
-      <label> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/administrative_console.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectAdmin} </span> <span class="jcf-checkbox jcf-checked"><span></span>
-        <input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;"/>
-        </span> </label>
-    </div>
-    <div class="input-holder">
-      <label> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/searchable_and_sortable_robot_list.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectSearch} </span> <span class="jcf-checkbox jcf-checked"><span></span>
-        <input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;"/>
-        </span> </label>
-    </div>
-    <div class="input-holder">
-      <label> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/language_support.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectLang} </span> <span class="jcf-checkbox jcf-checked"><span></span>
-        <input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;"/>
-        </span> </label>
-    </div>
-  </form>
-</div>
-<div class="bg-stretch" id="bg-stretch1477517020051400"> </div>
-
+           <div class="container" style="margin-left: auto; margin-right: auto;">
+              <div class="section-title">
+                 <picture> <img src="{!URLFOR($Resource.APTSDMP_ConnectLiteLogo)}" alt="image description" width="320" height="31"/> </picture>
+              </div>
+              <div class="content-holder" style="max-width: 580px;">
+                 <p>{!$Label.APTSDMP_ConnectLiteDesc}</p>
+              </div>
+              <form action="#" class="form-1">
+                 <div class="input-holder">
+                    <label> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/codition_monitoring.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectCondition} </span> <span class="jcf-checkbox jcf-checked"><span></span>
+                    <input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;"/>
+                    </span> </label>
+                 </div>
+                 <div class="input-holder">
+                    <label> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/timeline_with_routine_maintenance_milestones.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectTimeline} </span> <span class="jcf-checkbox jcf-checked"><span></span>
+                    <input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;"/>
+                    </span> </label>
+                 </div>
+                 <div class="input-holder">
+                    <label> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/robot_identification_data_icon.png')}"/></span><span class="input-title"> {!$Label.APTSDMP_ConnectRobot} </span> <span class="jcf-checkbox jcf-checked"><span></span>
+                    <input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;"/>
+                    </span> </label>
+                 </div>
+                 <div class="input-holder">
+                    <label> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/controller_identification_data.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectController} </span> <span class="jcf-checkbox jcf-checked"><span></span>
+                    <input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;"/>
+                    </span> </label>
+                 </div>
+                 <div class="input-holder">
+                    <label> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/specifications.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectSpecs} </span> <span class="jcf-checkbox jcf-checked"><span></span>
+                    <input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;"/>
+                    </span> </label>
+                 </div>
+                 <div class="input-holder">
+                    <label> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/administrative_console.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectAdmin} </span> <span class="jcf-checkbox jcf-checked"><span></span>
+                    <input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;"/>
+                    </span> </label>
+                 </div>
+                 <div class="input-holder">
+                    <label> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/searchable_and_sortable_robot_list.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectSearch} </span> <span class="jcf-checkbox jcf-checked"><span></span>
+                    <input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;"/>
+                    </span> </label>
+                 </div>
+                 <div class="input-holder">
+                    <label> <span class="icon-holder"><img class="icon-lines" src="{!URLFOR($Resource.APTSDMP_ConnectLiteIcons, 'ConnectLiteIcons/language_support.png')}"/></span> <span class="input-title"> {!$Label.APTSDMP_ConnectLang} </span> <span class="jcf-checkbox jcf-checked"><span></span>
+                    <input type="checkbox" style="position: absolute; height: 100%; width: 100%; opacity: 0; margin: 0px;"/>
+                    </span> </label>
+                 </div>
+              </form>
+           </div>
+           <div class="bg-stretch" id="bg-stretch1477517020051400"> </div>
         </section>
         <div id="product_video_container" ng-if="trustedVideoUrl">
             <div id="product_video">
@@ -460,6 +458,12 @@
           </div>
         </div>
       </div>
+    </div>
+  </script>
+
+  <script type="text/ng-template" id="product-bundle.html">
+    <div class="product-bundle">
+      Product Bundle Template
     </div>
   </script>
 
@@ -1012,10 +1016,10 @@
   <script type="text/ng-template" id="legal.html">
             <style>
                 .legalli{
-                    margin: 0 0 10px 0;                    
+                    margin: 0 0 10px 0;
                 }
                 .legaltext{
-                    text-decoration: underline; font-weight: bold;    
+                    text-decoration: underline; font-weight: bold;
                 }
             </style>
 
@@ -1024,7 +1028,7 @@
                 <div class="content">
                     <center><h2>KUKA MARKETPLACE TERMS OF USE</h2></center>
                   </div>
-                    <div style="margin-top:20px"> 
+                    <div style="margin-top:20px">
                       <ol>
                         <li class="legalli"><span class="legaltext">Acceptance of the Terms of Use.</span> These KUKA Connect Marketplace Terms of Use are entered into by and between you and KUKA Roboter GmbH ("Company", "we" or "us"). The following terms and conditions, together with any documents they expressly incorporate by reference (collectively, these "Terms of Use"), govern your access to and use of shop.kuka.com, including any content, functionality, and services offered on or through shop.kuka.com (the "Website"). Please read the Terms of Use carefully before you start to use the Website. By using the Website or by clicking to accept or agree to the Terms of Use, you accept and agree to be bound by these Terms of Use and our Data Protection Policy, found at www.kuka.com/en-de/privacy (“Privacy Policy”), incorporated herein by reference. If you do not want to agree to these Terms of Use or the Privacy Policy, you must not access or use the Website. </li>
                         <li class="legalli"><span class="legaltext">Changes to These Terms.</span> We reserve the right to change these Terms of Use at any time upon notice. We may give notice by posting the updated Terms of Use on the Website or by any other reasonable means. You can review the most current version of these terms of use at any time at HTTPS://shop.kuka.com/legal. The Terms of Use in effect at the time of your use of the Website apply. Updated Terms of Use are binding on you with respect to your use of the Website on or after the date indicated in the updated Terms of Use.  If you do not agree to the updated Terms of Use, you must stop using the Website.  Your continued use of the Website after the date of the updated Terms of Use will constitute your acceptance of the updated Terms of Use. </li>
@@ -1048,7 +1052,7 @@
                 <div class="content">
                     <center><h2>NUTZUNGSBEDINGUNGEN FÜR KUKA MARKETPLACE</h2></center>
                   </div>
-                    <div style="margin-top:20px"> 
+                    <div style="margin-top:20px">
                       <ol>
                         <li class="legalli"><span class="legaltext">Annahme der Nutzungsbedingungen. </span> Die vorliegenden Nutzungsbedingungen für KUKA Connect Marketplace werden zwischen dem Rechtsträger bzw. dem in den beim Registrierungsverfahren angegebenen Registrierungsangaben genannten Unternehmen oder für den Fall, dass kein Rechtsträger oder anderes Unternehmen angegeben wurde, zwischen dem Rechtsträger oder Unternehmen, das von der die Registrierung vornehmenden Person vertreten wird und dieses implizit vertritt bzw. an dessen Statt handelt (der im Folgenden als „Sie“ bezeichnete Rechtsträger bzw. Unternehmen) und der KUKA Roboter GmbH, einer Gesellschaft mit Hauptsitz in der Zugspitzstraße 140, 86165 Augsburg, Deutschland („Gesellschaft“, „wir“ oder „uns“), vereinbart. Die folgenden Bedingungen regeln zusammen mit allen ausdrücklich hierin durch Bezugnahme aufgenommenen Dokumenten (zusammenfassend die „Nutzungsbedingungen“) Ihren Zugriff auf und die Nutzung von shop.kuka.com, einschließlich jeglicher auf bzw. über shop.kuka.com (die „Webseite“) angebotenen Inhalte, Funktionen und Dienste. Bitte lesen Sie die Nutzungsbedingungen vor der Nutzung der Webseite sorgfältig durch. Durch Anklicken der Annahme oder Zustimmung zu den Nutzungsbedingungen erklären Sie sich einverstanden und stimmen zu, dass diese Nutzungsbedingungen für Sie verbindlich gelten.</li>
                         <li class="legalli"><span class="legaltext">Zugriff auf die Webseite. </span> Wir behalten uns das Recht vor, diese Webseite sowie jegliche von uns auf dieser Webseite bereitgestellten Dienste oder Material jederzeit nach unserem alleinigen Ermessen ohne Vorankündigung zu löschen bzw. zu ändern. Wir übernehmen keine Haftung, falls die Webseite aus irgend einem Grund ganz oder teilweise zu einem bestimmten Zeitpunkt oder für einen bestimmten Zeitraum nicht verfügbar ist. Wir können gelegentlich für Anwender den Zugriff auf die gesamte oder einige Teile der Webseite einschränken. Um auf die Webseite oder einige der darauf angebotenen Ressourcen zuzugreifen, werden Sie ggf. um die Angabe bestimmter Registrierungsdaten oder anderweitiger Informationen gebeten. Es stellt eine Voraussetzung für Ihre Nutzung der Webseite dar, dass alle von Ihnen auf dieser Webseite angegebenen Informationen wahrheitsgemäß, aktuell und vollständig sind. Wenn Sie einen Benutzernamen, ein Passwort oder andere Informationen im Rahmen unserer Sicherheitsverfahren wählen bzw. Ihnen diese zugeteilt werden, sind diese Informationen vertraulich zu behandeln und Sie dürfen diese weder an natürliche noch juristische Personen weitergeben. Sie erklären sich auch einverstanden, dass Ihr Konto für Sie persönlich ist und stimmen zu, keiner anderen Person unter Verwendung Ihres Benutzernamens, Passwortes oder anderweitiger Sicherheitsinformationen Zugriff auf diese Webseite oder Teile derselben zu gewähren. Sie erklären sich einverstanden, uns unverzüglich über jeden unbefugten Zugriff bzw. unbefugte Nutzung Ihres Benutzernamens oder Passwortes bzw. jeglichen anderweitigen Sicherheitsverstoß zu informieren. Sie erklären sich auch einverstanden, sich zu vergewissern, dass Sie am Ende jeder Sitzung aus Ihrem Konto ausloggen. Beim Zugriff auf Ihr Konto von einem öffentlichen oder gemeinsam genutzten Computer ist besondere Vorsicht geboten, damit andere Personen nicht Ihr Passwort oder andere personenbezogene Informationen sehen oder aufzeichnen können. Wir können jeden Benutzernamen, jedes Passwort bzw. andere Kennungen deaktivieren, unabhängig davon, ob diese von Ihnen gewählt oder von uns zugeteit wurden, wenn Sie nach unserem Dafürhalten gegen eine Bestimmung dieser Nutzungsbedingungen verstoßen haben.</li>
@@ -1065,8 +1069,8 @@
                       </ol>
                     </div>
                 </div>
-              </div>                        
-            </section>    
+              </div>
+            </section>
       </script>
 
 </apex:component>

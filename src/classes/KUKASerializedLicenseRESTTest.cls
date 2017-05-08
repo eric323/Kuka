@@ -6,7 +6,7 @@
  *  -----------------------------------------------------------------------------
  *  Arokia Joseph      2017-04-13   Initial Version  
  */
-@isTest(seeAllData=false)
+@isTest(seeAllData=true)
 private class KUKASerializedLicenseRESTTest 
 {
     private static Apttus_Config2__PriceList__c objPriceList;
@@ -129,24 +129,7 @@ private class KUKASerializedLicenseRESTTest
     }
     
     
-    
- /*   static testMethod void myUnitTest1()
-    {
-        init();
-        
-        Test.StartTest();
-       // String JsonMsg=JSON.serialize(slaObj);
-       // system.debug('JsonMsg====='+JsonMsg);
-        String JsonMsg= '{"LicenseAssets" : [{"Id" : "'+objSLA.Id+'","APTSDMP_Billing_Account__c" : "'+acc.Id+'","APTSDMP_Integration_Status__c" : "In Progress","APTSDMP_License_Product__c" : "'+pdt.Id+'", "APTSDMP_Original_Asset__c" : "'+objAsset.Id+'","APTSDMP_Status__c" : "Active" }]}';
-        RestRequest req = new RestRequest();
-        RestResponse res = new RestResponse();
-        req.requestURI = 'https://+strUrl+/services/apexrest/APTSDMPSerailzedLicenseAssets/';  //Request URL
-        req.httpMethod = 'POST';//HTTP Request Type
-        req.requestBody = Blob.valueof(JsonMsg);
-        RestContext.request = req;
-        APTSDMP_SerializedAssetsREST.updateSetializedAssets();
-        Test.StopTest();
-    } */
+
     
  
     

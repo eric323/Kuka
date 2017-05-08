@@ -1,4 +1,4 @@
-<apex:page standardStylesheets="false" sidebar="false" showHeader="false" controller="APTSMD_ApttusLabAngularJS" applyBodyTag="false" cache="false" applyHtmlTag="false" docType="html-5.0" language="{!UserLanguage}" >
+<apex:page standardStylesheets="false" sidebar="false" showHeader="false" controller="APTSMD_ApttusLabAngularJS" applyBodyTag="false" cache="false" applyHtmlTag="false" docType="html-5.0" language="{!UserLanguage}" extensions="APTSMD_eCommController">
   <head>
     <meta charset="UTF-8" />
     <title>{!title}</title>
@@ -111,14 +111,28 @@
             url : "product/:productId",
             views : {
               "content@index" : {
-                templateUrl : "product-details.html",
+                templateUrl : function(a, b){
+                  return "product-details.html";
+                },
                 controller : "ProductDetailsController",
                 resolve : {
                   $product : function(productCache, $stateParams){
-                    return productCache.getProduct(kuka.model.store.APTSMD_Price_List__c, $stateParams.productId);
+                    // return productCache.getProduct(kuka.model.store.APTSMD_Price_List__c, $stateParams.productId);
+                    return productCache.getNewProduct($stateParams.productId);
+                  },
+                  $new_product : function(productCache, $stateParams){
+                    // return productCache.getNewProduct($stateParams.productId);
                   },
                   $model : function(){return kuka.model}
                 }
+              }
+            }
+          })
+          .state("index.productBundle", {
+            url : "product-bundle/",
+            views : {
+              "content@index" : {
+                templateUrl : "product-bundle.html"
               }
             }
           })

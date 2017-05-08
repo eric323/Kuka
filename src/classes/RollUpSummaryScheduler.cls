@@ -13,5 +13,7 @@ public class RollUpSummaryScheduler implements Schedulable {
     public void execute(SchedulableContext sc) {
         RollUpSummaryBatch batchJob = new RollUpSummaryBatch();
         Database.executebatch(batchJob, 100);
+        
+        
     }
 }
