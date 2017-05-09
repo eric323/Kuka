@@ -1,0 +1,17 @@
+{
+    "projectName": "Xpert-Projects",
+    "username": "eric.wilson@admin.kuka.corp.qkdev",
+    "id": "ee0b7040-3429-11e7-aec1-b77d1c3f2e1b",
+    "namespace": "",
+    "orgType": "developer",
+    "loginUrl": "https://login.salesforce.com/",
+    "instanceUrl": "https://kuka--QKDev.cs84.my.salesforce.com",
+    "workspace": "C:\\Users\\ewilson\\Documents",
+    "subscription": [
+        "ApexClass",
+        "ApexComponent",
+        "ApexPage",
+        "ApexTrigger",
+        "StaticResource"
+    ]
+}
